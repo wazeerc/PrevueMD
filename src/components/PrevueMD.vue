@@ -5,7 +5,7 @@ import MarkdownPreview from './MarkdownPreview.vue'
 
 <template>
     <header class="header-footer border-b-2">
-        <h1 class="text-lg font-bold font-sans text-neutral-200 sm:text-xl md:text-2xl">PrevueMd</h1>
+        <h1 class="text-lg font-bold font-sans text-neutral-200 sm:text-xl md:text-2xl">PrevueMD</h1>
         <button class="rounded-md font-sans bg-neutral-200 drop-shadow-sm px-2 py-1 text-xs font-semibold text-neutral-800 
                                         sm:px-3 sm:py-2 sm:text-sm md:px-4 md:py-3 md:text-xs flex items-center">
             Open from
@@ -23,6 +23,6 @@ import MarkdownPreview from './MarkdownPreview.vue'
     <footer class="header-footer border-t-2">
         <span class="text-xs font-normal font-sans text-neutral-500 sm:text-sm md:text-xs">Built with Vue</span>
         <a href="https://github.com/wazeerc/PrevueMD" target="_blank"
-            class="text-xs font-normal text-neutral-500 font-sans sm:text-sm md:text-xs">Collaborate here!</a>
+            class="text-xs font-normal text-neutral-500 font-sans sm:text-sm md:text-xs underline">Collaborate here!</a>
     </footer>
 </template>
