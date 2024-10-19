@@ -1,4 +1,6 @@
 <template>
-    <textarea placeholder="Write some Markdown"
-        class="p-4 rounded-sm bg-gray-700 text-gray-100 w-full h-64 md:h-96 lg:h-[40rem] resize-none"></textarea>
+    <div class="flex flex-col">
+        <h2 class="sub-heading">Editor</h2>
+        <textarea placeholder="Write some Markdown" class="markdown-container resize-none font-mono"></textarea>
+    </div>
 </template>
