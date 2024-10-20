@@ -2,14 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-.sub-heading {
-  @apply pb-2 pl-1 font-sans text-base font-medium text-neutral-300;
-}
+@layer components {
+  .sub-heading {
+    padding-bottom: theme("spacing.2");
+    padding-left: theme("spacing.1");
+    font-family: theme("fontFamily.sans");
+    font-size: theme("fontSize.base");
+    font-weight: theme("fontWeight.medium");
+    color: theme("colors.neutral.300");
+  }
 
-.markdown-container {
-  @apply h-64 w-full rounded-sm bg-zinc-900 p-4 text-neutral-200 drop-shadow sm:h-[40rem] md:h-[32rem] lg:h-[36rem];
-}
+  .markdown-container {
+    height: theme("height.80");
+    width: theme("width.full");
+    border-radius: theme("borderRadius.sm");
+    background-color: theme("colors.zinc.900");
+    padding: theme("spacing.4");
+    color: theme("colors.neutral.200");
+    box-shadow: theme("boxShadow.md");
 
-.header-footer {
-  @apply flex items-center justify-between border-neutral-800 px-4 py-2 sm:px-8 sm:py-4 md:px-16 md:py-6;
+    @screen xs {
+      height: 20rem;
+    }
+
+    @screen sm {
+      height: 24rem;
+    }
+
+    @screen md {
+      height: 50rem;
+    }
+
+    @screen lg {
+      height: 50rem;
+    }
+  }
+
+  .header-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-color: theme("colors.neutral.800");
+    padding: theme("spacing.2") theme("spacing.4");
+
+    @screen sm {
+      padding: theme("spacing.4") theme("spacing.8");
+    }
+
+    @screen md {
+      padding: theme("spacing.6") theme("spacing.16");
+    }
+  }
 }
