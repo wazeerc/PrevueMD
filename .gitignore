@@ -30,4 +30,3 @@ design/
 *.tsbuildinfo
 
 test-results/
-playwright-report/

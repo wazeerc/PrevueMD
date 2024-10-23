@@ -38,12 +38,8 @@ pnpm run build
 pnpm run test:unit
 ```
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
 
 ```sh
-# Install browsers for the first run
-pnpm exec playwright install
-
 # When testing on CI, must build the project first
 pnpm run build
 
