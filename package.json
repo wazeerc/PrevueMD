@@ -17,7 +17,6 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
-    "eslint-plugin-readable-tailwind": "^1.8.1",
     "vue": "^3.5.12"
   },
   "devDependencies": {

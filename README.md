@@ -38,7 +38,6 @@ pnpm run build
 pnpm run test:unit
 ```
 
-
 ```sh
 # When testing on CI, must build the project first
 pnpm run build
