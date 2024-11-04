@@ -23,13 +23,26 @@ import MarkdownPreview from "./MarkdownPreview.vue"
   </header>
 
   <main :class="cn(
-    'mx-4 my-4 flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800 p-2 drop-shadow-xl',
+    'mx-4 my-4 flex flex-col gap-4 overflow-y-auto',
     'sm:mx-8 sm:my-6',
-    'md:flex-row md:gap-8 md:p-4',
-    'lg:mx-32 lg:my-10 lg:gap-12 lg:p-6',
+    'lg:mx-32 lg:my-10',
   )">
-    <MarkdownEditor :class="cn('w-full', 'md:w-1/2')" />
-    <MarkdownPreview :class="cn('w-full', 'md:w-1/2')" />
+    <div :class="cn('w-full')">
+      <h2 :class="cn('text-neutral-400' ,'pl-2', 'font-medium', 'text-sm', 'sm:text-base')">
+        A real-time Markdown editor for your READMEs.
+      </h2>
+      <!-- TODO: Remove this after 10s or as soon as user starts writing -->
+      <!-- <span :class="cn('motion-preset-flomoji-👉')"></span> -->
+    </div>
+    <div :class="cn(
+      'w-full flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800' ,
+      'p-2 drop-shadow-xl',
+      'md:flex-row md:gap-8 md:p-4',
+      'lg:gap-8 lg:p-6',
+    )">
+      <MarkdownEditor :class="cn('w-full', 'md:w-1/2',)" />
+      <MarkdownPreview :class="cn('w-full', 'md:w-1/2')" />
+    </div>
   </main>
 
   <footer class="header-footer border-t-2">
