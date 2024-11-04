@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "../utils"
+import cn from "../utils/lib"
 import Header from "./AppHeader.vue";
 import Footer from "./AppFooter.vue";
 import MarkdownEditor from "./MarkdownEditor.vue"
