@@ -7,6 +7,7 @@ import MarkdownPreview from "./MarkdownPreview.vue"
 <template>
   <header class="header-footer border-b-2">
     <h1 :class="cn('font-sans font-bold text-neutral-200', 'text-lg', 'sm:text-xl', 'md:text-2xl',
+      'motion-preset-rebound-right motion-delay-75',
       'hover:motion-preset-confetti hover:cursor-default')">
       PrevueMD
     </h1>
@@ -15,6 +16,7 @@ import MarkdownPreview from "./MarkdownPreview.vue"
       'px-2 py-1 text-xs',
       'sm:px-3 sm:py-2 sm:text-sm',
       'md:px-4 md:py-3 md:text-xs',
+      'motion-preset-rebound-left motion-delay-150',
       'hover:bg-neutral-300 hover:text-neutral-950 transition-colors ease duration-200',
     )">
       Open from
@@ -26,9 +28,11 @@ import MarkdownPreview from "./MarkdownPreview.vue"
     'mx-4 my-4 flex flex-col gap-4 overflow-y-auto',
     'sm:mx-8 sm:my-6',
     'lg:mx-32 lg:my-10',
+    'motion-preset-slide-up-sm motion-delay-300'
   )">
     <div :class="cn('w-full')">
-      <h2 :class="cn('text-neutral-400' ,'pl-2', 'font-medium', 'text-sm', 'sm:text-base')">
+      <h2 :class="cn('text-neutral-400' ,'pl-2', 'font-medium', 'text-sm', 'sm:text-base',
+      'motion-preset-blur-right-md motion-delay-500')">
         A real-time Markdown editor for your READMEs.
       </h2>
       <!-- TODO: Remove this after 10s or as soon as user starts writing -->
@@ -47,7 +51,7 @@ import MarkdownPreview from "./MarkdownPreview.vue"
 
   <footer class="header-footer border-t-2">
     <span :class="cn('font-sans font-normal text-neutral-500', 'text-xs', 'sm:text-sm', 'md:text-xs', 
-      'motion-preset-rebound-right')">
+      'motion-preset-rebound-right motion-delay-200')">
       Built with Vue
     </span>
     <a href="https://github.com/wazeerc/PrevueMD" target="_blank" :class="cn(
@@ -56,8 +60,8 @@ import MarkdownPreview from "./MarkdownPreview.vue"
       'sm:text-sm',
       'md:text-xs',
       'underline',
-      'motion-preset-rebound-left',
-      'hover:text-neutral-400',
+      'motion-preset-rebound-left motion-delay-200',
+      'hover:text-neutral-400 transition-colors ease duration-200',
     )">Collaborate here!</a>
   </footer>
 </template>
