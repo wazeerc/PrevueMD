@@ -6,17 +6,19 @@ import MarkdownPreview from "./MarkdownPreview.vue"
 
 <template>
   <header class="header-footer border-b-2">
-    <h1 :class="cn('font-sans font-bold text-neutral-200', 'text-lg', 'sm:text-xl', 'md:text-2xl')">
+    <h1 :class="cn('font-sans font-bold text-neutral-200', 'text-lg', 'sm:text-xl', 'md:text-2xl',
+      'hover:motion-preset-confetti hover:cursor-default')">
       PrevueMD
     </h1>
     <button :class="cn(
-      'flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
+      'group flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
       'px-2 py-1 text-xs',
       'sm:px-3 sm:py-2 sm:text-sm',
       'md:px-4 md:py-3 md:text-xs',
+      'hover:bg-neutral-300 hover:text-neutral-950 transition-colors ease duration-200',
     )">
       Open from
-      <img src="/github.svg" alt="GitHub Icon" class="ml-2 h-6 w-6" />
+      <img src="/github.svg" alt="GitHub Icon" :class="cn('ml-2 h-6 w-6', 'group-hover:motion-preset-wiggle')" />
     </button>
   </header>
 
@@ -31,7 +33,8 @@ import MarkdownPreview from "./MarkdownPreview.vue"
   </main>
 
   <footer class="header-footer border-t-2">
-    <span :class="cn('font-sans font-normal text-neutral-500', 'text-xs', 'sm:text-sm', 'md:text-xs')">
+    <span :class="cn('font-sans font-normal text-neutral-500', 'text-xs', 'sm:text-sm', 'md:text-xs', 
+      'motion-preset-rebound-right')">
       Built with Vue
     </span>
     <a href="https://github.com/wazeerc/PrevueMD" target="_blank" :class="cn(
@@ -40,6 +43,8 @@ import MarkdownPreview from "./MarkdownPreview.vue"
       'sm:text-sm',
       'md:text-xs',
       'underline',
+      'motion-preset-rebound-left',
+      'hover:text-neutral-400',
     )">Collaborate here!</a>
   </footer>
 </template>
