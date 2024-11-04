@@ -4,7 +4,7 @@ import { cn } from "../utils"
 
 <template>
   <div class="flex flex-col">
-    <h2 class="sub-heading">Preview</h2>
+    <h3 class="sub-heading">Preview</h3>
     <div class="markdown-container">
       <code :class="cn('font-mono', 'text-neutral-200')">Some Markdown</code>
     </div>
