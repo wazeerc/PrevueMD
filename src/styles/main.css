@@ -8,6 +8,12 @@
   margin: 0;
   padding: 0;
   overflow-y: hidden;
+
+  :focus {
+    outline: 2px solid var(--vue-color-secondary);
+    border-radius: 2px;
+    outline-offset: 2px;
+  }
 }
 
 @media (max-width: 768px) {

@@ -7,7 +7,8 @@ import cn from "../utils/lib"
     <h1 :class="cn('font-sans font-bold text-neutral-200', 'text-lg', 'sm:text-xl', 'md:text-2xl',
       'motion-preset-rebound-right motion-delay-75',
       'hover:motion-preset-confetti hover:cursor-default')">
-      Prevue<span :class="cn('font-sans font-bold text-[#41b883]', 'text-lg', 'sm:text-xl', 'md:text-2xl')">MD</span>
+      Prevue<span
+        :class="cn('font-sans font-bold text-[--vue-color-primary]', 'text-lg', 'sm:text-xl', 'md:text-2xl')">MD</span>
     </h1>
     <button :class="cn(
       'group flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
