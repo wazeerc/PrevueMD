@@ -10,7 +10,8 @@ import cn from "../utils/lib"
     )">
       Built with Vue
       <a href="https://vuejs.org" target="_blank">
-        <img src="/vue.svg" alt="Vue Icon" :class="cn('ml-2 h-6 w-6', 'hover:motion-preset-shake')" />
+        <img src="/vue.svg" alt="Vue Icon"
+          :class="cn('ml-2 h-4 w-4', 'sm:h-5 sm:w-5', 'md:h-6 md:w-6', 'hover:motion-preset-wiggle')" />
       </a>
     </p>
     <a href="https://github.com/wazeerc/PrevueMD" target="_blank" :class="cn(

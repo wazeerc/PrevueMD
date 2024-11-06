@@ -18,7 +18,8 @@ import cn from "../utils/lib"
       'hover:bg-neutral-300 hover:text-neutral-950 transition-colors ease duration-200',
     )">
       Open from
-      <img src="/github.svg" alt="GitHub Icon" :class="cn('ml-2 h-6 w-6', 'group-hover:motion-preset-wiggle')" />
+      <img src="/github.svg" alt="GitHub Icon" :class="cn('ml-2 h-4 w-4', 'sm:h-5 sm:w-5', 'md:h-6 md:w-6', 
+        'group-hover:motion-preset-wiggle')" />
     </button>
   </header>
 </template>
