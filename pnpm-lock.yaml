@@ -67,8 +67,8 @@ importers:
         specifier: ^3.4.14
         version: 3.4.14
       tailwindcss-motion:
-        specifier: 0.3.0-beta
-        version: 0.3.0-beta(tailwindcss@3.4.14)
+        specifier: latest
+        version: 0.4.5-beta(tailwindcss@3.4.14)
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -1859,8 +1859,8 @@ packages:
   tailwind-merge@2.5.4:
     resolution: {integrity: sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==}
 
-  tailwindcss-motion@0.3.0-beta:
-    resolution: {integrity: sha512-dBmakhcseaB7zK82H9zMmzNhAZFCA9DxWeuw0rkttIarur/7tnjWg1Nv9LlZZR9c+YctRyZns3D+1Fjbksq7Fg==}
+  tailwindcss-motion@0.4.5-beta:
+    resolution: {integrity: sha512-XgFUvksXHDuZ33+GtUcSDhK6yYDbprc0JxiT6OgPoxPwnxKqNYRl/MQhZqPF7sGyRMgGWBkMe+r+mdlRavbonA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
@@ -3948,7 +3948,7 @@ snapshots:
 
   tailwind-merge@2.5.4: {}
 
-  tailwindcss-motion@0.3.0-beta(tailwindcss@3.4.14):
+  tailwindcss-motion@0.4.5-beta(tailwindcss@3.4.14):
     dependencies:
       tailwindcss: 3.4.14
 

@@ -34,7 +34,7 @@
     "jsdom": "^25.0.1",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "tailwindcss-motion": "0.3.0-beta",
+    "tailwindcss-motion": "latest",
     "typescript": "~5.5.4",
     "vite": "^5.4.8",
     "vite-plugin-vue-devtools": "^7.4.6",
