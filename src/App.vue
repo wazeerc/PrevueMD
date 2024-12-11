@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PrevueMD from "./components/PrevueMD.vue"
+import PrevueMD from "@/components/PrevueMD.vue";
 </script>
 
 <template>

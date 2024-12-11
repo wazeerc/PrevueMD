@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import PrevueMD from "@/App.vue";
 import { mount } from "@vue/test-utils";
-import PrevueMD from "../PrevueMD.vue";
 
 describe("PrevueMD Component", () => {
   const WRAPPER = mount(PrevueMD);

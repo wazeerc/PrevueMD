@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import cn from "../utils/lib";
-import Header from "./AppHeader.vue";
+import cn from "@/utils/lib";
 import Footer from "./AppFooter.vue";
+import Header from "./AppHeader.vue";
 import MarkdownEditor from "./MarkdownEditor.vue";
 import MarkdownPreview from "./MarkdownPreview.vue";
 </script>
