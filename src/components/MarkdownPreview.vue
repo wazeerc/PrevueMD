@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import cn from "../utils/lib"
+import cn from "../utils/lib";
 </script>
 
 <template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import cn from "../utils/lib"
+import cn from "../utils/lib";
 import Header from "./AppHeader.vue";
 import Footer from "./AppFooter.vue";
-import MarkdownEditor from "./MarkdownEditor.vue"
-import MarkdownPreview from "./MarkdownPreview.vue"
+import MarkdownEditor from "./MarkdownEditor.vue";
+import MarkdownPreview from "./MarkdownPreview.vue";
 </script>
 
 <template>
@@ -15,14 +15,14 @@ import MarkdownPreview from "./MarkdownPreview.vue"
     'lg:mx-32 lg:my-10',
     'motion-preset-slide-up-sm motion-delay-300'
   )">
-    <h2 :class="cn('text-neutral-400' ,'pl-2', 'font-medium', 'text-sm', 'sm:text-base',
+    <h2 :class="cn('text-neutral-400', 'pl-2', 'font-medium', 'text-sm', 'sm:text-base',
       'motion-preset-blur-right-md motion-delay-500')">
       A real-time Markdown editor for your READMEs.
     </h2>
     <!-- TODO: Remove this after 10s or as soon as user starts writing -->
     <!-- <span :class="cn('motion-preset-flomoji-👉')"></span> -->
     <section :class="cn(
-      'w-full flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800' ,
+      'w-full flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800',
       'p-2 drop-shadow-xl',
       'md:flex-row md:gap-8 md:p-4',
       'lg:gap-8 lg:p-6',
