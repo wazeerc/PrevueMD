@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
+import PrevueMD from "@/App.vue";
 import { mount } from "@vue/test-utils";
-import PrevueMD from "../PrevueMD.vue";
 
 describe("PrevueMD Component", () => {
   const WRAPPER = mount(PrevueMD);
@@ -23,7 +23,7 @@ describe("PrevueMD Component", () => {
 
   it("Should contain a link to the repo in the footer", () => {
     const footer = WRAPPER.find("footer");
-    const repoLinkUrl = footer.find("a").attributes("href");
+    const repoLinkUrl = footer.findAll("a")[1].attributes("href");
 
     expect(footer.exists()).toBe(true);
     expect(repoLinkUrl).toBe("https://github.com/wazeerc/PrevueMD");

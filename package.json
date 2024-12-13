@@ -10,15 +10,18 @@
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix",
-    "format": "prettier --write .",
-    "pre-commit": "pnpm run lint --fix && pnpm run format",
-    "prepare": "husky",
-    "lint-staged": "lint-staged"
+    "lint": "eslint src/ --fix"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "clsx": "^2.1.1",
+    "rehype-format": "^5.0.1",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.1",
     "tailwind-merge": "^2.5.4",
+    "unified": "^11.0.5",
     "vue": "^3.5.12"
   },
   "devDependencies": {
@@ -35,29 +38,16 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.12.0",
     "eslint-plugin-vue": "^9.29.0",
-    "husky": "^9.1.6",
     "jsdom": "^25.0.1",
-    "lint-staged": "^15.2.10",
     "postcss": "^8.4.47",
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.8",
-    "prettier-plugin-vue": "^1.1.6",
+    "rehype-raw": "^7.0.0",
     "tailwindcss": "^3.4.14",
-    "tailwindcss-motion": "0.3.0-beta",
+    "tailwindcss-motion": "latest",
     "typescript": "~5.5.4",
     "vite": "^5.4.8",
     "vite-plugin-vue-devtools": "^7.4.6",
     "vitest": "^2.1.2",
     "vue-eslint-parser": "^9.4.3",
     "vue-tsc": "^2.1.6"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,vue}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{css,scss,html,json,md}": [
-      "prettier --write"
-    ]
   }
 }
