@@ -10,14 +10,16 @@ import { cn } from "@/utils/lib";
       Prevue<span
             :class="cn('font-sans font-bold text-[--vue-color-primary]', 'text-lg', 'sm:text-xl', 'md:text-2xl')">MD</span>
     </h1>
-    <button :class="cn(
-      'group flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
-      'px-2 py-1 text-xs',
-      'sm:px-3 sm:py-2 sm:text-sm',
-      'md:px-4 md:py-3 md:text-xs',
-      'motion-preset-rebound-left motion-delay-150',
-      'hover:bg-neutral-300 hover:text-neutral-950 transition-colors ease duration-200',
-    )">
+    <button :disabled="true"
+            :class="cn(
+              'group flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
+              'px-2 py-1 text-xs',
+              'sm:px-3 sm:py-2 sm:text-sm',
+              'md:px-4 md:py-3 md:text-xs',
+              'motion-preset-rebound-left motion-delay-150',
+              'hover:bg-neutral-300 hover:text-neutral-950 transition-colors ease duration-200',
+              'disabled:opacity-20 disabled:cursor-not-allowed'
+            )">
       Open from
       <img src="/github.svg"
            alt="GitHub Icon"
