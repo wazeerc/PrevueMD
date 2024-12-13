@@ -24,7 +24,7 @@ const processMarkdown = async (markdownInput: string) =>
   )">
     <h2 :class="cn('text-neutral-400', 'pl-2', 'font-medium', 'text-sm', 'sm:text-base',
       'motion-preset-blur-right-md motion-delay-500')">
-      A real-time Markdown editor for your READMEs.
+      A real-time Markdown editor.
     </h2>
     <section :class="cn(
       'w-full flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800',
