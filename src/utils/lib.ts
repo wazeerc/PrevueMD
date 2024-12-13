@@ -14,7 +14,37 @@ export function cn(...inputs: ClassValue[]): string {
 //#endregion
 
 //#region: Markdown parsing utils
-export function parseMarkdown(textToParseIntoMarkdown: string): string {
-  return textToParseIntoMarkdown;
+import rehypeFormat from "rehype-format";
+import rehypeStringify from 'rehype-stringify';
+import remarkGfm from "remark-gfm";
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import { unified } from 'unified';
+
+/**
+ * Processes and converts markdown text into HTML using unified processor with various plugins.
+ *
+ * @param textToParseIntoMarkdown - The markdown text string to be processed
+ * @returns Promise resolving to the processed markdown value
+ *
+ * @remarks
+ * This function uses the following remark and rehype plugins:
+ * - remarkParse: Parses markdown into mdast syntax tree
+ * - remarkGfm: Adds support for GitHub Flavored Markdown
+ * - remarkRehype: Converts mdast to hast
+ * - rehypeFormat: Formats HTML
+ * - rehypeStringify: Converts hast to HTML string
+ *
+ * The function allows dangerous HTML through the remarkRehype configuration.
+ */
+export async function parseMarkdown(textToParseIntoMarkdown: string): Promise<unknown> {
+  const markdownProcessor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeFormat)
+    .use(rehypeStringify);
+
+  return await markdownProcessor.process(textToParseIntoMarkdown);
 };
 //#endregion

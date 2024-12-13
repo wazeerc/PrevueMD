@@ -9,8 +9,8 @@ import MarkdownPreview from "./MarkdownPreview.vue";
 
 const globalMarkdown = ref();
 
-const processMarkdown = (markdownInput: string) =>
-  globalMarkdown.value = parseMarkdown(markdownInput);
+const processMarkdown = async (markdownInput: string) =>
+  globalMarkdown.value = await parseMarkdown(markdownInput);
 </script>
 
 <template>
