@@ -10,6 +10,10 @@ import { cn } from "@/utils/lib";
       Prevue<span
             :class="cn('font-sans font-bold text-[--vue-color-primary]', 'text-lg', 'sm:text-xl', 'md:text-2xl')">MD</span>
     </h1>
+    <h2 :class="cn('text-neutral-400', 'pl-2', 'mt-4', 'font-medium', 'text-sm', 'sm:text-base',
+      'motion-preset-blur-up-md motion-delay-500')">
+      A real-time Markdown editor.
+    </h2>
     <button :disabled="true"
             :class="cn(
               'group flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
