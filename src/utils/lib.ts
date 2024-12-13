@@ -15,6 +15,7 @@ export function cn(...inputs: ClassValue[]): string {
 
 //#region: Markdown parsing utils
 import rehypeFormat from "rehype-format";
+import rehypeRaw from 'rehype-raw';
 import rehypeStringify from 'rehype-stringify';
 import remarkGfm from "remark-gfm";
 import remarkParse from 'remark-parse';
@@ -42,6 +43,7 @@ export async function parseMarkdown(textToParseIntoMarkdown: string): Promise<un
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
     .use(rehypeFormat)
     .use(rehypeStringify);
 
