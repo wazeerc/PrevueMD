@@ -18,7 +18,7 @@ const handleInput = (event: Event) => {
     <h3 class="sub-heading">Editor</h3>
     <textarea autofocus
               placeholder="Write some Markdown"
-              :class="cn('markdown-container', 'resize-none', 'font-mono')"
+              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono',)"
               :value="rawMarkdown"
               @input="handleInput">
     </textarea>
