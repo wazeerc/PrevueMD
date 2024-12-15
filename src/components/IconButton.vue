@@ -45,8 +45,8 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
             props.class)">
     <slot>{{ text }}</slot>
     <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
-         :class="cn(variant === 'primary' && 'group-hover:motion-preset-seesaw-lg',
-          variant === 'secondary' && 'group-hover:motion-preset-shake',
+         :class="cn(variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
+          variant === 'secondary' && !disabled && 'group-hover:motion-preset-shake',
         )" />
   </button>
 </template>
