@@ -27,7 +27,7 @@ const handleClearInput = (): void => {
     <div class="flex justify-between items-center">
       <h3 class="sub-heading">Editor</h3>
       <IconButton :disabled="!rawMarkdown"
-                  :onClick="handleClearInput"
+                  @click="handleClearInput"
                   :state="!rawMarkdown ? 'disabled' : 'default'"
                   icon="reset"
                   variant="secondary"
