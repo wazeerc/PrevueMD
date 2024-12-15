@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { cn } from "@/utils/lib";
 import { ref } from "vue";
+
+import { cn } from "@/utils/lib";
 import IconButton from "./IconButton.vue";
 
 const EMPTY_STRING = '' as const;

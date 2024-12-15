@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { cn, parseMarkdown } from "@/utils/lib";
+import { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown } from "@/utils/lib";
 import type { VFile } from "node_modules/rehype-raw/lib";
+
 import Footer from "./AppFooter.vue";
 import Header from "./AppHeader.vue";
 import MarkdownEditor from "./MarkdownEditor.vue";
@@ -16,29 +17,11 @@ const processMarkdown = async (markdownInput: string): Promise<void> => {
 
   globalMarkdown.value = markdownInput ? await parseMarkdown(markdownInput) : undefined;
 };
-
-//TODO: Add a toast notification for successful copy
-const copyToClipboard = (): Promise<void> => navigator.clipboard.writeText(rawMarkdown.value)
-  .then(() => alert('Copied to clipboard!'));
-
-const downloadMarkdown = () => {
-  const markdownString = rawMarkdown.value;
-
-  const blob = new Blob([markdownString], { type: 'text/markdown' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-
-  a.href = url;
-  a.download = 'prevued.md';
-  a.click();
-
-  URL.revokeObjectURL(url);
-};
 </script>
 
 <template>
   <Header :processedMarkdown="globalMarkdown"
-          @handle-downloadMarkdown="downloadMarkdown" />
+          @handle-downloadMarkdown="() => downloadMarkdownFile(rawMarkdown)" />
 
   <main :class="cn(
     'mx-4 my-4 flex flex-col gap-4 overflow-y-auto',
@@ -56,7 +39,7 @@ const downloadMarkdown = () => {
                       @process-markdown="processMarkdown" />
       <MarkdownPreview :class="cn('w-full', 'md:w-1/2')"
                        :processedMarkdown="globalMarkdown"
-                       @handle-copyToClipboard="copyToClipboard" />
+                       @handle-copyToClipboard="() => copyToClipboard(rawMarkdown)" />
     </section>
   </main>
 

@@ -18,7 +18,7 @@ const emit = defineEmits(['handle-copyToClipboard']);
       <h3 class="sub-heading">Preview</h3>
       <div class="flex space-x-2">
         <IconButton :disabled="!props.processedMarkdown"
-                    @click="() => emit('handle-copyToClipboard')"
+                    @click="emit('handle-copyToClipboard')"
                     icon="clipboard"
                     variant="secondary"
                     size="md" />
