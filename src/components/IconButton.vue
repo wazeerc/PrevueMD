@@ -25,7 +25,6 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
   <button :disabled="disabled"
           :aria-disabled="disabled"
           :aria-label="`${icon} Icon`"
-          :alt="`${icon} Icon`"
           @click="onClick"
           :class="cn('group inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed',
             variant === 'primary' && [
@@ -45,6 +44,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
             props.class)">
     <slot>{{ text }}</slot>
     <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
+         :alt="`${icon} Icon`"
          :class="cn(variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
           variant === 'secondary' && !disabled && 'group-hover:motion-preset-shake',
         )" />
