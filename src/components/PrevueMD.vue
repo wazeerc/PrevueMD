@@ -8,10 +8,17 @@ import Header from "./AppHeader.vue";
 import MarkdownEditor from "./MarkdownEditor.vue";
 import MarkdownPreview from "./MarkdownPreview.vue";
 
+const rawMarkdown = ref<string>('');
 const globalMarkdown = ref<VFile>();
 
-const processMarkdown = async (markdownInput: string) =>
+const processMarkdown = async (markdownInput: string): Promise<void> => {
+  rawMarkdown.value = markdownInput;
+
   globalMarkdown.value = markdownInput ? await parseMarkdown(markdownInput) : undefined;
+};
+
+//TODO: Add a toast notification for successful copy
+const copyToClipboard = (): Promise<void> => navigator.clipboard.writeText(rawMarkdown.value).then(() => alert('Copied to clipboard!'));
 </script>
 
 <template>
@@ -32,7 +39,8 @@ const processMarkdown = async (markdownInput: string) =>
       <MarkdownEditor :class="cn('w-full', 'md:w-1/2',)"
                       @process-markdown="processMarkdown" />
       <MarkdownPreview :class="cn('w-full', 'md:w-1/2')"
-                       :processedMarkdown="globalMarkdown" />
+                       :processedMarkdown="globalMarkdown"
+                       @handle-copyToClipboard="copyToClipboard" />
     </section>
   </main>
 

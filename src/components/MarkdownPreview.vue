@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import IconButton from "./IconButton.vue";
 
-defineProps({
+const props = defineProps({
   processedMarkdown: {
     type: [Object, String],
     required: true,
     default: ''
-  }
+  },
 });
 
-const copyToClipboard = () => {
-  console.log('Copying to clipboard');
-};
+const emit = defineEmits(['handle-copyToClipboard']);
 </script>
 
 <template>
@@ -19,8 +17,8 @@ const copyToClipboard = () => {
     <div class="flex justify-between items-center">
       <h3 class="sub-heading">Preview</h3>
       <div class="flex space-x-2">
-        <IconButton :disabled="!processedMarkdown"
-                    :onClick="copyToClipboard"
+        <IconButton :disabled="!props.processedMarkdown"
+                    :onClick="() => emit('handle-copyToClipboard')"
                     icon="clipboard"
                     variant="secondary"
                     size="md" />

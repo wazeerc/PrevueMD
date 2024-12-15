@@ -4,7 +4,7 @@ import { IconLibrary, type Icons, type IconSize, type IconState, type IconVarian
 
 type IconButtonProps = {
   icon: Icons;
-  onClick: () => unknown;
+  onClick: () => unknown | void;
   state?: IconState;
   text?: string;
   disabled?: boolean;
