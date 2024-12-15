@@ -18,11 +18,27 @@ const processMarkdown = async (markdownInput: string): Promise<void> => {
 };
 
 //TODO: Add a toast notification for successful copy
-const copyToClipboard = (): Promise<void> => navigator.clipboard.writeText(rawMarkdown.value).then(() => alert('Copied to clipboard!'));
+const copyToClipboard = (): Promise<void> => navigator.clipboard.writeText(rawMarkdown.value)
+  .then(() => alert('Copied to clipboard!'));
+
+const downloadMarkdown = () => {
+  const markdownString = rawMarkdown.value;
+
+  const blob = new Blob([markdownString], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  a.href = url;
+  a.download = 'prevued.md';
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
 </script>
 
 <template>
-  <Header :processedMarkdown="globalMarkdown" />
+  <Header :processedMarkdown="globalMarkdown"
+          @handle-downloadMarkdown="downloadMarkdown" />
 
   <main :class="cn(
     'mx-4 my-4 flex flex-col gap-4 overflow-y-auto',

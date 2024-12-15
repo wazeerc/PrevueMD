@@ -10,7 +10,8 @@ defineProps({
   }
 });
 
-const downloadMarkdown = () => { };
+const emit = defineEmits(['handle-downloadMarkdown']);
+
 </script>
 
 <template>
@@ -25,7 +26,7 @@ const downloadMarkdown = () => { };
       'motion-preset-blur-up-md motion-delay-500')">
       A real-time Markdown editor.
     </h2>
-    <IconButton @click="downloadMarkdown"
+    <IconButton @click="emit('handle-downloadMarkdown')"
                 :disabled="!processedMarkdown"
                 icon="download"
                 class="motion-preset-rebound-left motion-delay-150"
