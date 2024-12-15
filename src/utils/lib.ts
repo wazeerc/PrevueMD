@@ -14,6 +14,7 @@ export function cn(...inputs: ClassValue[]): string {
 //#endregion
 
 //#region: Markdown parsing utils
+import type { VFile } from "node_modules/rehype-raw/lib";
 import rehypeFormat from "rehype-format";
 import rehypeRaw from 'rehype-raw';
 import rehypeStringify from 'rehype-stringify';
@@ -38,7 +39,7 @@ import { unified } from 'unified';
  *
  * The function allows dangerous HTML through the remarkRehype configuration.
  */
-export async function parseMarkdown(textToParseIntoMarkdown: string): Promise<unknown> {
+export async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile> {
   const markdownProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
