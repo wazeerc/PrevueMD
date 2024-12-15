@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { cn } from "@/utils/lib";
+import IconButton from "./IconButton.vue";
+
+defineProps({
+  processedMarkdown: {
+    type: [Object, String],
+    required: true,
+    default: ''
+  }
+});
 </script>
 
 <template>
@@ -14,7 +23,7 @@ import { cn } from "@/utils/lib";
       'motion-preset-blur-up-md motion-delay-500')">
       A real-time Markdown editor.
     </h2>
-    <button :disabled="true"
+    <!-- <button :disabled="true"
             :class="cn(
               'group flex items-center rounded-md bg-neutral-200 font-sans font-semibold text-neutral-800 drop-shadow-sm',
               'px-2 py-1 text-xs',
@@ -29,6 +38,17 @@ import { cn } from "@/utils/lib";
            alt="GitHub Icon"
            :class="cn('ml-2 h-4 w-4', 'sm:h-5 sm:w-5', 'md:h-6 md:w-6',
             'group-hover:motion-preset-wiggle')" />
-    </button>
+    </button> -->
+    <IconButton :onClick="() => console.log('hi')"
+                :disabled="!processedMarkdown"
+                icon="download"
+                class="motion-preset-rebound-left motion-delay-150"
+                variant="primary"
+                size="md" />
+    <!-- <IconButton :disabled="false"
+                  class="motion-preset-rebound-left motion-delay-150"
+                  :onClick="() => console.log('hi')"
+                  icon="github"
+                  size="lg" /> -->
   </header>
 </template>

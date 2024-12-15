@@ -2,19 +2,20 @@
 import { ref } from "vue";
 
 import { cn, parseMarkdown } from "@/utils/lib";
+import type { VFile } from "node_modules/rehype-raw/lib";
 import Footer from "./AppFooter.vue";
 import Header from "./AppHeader.vue";
 import MarkdownEditor from "./MarkdownEditor.vue";
 import MarkdownPreview from "./MarkdownPreview.vue";
 
-const globalMarkdown = ref();
+const globalMarkdown = ref<VFile>();
 
 const processMarkdown = async (markdownInput: string) =>
-  globalMarkdown.value = await parseMarkdown(markdownInput);
+  globalMarkdown.value = markdownInput ? await parseMarkdown(markdownInput) : undefined;
 </script>
 
 <template>
-  <Header />
+  <Header :processedMarkdown="globalMarkdown" />
 
   <main :class="cn(
     'mx-4 my-4 flex flex-col gap-4 overflow-y-auto',
