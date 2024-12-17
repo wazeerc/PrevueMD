@@ -41,7 +41,7 @@ import { unified } from 'unified';
  *
  * The function allows dangerous HTML through the remarkRehype configuration.
  */
-async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile> {
+async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile["value"]> {
   try {
     const markdownProcessor = unified()
       .use(remarkParse)
@@ -51,7 +51,7 @@ async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile> {
       .use(rehypeFormat)
       .use(rehypeStringify);
 
-    return await markdownProcessor.process(textToParseIntoMarkdown);
+    return (await markdownProcessor.process(textToParseIntoMarkdown)).value;
   }
   catch (error) {
     throw new Error(`Failed to parse markdown: ${error}`);

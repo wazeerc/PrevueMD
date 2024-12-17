@@ -1,15 +1,14 @@
 import { copyToClipboard, downloadMarkdownFile, parseMarkdown } from "@/utils/lib";
-import type { VFile } from "node_modules/rehype-raw/lib";
 import { defineStore } from "pinia";
 
 interface StoreState {
   markdown: string | undefined;
-  markup: VFile | undefined;
+  markup: string | undefined;
 }
 
 interface StoreActions {
   setMarkdown(markdownText: string): void;
-  setMarkup(VFile: VFile): void;
+  setMarkup(markupText: string): void;
   clearMarkdown(): void;
   handleParseMarkdown(rawMarkdown: string): void;
   handleCopyToClipboard(): void;
@@ -18,7 +17,7 @@ interface StoreActions {
 
 interface StoreGetters extends Record<string, (state: StoreState) => any> {
   getMarkdown: (state: StoreState) => string | undefined;
-  getMarkup: (state: StoreState) => VFile | undefined;
+  getMarkup: (state: StoreState) => string | undefined;
 }
 
 export const useStore = defineStore<
@@ -29,21 +28,21 @@ export const useStore = defineStore<
 >('useStore', {
   state: () => ({
     markdown: '' as string | undefined,
-    markup: undefined as VFile | undefined,
+    markup: '' as string | undefined,
   }),
   actions: {
     setMarkdown(markdownText: string) {
       this.markdown = markdownText;
     },
-    setMarkup(VFile: VFile) {
-      this.markup = VFile;
+    setMarkup(markupText: string) {
+      this.markup = markupText;
     },
     clearMarkdown() {
       this.markdown = '';
       this.markup = undefined;
     },
     async handleParseMarkdown(rawMarkdown: string) {
-      this.setMarkup(await parseMarkdown(rawMarkdown));
+      this.setMarkup((await parseMarkdown(rawMarkdown)).toString());
     },
     handleCopyToClipboard() {
       copyToClipboard(this.markdown || '');
@@ -53,7 +52,7 @@ export const useStore = defineStore<
     },
   },
   getters: {
-    getMarkdown: (state) => state.markdown,
-    getMarkup: (state) => state.markup,
+    getMarkdown: (state) => state.markdown || '',
+    getMarkup: (state) => state.markup || '',
   },
 });

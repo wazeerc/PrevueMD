@@ -19,7 +19,7 @@ const store = useStore();
     </div>
     <div class="markdown-container">
       <div class="prose prose-invert"
-           v-html="store.getMarkup?.value ?? ''">
+           v-html="store.getMarkup">
       </div>
     </div>
   </div>
