@@ -42,15 +42,20 @@ import { unified } from 'unified';
  * The function allows dangerous HTML through the remarkRehype configuration.
  */
 async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile> {
-  const markdownProcessor = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
-    .use(rehypeFormat)
-    .use(rehypeStringify);
+  try {
+    const markdownProcessor = unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(rehypeFormat)
+      .use(rehypeStringify);
 
-  return await markdownProcessor.process(textToParseIntoMarkdown);
+    return await markdownProcessor.process(textToParseIntoMarkdown);
+  }
+  catch (error) {
+    throw new Error(`Failed to parse markdown: ${error}`);
+  }
 };
 
 /**
