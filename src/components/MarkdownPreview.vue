@@ -1,15 +1,8 @@
 <script setup lang="ts">
+import { useStore } from "../store";
 import IconButton from "./IconButton.vue";
 
-const props = defineProps({
-  processedMarkdown: {
-    type: [Object, String],
-    required: true,
-    default: ''
-  },
-});
-
-const emit = defineEmits(['handle-copyToClipboard']);
+const store = useStore();
 </script>
 
 <template>
@@ -17,8 +10,8 @@ const emit = defineEmits(['handle-copyToClipboard']);
     <div class="flex justify-between items-center">
       <h3 class="sub-heading">Preview</h3>
       <div class="flex space-x-2">
-        <IconButton :disabled="!props.processedMarkdown"
-                    @click="emit('handle-copyToClipboard')"
+        <IconButton :disabled="!store.getMarkdown"
+                    @click="store.handleCopyToClipboard"
                     icon="clipboard"
                     variant="secondary"
                     size="md" />
@@ -26,7 +19,7 @@ const emit = defineEmits(['handle-copyToClipboard']);
     </div>
     <div class="markdown-container">
       <div class="prose prose-invert"
-           v-html="processedMarkdown">
+           v-html="store.getMarkup?.value ?? ''">
       </div>
     </div>
   </div>

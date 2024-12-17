@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import { cn } from "@/utils/lib";
+import { useStore } from "../store";
 import IconButton from "./IconButton.vue";
 
-defineProps({
-  processedMarkdown: {
-    type: [Object, String],
-    required: true,
-    default: ''
-  }
-});
-
-const emit = defineEmits(['handle-downloadMarkdown']);
+const store = useStore();
 </script>
 
 <template>
@@ -25,8 +18,8 @@ const emit = defineEmits(['handle-downloadMarkdown']);
       'motion-preset-blur-up-md motion-delay-500')">
       A real-time Markdown editor.
     </h2>
-    <IconButton @click="emit('handle-downloadMarkdown')"
-                :disabled="!processedMarkdown"
+    <IconButton @click="store.handleDownloadMarkdownFile"
+                :disabled="!store.getMarkdown"
                 icon="download"
                 class="motion-preset-rebound-left motion-delay-150"
                 variant="primary"
