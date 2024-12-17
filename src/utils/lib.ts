@@ -15,6 +15,7 @@ function cn(...inputs: ClassValue[]): string {
 }
 //#endregion
 
+//TODO: Implement toasts to replace alerts
 //#region: Markdown utils
 import type { VFile } from "node_modules/rehype-raw/lib";
 import rehypeFormat from "rehype-format";
@@ -28,7 +29,8 @@ import { unified } from 'unified';
 /**
  * Processes and converts markdown text into HTML using unified processor with various plugins.
  *
- * @param textToParseIntoMarkdown - The markdown text string to be processed
+ * @param markdownTextToParseIntoMarkup - The markdown text string to be processed
+ * @throws {Error} If the markdown parsing process fails
  * @returns Promise resolving to the processed markdown value
  *
  * @remarks
@@ -36,12 +38,13 @@ import { unified } from 'unified';
  * - remarkParse: Parses markdown into mdast syntax tree
  * - remarkGfm: Adds support for GitHub Flavored Markdown
  * - remarkRehype: Converts mdast to hast
+ * - rehypeRaw: Allows raw HTML in markdown
  * - rehypeFormat: Formats HTML
  * - rehypeStringify: Converts hast to HTML string
  *
  * The function allows dangerous HTML through the remarkRehype configuration.
  */
-async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile["value"]> {
+async function parseMarkdown(markdownTextToParseIntoMarkup: string): Promise<VFile["value"]> {
   try {
     const markdownProcessor = unified()
       .use(remarkParse)
@@ -51,7 +54,7 @@ async function parseMarkdown(textToParseIntoMarkdown: string): Promise<VFile["va
       .use(rehypeFormat)
       .use(rehypeStringify);
 
-    return (await markdownProcessor.process(textToParseIntoMarkdown)).value;
+    return (await markdownProcessor.process(markdownTextToParseIntoMarkup)).value;
   }
   catch (error) {
     throw new Error(`Failed to parse markdown: ${error}`);
@@ -85,7 +88,7 @@ async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
  * Creates a Blob object with the markdown content and initiates a download
  * through a temporary anchor element. The file is saved as 'prevued.md'.
  *
- * @param markdownFileToDownload - The markdown content to be downloaded as a file
+ * @param markdownContentToDownload - The markdown content to be downloaded as a file
  * @throws Will display an alert if the download process fails
  * @remarks
  * The function creates a temporary URL object which is automatically revoked
@@ -96,9 +99,9 @@ async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
  * downloadMarkdownFile('# Hello World\nThis is a markdown file');
  * ```
  */
-function downloadMarkdownFile(markdownFileToDownload: string): void {
+function downloadMarkdownFile(markdownContentToDownload: string): void {
   try {
-    const markdown = markdownFileToDownload;
+    const markdown = markdownContentToDownload;
     const blob = new Blob([markdown], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
