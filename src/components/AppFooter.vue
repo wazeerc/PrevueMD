@@ -26,7 +26,7 @@ import { cn } from "@/utils/lib";
         'motion-preset-fade-lg motion-delay-200',
         'hover:underline hover:text-neutral-400 transition-colors ease duration-200',
       )">
-      Collaborate here!
+      Contribute here!
     </a>
   </footer>
 </template>
