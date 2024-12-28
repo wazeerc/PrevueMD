@@ -1,4 +1,4 @@
-export { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown };
+export { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload };
 
 //#region: Tailwind Utils
 import { clsx, type ClassValue } from "clsx";
@@ -114,6 +114,39 @@ function downloadMarkdownFile(markdownContentToDownload: string): void {
     alert('Markdown file downloaded successfully!');
   } catch (error) {
     alert(`Failed to download markdown file: ${error}.`);
+  }
+}
+//#endregion
+
+//#region: Others
+/**
+ * Sets up a warning dialog when attempting to leave/reload the page.
+ * This function adds a beforeunload event listener to the window that triggers
+ * a browser-specific warning dialog.
+ *
+ * @returns A cleanup function that removes the event listener when called.
+ * The returned function should be used to clean up the event listener
+ * when it's no longer needed (e.g., in useEffect cleanup).
+ * @throws {Error} If the event listener cannot be set up
+ *
+ * @example
+ * onMounted(() => {
+ *   const cleanup = warnBeforeUnload();
+ *   onUnmounted(cleanup);
+ * });
+ */
+function warnBeforeUnload(): () => void {
+  try {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      return '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  } catch (error) {
+    throw new Error(`Failed to set up warning before unload: ${error}`);
   }
 }
 //#endregion

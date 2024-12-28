@@ -1,9 +1,10 @@
-import { copyToClipboard, downloadMarkdownFile, parseMarkdown } from "@/utils/lib";
+import { copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from "@/utils/lib";
 import { defineStore } from "pinia";
 
 interface StoreState {
-  markdown: string | undefined;
-  markup: string | undefined;
+  markdown: string | null;
+  markup: string | null;
+  unloadWarning: (() => void) | null;
 }
 
 interface StoreActions {
@@ -16,9 +17,15 @@ interface StoreActions {
 }
 
 interface StoreGetters extends Record<string, (state: StoreState) => any> {
-  getMarkdown: (state: StoreState) => string | undefined;
-  getMarkup: (state: StoreState) => string | undefined;
+  getMarkdown: (state: StoreState) => string | null;
+  getMarkup: (state: StoreState) => string | null;
 }
+
+const initialState: Readonly<StoreState> = {
+  markdown: null,
+  markup: null,
+  unloadWarning: null
+};
 
 export const useStore = defineStore<
   'useStore',
@@ -26,33 +33,35 @@ export const useStore = defineStore<
   StoreGetters,
   StoreActions
 >('useStore', {
-  state: () => ({
-    markdown: '' as string | undefined,
-    markup: '' as string | undefined,
-  }),
+  state: () => (initialState),
   actions: {
     setMarkdown(markdownText: string) {
       this.markdown = markdownText;
+
+      this.unloadWarning ??= warnBeforeUnload();
     },
     setMarkup(markupText: string) {
       this.markup = markupText;
     },
     clearMarkdown() {
-      this.markdown = '';
-      this.markup = undefined;
+      this.markdown = null;
+      this.markup = null;
+
+      this.unloadWarning?.();
+      this.unloadWarning = null;
     },
     async handleParseMarkdown(rawMarkdown: string) {
       this.setMarkup((await parseMarkdown(rawMarkdown)).toString());
     },
     handleCopyToClipboard() {
-      copyToClipboard(this.markdown || '');
+      copyToClipboard(this.markdown ?? '');
     },
     handleDownloadMarkdownFile() {
-      downloadMarkdownFile(this.markdown || '');
+      downloadMarkdownFile(this.markdown ?? '');
     },
   },
   getters: {
-    getMarkdown: (state) => state.markdown || '',
-    getMarkup: (state) => state.markup || '',
+    getMarkdown: (state) => state.markdown ?? '',
+    getMarkup: (state) => state.markup ?? '',
   },
 });
