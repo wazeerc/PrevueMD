@@ -104,6 +104,10 @@ async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
 function downloadMarkdownFile(markdownContentToDownload: string): void {
   const toast = useToast();
   try {
+    if (markdownContentToDownload.trim() === '') {
+      toast.warning('Did you forget to write something?');
+      return;
+    }
     const markdown = markdownContentToDownload;
     const blob = new Blob([markdown], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);

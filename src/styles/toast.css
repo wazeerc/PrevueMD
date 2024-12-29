@@ -156,7 +156,7 @@
 
 .Vue-Toastification__toast--warning {
   background-color: #ffc107;
-  color: #fff;
+  color: #35495e;
 }
 
 @media only screen and (max-width : 600px) {
