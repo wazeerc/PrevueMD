@@ -25,6 +25,7 @@ import remarkGfm from "remark-gfm";
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
+import { useToast } from "vue-toastification";
 
 /**
  * Processes and converts markdown text into HTML using unified processor with various plugins.
@@ -71,15 +72,16 @@ async function parseMarkdown(markdownTextToParseIntoMarkup: string): Promise<VFi
  * @example
  * ```typescript
  * await copyToClipboard("Hello World!");
- * // Shows alert "Copied to clipboard!"
+ * // Shows toast "Copied to clipboard!"
  * ```
  */
 async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
+  const toast = useToast();
   try {
     await navigator.clipboard.writeText(textToCopyToClipboard);
-    alert('Copied to clipboard!');
+    toast.success('Copied to clipboard!');
   } catch (error) {
-    alert(`Failed to copy to clipboard: ${error}`);
+    toast.error('Failed to copy to clipboard!');
   }
 }
 
@@ -89,7 +91,7 @@ async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
  * through a temporary anchor element. The file is saved as 'prevued.md'.
  *
  * @param markdownContentToDownload - The markdown content to be downloaded as a file
- * @throws Will display an alert if the download process fails
+ * @throws Will display a toast if the download process fails
  * @remarks
  * The function creates a temporary URL object which is automatically revoked
  * after the download is initiated.
@@ -100,6 +102,7 @@ async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
  * ```
  */
 function downloadMarkdownFile(markdownContentToDownload: string): void {
+  const toast = useToast();
   try {
     const markdown = markdownContentToDownload;
     const blob = new Blob([markdown], { type: 'text/markdown' });
@@ -111,9 +114,9 @@ function downloadMarkdownFile(markdownContentToDownload: string): void {
     a.click();
     URL.revokeObjectURL(url);
 
-    alert('Markdown file downloaded successfully!');
+    toast.info('Markdown file queued for download!');
   } catch (error) {
-    alert(`Failed to download markdown file: ${error}.`);
+    toast.error(`Failed to download markdown file: ${error}.`);
   }
 }
 //#endregion
