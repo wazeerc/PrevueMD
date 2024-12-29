@@ -39,7 +39,7 @@ export const useStore = defineStore<
       this.markdown = markdownText;
 
       this.unloadWarning?.();
-      this.unloadWarning = markdownText ? warnBeforeUnload() : null;
+      this.unloadWarning = markdownText.trim() ? warnBeforeUnload() : null;
     },
     setMarkup(markupText: string) {
       this.markup = markupText;
