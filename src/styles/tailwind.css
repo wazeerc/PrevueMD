@@ -15,7 +15,7 @@
   .markdown-container {
     height: theme("height.80");
     width: theme("width.full");
-    overflow-y: scroll;
+    overflow-y: auto;
     border-radius: theme("borderRadius.sm");
     background-color: theme("colors.zinc.900");
     padding: theme("spacing.4");
