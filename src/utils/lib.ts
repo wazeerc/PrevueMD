@@ -15,7 +15,6 @@ function cn(...inputs: ClassValue[]): string {
 }
 //#endregion
 
-//TODO: Implement toasts to replace alerts
 //#region: Markdown utils
 import type { VFile } from "node_modules/rehype-raw/lib";
 import rehypeFormat from "rehype-format";
@@ -133,7 +132,7 @@ function downloadMarkdownFile(markdownContentToDownload: string): void {
  *
  * @returns A cleanup function that removes the event listener when called.
  * The returned function should be used to clean up the event listener
- * when it's no longer needed (e.g., in useEffect cleanup).
+ * when it's no longer needed.
  * @throws {Error} If the event listener cannot be set up
  *
  * @example
