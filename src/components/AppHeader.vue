@@ -23,6 +23,7 @@ const store = useStore();
                 icon="download"
                 class="motion-preset-rebound-left motion-delay-150"
                 variant="primary"
+                tooltip="Download Markdown"
                 size="md" />
   </header>
 </template>
