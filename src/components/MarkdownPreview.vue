@@ -13,6 +13,7 @@ const store = useStore();
         <IconButton :disabled="!store.getMarkdown"
                     @click="store.handleCopyToClipboard"
                     icon="clipboard"
+                    tooltip="Copy"
                     variant="secondary"
                     size="md" />
       </div>

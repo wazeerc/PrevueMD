@@ -22,6 +22,7 @@ const handleClearInput = (): void => store.clearMarkdown();
                   @click="handleClearInput"
                   :state="!store.getMarkdown ? 'disabled' : 'default'"
                   icon="reset"
+                  tooltip="Reset"
                   variant="secondary"
                   size="md" />
     </div>

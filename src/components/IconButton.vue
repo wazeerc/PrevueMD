@@ -11,6 +11,7 @@ type IconButtonProps = {
   class?: string;
   variant?: IconVariant;
   size?: IconSize;
+  tooltip?: string;
 };
 
 const props = withDefaults(defineProps<IconButtonProps>(), {
@@ -18,6 +19,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
   state: 'default',
   variant: 'primary',
   size: 'md',
+  tooltip: '',
 });
 </script>
 
@@ -25,8 +27,21 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
   <button :disabled="disabled"
           :aria-disabled="disabled"
           :aria-label="`${icon} Icon`"
+          :data-tooltip="tooltip"
           @click="onClick"
-          :class="cn('group inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed',
+          :class="cn('group inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed relative',
+            tooltip && !disabled && [
+              'after:content-[attr(data-tooltip)] after:absolute',
+              'after:left-1/2 after:-translate-x-1/2 after:px-2 after:py-1',
+              'after:bg-neutral-800/80 after:text-neutral-400 after:outline after:outline-1 after:outline-[--vue-color-secondary]', 'after:font-sans after:text-xs after:rounded-md',
+              'after:whitespace-nowrap after:z-10',
+              'after:top-[100%] after:mt-2',
+              'after:opacity-0 after:translate-y-2',
+              'after:transition-all after:duration-200 after:ease-in',
+              'after:invisible after:pointer-events-none',
+              'hover:after:visible hover:after:pointer-events-auto hover:after:opacity-100 hover:after:translate-y-0'
+            ],
+            tooltip && !disabled && 'hover:after:opacity-100',
             variant === 'primary' && [
               'px-2 py-1.5 sm:px-3 sm:py-2',
               'text-xs sm:text-sm',
