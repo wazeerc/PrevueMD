@@ -9,7 +9,7 @@
     font-family: theme("fontFamily.sans");
     font-size: theme("fontSize.base");
     font-weight: theme("fontWeight.medium");
-    color: theme("colors.neutral.500");
+    color: theme("colors.neutral.400");
   }
 
   .markdown-container {

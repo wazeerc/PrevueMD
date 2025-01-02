@@ -15,7 +15,7 @@ import MarkdownPreview from "./MarkdownPreview.vue";
     'motion-preset-slide-up-sm motion-delay-300'
   )">
     <section :class="cn(
-      'w-full flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800',
+      'w-full flex flex-col gap-4 overflow-y-auto rounded-md bg-neutral-800 border-2 border-neutral-400/10',
       'p-2 drop-shadow-xl',
       'md:flex-row md:gap-8 md:p-4',
       'lg:gap-8 lg:p-6',
