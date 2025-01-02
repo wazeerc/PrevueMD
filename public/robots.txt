@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Common private paths to disallow
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+Disallow: /temp/
+
+# Add sitemap when available
+
+# Crawl-delay for all bots
+Crawl-delay: 10
