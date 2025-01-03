@@ -1,28 +1,20 @@
 import { useStore } from "@/store";
-import { VueWrapper, mount } from "@vue/test-utils";
-import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { VueWrapper } from "@vue/test-utils";
+import { beforeAll, describe, expect, it } from "vitest";
 import MarkdownPreview from "../MarkdownPreview.vue";
+import { setupTest } from "./test-utils";
 
 describe("MarkdownPreview component", () => {
   let store: ReturnType<typeof useStore>;
   let wrapper: VueWrapper;
   const mockMarkup: string = "<h1>Hello</h1>";
 
-  beforeEach(() => {
-    setActivePinia(createPinia());
-    store = useStore();
-
-    // Add mock data to store
-    store.$patch({
+  beforeAll(() => {
+    const testStore = setupTest(MarkdownPreview, {
       markup: mockMarkup
     });
-
-    wrapper = mount(MarkdownPreview, {
-      global: {
-        plugins: [createPinia()]
-      }
-    });
+    store = testStore.store;
+    wrapper = testStore.wrapper;
   });
 
   it('should contain "Markdown Preview" text', () => {

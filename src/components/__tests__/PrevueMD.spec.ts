@@ -1,30 +1,18 @@
-import { useStore } from "@/store";
-import { mount, VueWrapper } from '@vue/test-utils';
-import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from 'vitest';
+import type { VueWrapper } from "@vue/test-utils";
+import { beforeAll, describe, expect, it } from 'vitest';
 import Footer from '../AppFooter.vue';
 import Header from '../AppHeader.vue';
 import MarkdownEditor from '../MarkdownEditor.vue';
 import MarkdownPreview from '../MarkdownPreview.vue';
 import PrevueMD from '../PrevueMD.vue';
+import { setupTest } from './test-utils';
 
 describe('PrevueMD', () => {
-  let store: ReturnType<typeof useStore>;
   let wrapper: VueWrapper;
 
-  beforeEach(() => {
-    setActivePinia(createPinia());
-    store = useStore();
-
-    wrapper = mount(MarkdownPreview, {
-      global: {
-        plugins: [createPinia()]
-      }
-    });
-  });
+  beforeAll(() => wrapper = setupTest(PrevueMD).wrapper);
 
   it('should render the component structure correctly', () => {
-    const wrapper = mount(PrevueMD);
 
     expect(wrapper.findComponent(Header).exists()).toBe(true);
     expect(wrapper.findComponent(Footer).exists()).toBe(true);
@@ -33,7 +21,6 @@ describe('PrevueMD', () => {
   });
 
   it('should apply responsive classes correctly', () => {
-    const wrapper = mount(PrevueMD);
     const main = wrapper.find('main');
     const section = wrapper.find('section');
 

@@ -1,22 +1,18 @@
 import { useStore } from "@/store";
-import { mount, VueWrapper } from "@vue/test-utils";
-import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { VueWrapper } from "@vue/test-utils";
+import { beforeAll, describe, expect, it } from "vitest";
 import MarkdownEditor from "../MarkdownEditor.vue";
+import { setupTest } from "./test-utils";
 
 describe("MarkdownEditor component", () => {
   let store: ReturnType<typeof useStore>;
   let wrapper: VueWrapper;
   let textarea: ReturnType<typeof wrapper.find>;
 
-  beforeEach(() => {
-    setActivePinia(createPinia());
-    store = useStore();
-    wrapper = mount(MarkdownEditor, {
-      global: {
-        plugins: [createPinia()]
-      }
-    });
+  beforeAll(() => {
+    const testStore = setupTest(MarkdownEditor);
+    store = testStore.store;
+    wrapper = testStore.wrapper;
 
     textarea = wrapper.find("textarea");
   });
