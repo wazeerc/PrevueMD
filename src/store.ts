@@ -21,7 +21,7 @@ interface StoreGetters extends Record<string, (state: StoreState) => any> {
   getMarkup: (state: StoreState) => string | null;
 }
 
-const initialState: Readonly<StoreState> = {
+export const initialState: Readonly<StoreState> = {
   markdown: null,
   markup: null,
   unloadWarning: null
