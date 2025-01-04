@@ -10,6 +10,7 @@ import Toast, { POSITION } from "vue-toastification";
 const app = createApp(App);
 const store = createPinia();
 
+app.use(store);
 app.use(Toast, {
   position: POSITION.BOTTOM_RIGHT,
   timeout: 2500,
@@ -22,5 +23,4 @@ app.use(Toast, {
   icon: true,
   rtl: false
 });
-app.use(store);
 app.mount("#app");
