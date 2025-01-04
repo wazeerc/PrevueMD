@@ -1,0 +1,75 @@
+import { expect, test } from '@playwright/test';
+
+test('should display the correct title', async ({ page }) => {
+  await page.goto('/');
+  const title = page.locator('h1');
+
+  await expect(title).toHaveText('PrevueMD');
+});
+
+test('should capture markdown input properly', async ({ page }) => {
+  const mockMarkdownText = '# Hello, World!';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+
+  await markdownEditor.fill(mockMarkdownText);
+
+  expect(await markdownEditor.inputValue()).toBe(mockMarkdownText);
+});
+
+test('should parse markdown input into correct markup', async ({ page }) => {
+  const mockMarkdownText = '# Hello, World!';
+  const parsedMockMarkdownHtml = '<h1>Hello, World!</h1>';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const markdownPreview = page.locator('.prose.prose-invert');
+
+  await markdownEditor.fill(mockMarkdownText);
+
+  expect(await markdownPreview.innerHTML()).toContain(parsedMockMarkdownHtml);
+});
+
+test('should reset markdown editor when reset button is clicked', async ({ page }) => {
+  const mockMarkdownText = '# Hello, World!';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const resetBtn = page.locator('button[aria-label="reset Icon"]');
+
+  await markdownEditor.fill(mockMarkdownText);
+  await resetBtn.click();
+
+  expect(await markdownEditor.inputValue()).toBe('');
+});
+
+test('should copy markdown to clipboard when copy button is clicked', async ({ context, page }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  const mockMarkdownText = '# Hello, World!';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const copyBtn = page.locator('button[aria-label="clipboard Icon"]');
+
+  await markdownEditor.fill(mockMarkdownText);
+  await copyBtn.click();
+
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(mockMarkdownText);
+});
+
+test('should download markdown file when download button is clicked', async ({ page }) => {
+  const mockMarkdownText = '# Hello, World!';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const downloadBtn = page.locator('button[aria-label="download Icon"]');
+
+  await markdownEditor.fill(mockMarkdownText);
+
+  const downloadPromise = page.waitForEvent('download');
+  await downloadBtn.click();
+  const download = await downloadPromise;
+
+  expect(download.suggestedFilename()).toBe('prevued.md');
+});
