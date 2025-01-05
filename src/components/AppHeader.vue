@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from "@/utils/lib";
-import { useStore } from "../store";
+import { useStore } from "@/store";
 import IconButton from "./IconButton.vue";
 
 const store = useStore();

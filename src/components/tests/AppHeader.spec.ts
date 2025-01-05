@@ -1,6 +1,6 @@
+import { useStore } from "@/store";
 import { VueWrapper } from "@vue/test-utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { useStore } from "../../store";
 import AppHeader from "../AppHeader.vue";
 import { setupTest } from "./test-utils";
 

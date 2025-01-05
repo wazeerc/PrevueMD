@@ -1,7 +1,7 @@
+import { initialState, useStore } from '@/store';
 import { copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from "@/utils/lib";
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { initialState, useStore } from '../../store';
 
 vi.mock("@/utils/lib", () => ({
   copyToClipboard: vi.fn(),
