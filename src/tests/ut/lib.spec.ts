@@ -1,8 +1,8 @@
 /* eslint-disable */
 //? Disabling linting because this is a test file and several functions are mocked
+import { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from '@/utils/lib';
 import { unified } from "unified";
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from './lib';
 
 // Mock the toastification library
 vi.mock('vue-toastification', () => ({

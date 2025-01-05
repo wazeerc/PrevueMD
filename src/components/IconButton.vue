@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/utils/lib';
-import { IconLibrary, type Icons, type IconSize, type IconState, type IconVariant } from './assets/icons';
+import { IconLibrary, type Icons, type IconSize, type IconState, type IconVariant } from '@/utils/icons';
 
 type IconButtonProps = {
   icon: Icons;

@@ -1,5 +1,5 @@
+import { IconLibrary } from '@/utils/icons';
 import { describe, expect, it } from 'vitest';
-import { IconLibrary } from './icons';
 
 describe('IconLibrary', () => {
   const defaultColor = '#262626';
