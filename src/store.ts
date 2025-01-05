@@ -16,7 +16,7 @@ interface StoreActions {
   handleDownloadMarkdownFile(): void;
 }
 
-interface StoreGetters extends Record<string, (state: StoreState) => any> {
+interface StoreGetters extends Record<string, (state: StoreState) => string | null> {
   getMarkdown: (state: StoreState) => string | null;
   getMarkup: (state: StoreState) => string | null;
 }

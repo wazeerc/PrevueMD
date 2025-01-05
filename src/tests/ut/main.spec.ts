@@ -22,7 +22,7 @@ describe('Main application setup', () => {
     app = {
       use: vi.fn().mockReturnThis(),
       mount: vi.fn()
-    } as any;
+    } as unknown as ReturnType<typeof createApp>;
     (createApp as Mock).mockReturnValue(app);
   });
 

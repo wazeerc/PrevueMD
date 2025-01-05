@@ -1,11 +1,9 @@
-import { useStore } from "@/store";
 import { VueWrapper } from "@vue/test-utils";
 import { beforeAll, describe, expect, it } from "vitest";
 import MarkdownPreview from "../MarkdownPreview.vue";
 import { setupTest } from "./test-utils";
 
 describe("MarkdownPreview component", () => {
-  let store: ReturnType<typeof useStore>;
   let wrapper: VueWrapper;
   const mockMarkup: string = "<h1>Hello</h1>";
 
@@ -13,7 +11,6 @@ describe("MarkdownPreview component", () => {
     const testStore = setupTest(MarkdownPreview, {
       markup: mockMarkup
     });
-    store = testStore.store;
     wrapper = testStore.wrapper;
   });
 

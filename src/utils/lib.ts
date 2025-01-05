@@ -80,7 +80,7 @@ async function copyToClipboard(textToCopyToClipboard: string): Promise<void> {
     await navigator.clipboard.writeText(textToCopyToClipboard);
     toast.success('Copied to clipboard!');
   } catch (error) {
-    toast.error('Failed to copy to clipboard!');
+    toast.error(`Failed to copy to clipboard: ${error}`);
   }
 }
 
