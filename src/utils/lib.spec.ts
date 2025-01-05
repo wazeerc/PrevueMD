@@ -1,5 +1,20 @@
-import { describe, expect, it, vi } from 'vitest';
+/* eslint-disable */
+//? Disabling linting because this is a test file and several functions are mocked
+import { unified } from "unified";
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from './lib';
+
+// Mock the toastification library
+vi.mock('vue-toastification', () => ({
+  useToast: vi.fn(() => ({
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn()
+  }))
+}));
+
+import { useToast } from 'vue-toastification';
 
 describe('cn utility function', () => {
   it('should handle conditional classes', () => {
@@ -16,15 +31,54 @@ describe('cn utility function', () => {
 });
 
 describe('parseMarkdown function', () => {
+  vi.mock('unified', () => ({
+    unified: vi.fn()
+  }));
+
+  const mockProcess = vi.fn();
+  const mockUse = vi.fn();
+
+  beforeEach(() => {
+    mockProcess.mockRejectedValue(new Error('Mock parsing error'));
+    mockUse.mockReturnThis();
+    vi.mocked(unified).mockReturnValue({
+      use: mockUse,
+      process: mockProcess
+    } as any);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should convert markdown to HTML', async () => {
+    mockProcess.mockResolvedValue({ value: '<h1>Hello</h1>\n<p>This is <strong>bold</strong></p>' });
+
     const markdown = '# Hello\n\nThis is **bold**';
     const result = await parseMarkdown(markdown);
+
     expect(result).toContain('<h1>Hello</h1>');
     expect(result).toContain('<strong>bold</strong>');
+  });
+
+  it('should throw an error if markdown parsing fails', async () => {
+    await expect(parseMarkdown('# test'))
+      .rejects
+      .toThrow('Failed to parse markdown: Error: Mock parsing error');
   });
 });
 
 describe('copyToClipboard function', () => {
+  let mockToast: { success: any; error: any; };
+
+  beforeEach(() => {
+    mockToast = {
+      success: vi.fn(),
+      error: vi.fn()
+    };
+    (useToast as any).mockReturnValue(mockToast);
+  });
+
   it('should copy text to clipboard', async () => {
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: vi.fn() },
@@ -33,10 +87,32 @@ describe('copyToClipboard function', () => {
 
     await copyToClipboard('Test');
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Test');
+    expect(mockToast.success).toHaveBeenCalledWith('Copied to clipboard!');
+  });
+
+  it('should show error toast when copying fails', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockRejectedValue(new Error('Clipboard error')) },
+      writable: true
+    });
+
+    await copyToClipboard('Test');
+    expect(mockToast.error).toHaveBeenCalledWith('Failed to copy to clipboard: Error: Clipboard error');
   });
 });
 
 describe('downloadMarkdownFile function', () => {
+  let mockToast: { info: any; error: any; warning: any; };
+
+  beforeEach(() => {
+    mockToast = {
+      info: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn()
+    };
+    (useToast as any).mockReturnValue(mockToast);
+  });
+
   it('should prepare the markdown file for download', () => {
     const originalURL = global.URL;
     global.URL = {
@@ -57,8 +133,28 @@ describe('downloadMarkdownFile function', () => {
     expect(anchor.download).toBe('prevued.md');
     expect(anchor.href).toBe('blob:test-url');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:test-url');
+    expect(mockToast.info).toHaveBeenCalledWith('Markdown file queued for download!');
 
     vi.restoreAllMocks();
+  });
+
+  it('should display a warning if markdown is empty', () => {
+    downloadMarkdownFile('');
+    expect(mockToast.warning).toHaveBeenCalledWith('Did you forget to write something?');
+  });
+
+  it('should display a warning if markdown is only whitespace', () => {
+    downloadMarkdownFile('   ');
+    expect(mockToast.warning).toHaveBeenCalledWith('Did you forget to write something?');
+  });
+
+  it('should show error toast when download fails', () => {
+    vi.spyOn(URL, 'createObjectURL').mockImplementation(() => {
+      throw new Error('Download error');
+    });
+
+    downloadMarkdownFile('# Test');
+    expect(mockToast.error).toHaveBeenCalledWith('Failed to download markdown file: Error: Download error.');
   });
 });
 
@@ -66,6 +162,15 @@ describe('warnBeforeUnload function', () => {
   it('should add beforeunload event listener', () => {
     const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
     warnBeforeUnload();
+
     expect(addEventListenerSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function));
+  });
+
+  it('should throw an error if the event listener fails to attach', () => {
+    vi.spyOn(window, 'addEventListener').mockImplementation(() => {
+      throw new Error('Mock error');
+    });
+
+    expect(() => warnBeforeUnload()).toThrow('Failed to set up warning before unload: Error: Mock error');
   });
 });
