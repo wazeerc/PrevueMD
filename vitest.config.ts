@@ -7,9 +7,17 @@ export default mergeConfig(
   defineConfig({
     test: {
       environment: "jsdom",
-      exclude: [...configDefaults.exclude, "e2e/**"],
-      include: ['src/components/tests/*.spec.ts', 'src/tests/ut/*.spec.ts'],
+      exclude: [...configDefaults.exclude, "**/e2e/**"],
+      include: ["src/**/*.spec.ts"],
       root: fileURLToPath(new URL("./", import.meta.url)),
+      coverage: {
+        provider: "v8",
+        reporter: ["text", "json", "html"],
+        exclude: ["node_modules/", "dist/", "src/**/*.spec.ts", "*.d.ts", "*.config.*"],
+      },
+      globals: true,
+      clearMocks: true,
+      restoreMocks: true
     },
   }),
 );
