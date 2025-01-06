@@ -13,7 +13,7 @@ import { cn } from "@/utils/lib";
          target="_blank">
         <img src="/vue.svg"
              alt="Vue Icon"
-             :class="cn('h-4 w-4', 'md:h-5 md:w-5', 'hover:motion-preset-wiggle')" />
+             :class="cn('h-4 w-4', 'md:h-5 md:w-5', 'hover:motion-preset-wiggle', 'grayscale hover:grayscale-0 transition-all duration-200')" />
       </a>
     </p>
     <a href="https://github.com/wazeerc/PrevueMD"
