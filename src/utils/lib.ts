@@ -17,43 +17,37 @@ function cn(...inputs: ClassValue[]): string {
 
 //#region: Markdown utils
 import type { VFile } from "node_modules/rehype-raw/lib";
-import rehypeFormat from "rehype-format";
-import rehypeRaw from 'rehype-raw';
-import rehypeStringify from 'rehype-stringify';
-import remarkGfm from "remark-gfm";
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import { unified } from 'unified';
 import { useToast } from "vue-toastification";
 
-/**
- * Processes and converts markdown text into HTML using unified processor with various plugins.
- *
- * @param markdownTextToParseIntoMarkup - The markdown text string to be processed
- * @throws {Error} If the markdown parsing process fails
- * @returns Promise resolving to the processed markdown value
- *
- * @remarks
- * This function uses the following remark and rehype plugins:
- * - remarkParse: Parses markdown into mdast syntax tree
- * - remarkGfm: Adds support for GitHub Flavored Markdown
- * - remarkRehype: Converts mdast to hast
- * - rehypeRaw: Allows raw HTML in markdown
- * - rehypeFormat: Formats HTML
- * - rehypeStringify: Converts hast to HTML string
- *
- * The function allows dangerous HTML through the remarkRehype configuration.
- */
+const markdownProcessorPromise = Promise.all([
+  import('unified'),
+  import('remark-parse'),
+  import('remark-gfm'),
+  import('remark-rehype'),
+  import('rehype-raw'),
+  import('rehype-format'),
+  import('rehype-stringify')
+]).then(([
+  { unified },
+  { default: remarkParse },
+  { default: remarkGfm },
+  { default: remarkRehype },
+  { default: rehypeRaw },
+  { default: rehypeFormat },
+  { default: rehypeStringify }
+]) => {
+  return unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(rehypeFormat)
+    .use(rehypeStringify);
+});
+
 async function parseMarkdown(markdownTextToParseIntoMarkup: string): Promise<VFile["value"]> {
   try {
-    const markdownProcessor = unified()
-      .use(remarkParse)
-      .use(remarkGfm)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(rehypeFormat)
-      .use(rehypeStringify);
-
+    const markdownProcessor = await markdownProcessorPromise;
     return (await markdownProcessor.process(markdownTextToParseIntoMarkup)).value;
   }
   catch (error) {
