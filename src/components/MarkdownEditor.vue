@@ -28,7 +28,7 @@ const handleClearInput = (): void => store.clearMarkdown();
     </div>
     <textarea autofocus
               placeholder="Write some Markdown"
-              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono',)"
+              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal',)"
               :value="store.getMarkdown"
               @input="handleInput">
     </textarea>
