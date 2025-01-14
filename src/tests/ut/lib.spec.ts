@@ -66,6 +66,14 @@ describe('parseMarkdown function', () => {
       .rejects
       .toThrow('Failed to parse markdown: Error: Mock parsing error');
   });
+
+  it('should not allow dangerous HTML', async () => {
+    const markdown = '<script>alert("xss")</script>';
+
+    await expect(parseMarkdown(markdown))
+      .rejects
+      .toThrow('Failed to parse markdown: Error: Mock parsing error');
+  });
 });
 
 describe('copyToClipboard function', () => {

@@ -39,7 +39,7 @@ const markdownProcessorPromise = Promise.all([
   return unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(remarkRehype, { allowDangerousHtml: false })
     .use(rehypeRaw)
     .use(rehypeFormat)
     .use(rehypeStringify);
