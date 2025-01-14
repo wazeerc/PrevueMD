@@ -16,7 +16,15 @@ const store = useStore();
     </h1>
     <h2 :class="cn('text-neutral-400', 'pl-2', 'mt-4', 'font-medium', 'text-sm', 'sm:text-base',
       'motion-preset-blur-up-md motion-delay-500')">
-      A real-time Markdown editor.
+      A real-time
+      <a :class="cn(
+        'underline cursor-help',
+        'hover:text-neutral-500 transition-colors ease duration-200'
+      )"
+         href="https://commonmark.org/help/"
+         target="_blank"
+         rel="noopener noreferrer">
+        Markdown</a> editor.
     </h2>
     <IconButton @click="store.handleDownloadMarkdownFile"
                 :disabled="!store.getMarkdown"
