@@ -5,7 +5,7 @@
       <meta name="description"
             content="A real-time markdown editor built with Vue." />
       <link rel="icon"
-            href="/markdown.svg" />
+            href="/markdown.png" />
       <link rel="preload"
             href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
             as="style"
@@ -20,6 +20,8 @@
             <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap"
                   rel="stylesheet" />
       </noscript>
+      <link rel="manifest"
+            href="manifest.json">
       <meta name="viewport"
             content="width=device-width, initial-scale=1.0" />
       <title>PrevueMD</title>
@@ -28,5 +30,16 @@
       <div id="app"></div>
       <script type="module"
               src="/src/main.ts"></script>
+      <script>
+            if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.register('service-worker.ts')
+                        .then(registration => {
+                              console.log('Service Worker registered with scope:', registration.scope);
+                        })
+                        .catch(error => {
+                              console.error('Service Worker registration failed:', error);
+                        });
+            }
+      </script>
 </body>
 </html>
