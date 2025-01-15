@@ -73,3 +73,20 @@ test('should download markdown file when download button is clicked', async ({ p
 
   expect(download.suggestedFilename()).toBe('prevued.md');
 });
+
+test('should have manifest and service worker for pwa', async ({ page }) => {
+  await page.goto('/');
+
+  const serviceWorkerRegistration = await page.evaluate(async () => {
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration();
+      return !!registration;
+    }
+    return false;
+  });
+
+  expect(serviceWorkerRegistration).toBeTruthy();
+
+  const manifestLink = await page.$('link[rel="manifest"]');
+  expect(manifestLink).toBeTruthy();
+});
