@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { cn, } from "@/utils/lib";
+import { ref } from 'vue';
+import { cn } from "@/utils/lib";
 import Footer from "./AppFooter.vue";
 import Header from "./AppHeader.vue";
 import MarkdownEditor from "./MarkdownEditor.vue";
 import MarkdownPreview from "./MarkdownPreview.vue";
+
+const scrollPercentage = ref(0);
+const handleScroll = (percentage: number) => scrollPercentage.value = percentage;
 </script>
 
 <template>
@@ -20,8 +24,12 @@ import MarkdownPreview from "./MarkdownPreview.vue";
       'md:flex-row md:gap-8 md:p-4',
       'lg:gap-8 lg:p-6',
     )">
-      <MarkdownEditor :class="cn('w-full', 'md:w-1/2',)" />
-      <MarkdownPreview :class="cn('w-full', 'md:w-1/2')" />
+      <MarkdownEditor :class="cn('w-full', 'md:w-1/2')"
+                      :scroll-percentage="scrollPercentage"
+                      @scroll="handleScroll" />
+      <MarkdownPreview :class="cn('w-full', 'md:w-1/2')"
+                       :scroll-percentage="scrollPercentage"
+                       @scroll="handleScroll" />
     </section>
   </main>
   <Footer />

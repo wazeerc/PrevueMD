@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+import { useScrollSync } from '@/composables/useScrollSync';
 import { cn } from "@/utils/lib";
 import { useStore } from "@/store";
 import IconButton from "./IconButton.vue";
@@ -10,8 +12,15 @@ const handleInput = (event: Event): void => {
   store.setMarkdown(markdownInput);
   store.handleParseMarkdown(markdownInput);
 };
-
 const handleClearInput = (): void => store.clearMarkdown();
+
+const editorRef = ref<HTMLTextAreaElement | null>(null);
+const { onScroll, syncScroll } = useScrollSync(editorRef);
+
+const emit = defineEmits<{ scroll: [percentage: number]; }>();
+const props = defineProps<{ scrollPercentage: number; }>();
+
+watch(() => props.scrollPercentage, syncScroll);
 </script>
 
 <template>
@@ -26,11 +35,13 @@ const handleClearInput = (): void => store.clearMarkdown();
                   variant="secondary"
                   size="md" />
     </div>
-    <textarea autofocus
+    <textarea ref="editorRef"
+              autofocus
               placeholder="Write some Markdown"
-              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal',)"
+              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal')"
               :value="store.getMarkdown"
-              @input="handleInput">
+              @input="handleInput"
+              @scroll="() => onScroll(p => emit('scroll', p))">
     </textarea>
   </div>
 </template>
