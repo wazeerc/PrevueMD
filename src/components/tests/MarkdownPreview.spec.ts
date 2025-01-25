@@ -8,9 +8,10 @@ describe("MarkdownPreview component", () => {
   const mockMarkup: string = "<h1>Hello</h1>";
 
   beforeAll(() => {
-    const testStore = setupTest(MarkdownPreview, {
-      markup: mockMarkup
-    });
+    const testStore = setupTest(MarkdownPreview,
+      { markup: mockMarkup },
+      { props: { scrollPercentage: 0 } }
+    );
     wrapper = testStore.wrapper;
   });
 

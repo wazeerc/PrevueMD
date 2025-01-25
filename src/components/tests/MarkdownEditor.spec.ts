@@ -10,7 +10,11 @@ describe("MarkdownEditor component", () => {
   let textarea: ReturnType<typeof wrapper.find>;
 
   beforeAll(() => {
-    const testStore = setupTest(MarkdownEditor);
+    const testStore = setupTest(MarkdownEditor, undefined, {
+      props: {
+        scrollPercentage: 0
+      }
+    });
     store = testStore.store;
     wrapper = testStore.wrapper;
 
