@@ -28,6 +28,7 @@ test('should parse markdown input into correct markup', async ({ page }) => {
 
   await markdownEditor.fill(mockMarkdownText);
 
+  await expect(markdownPreview).not.toBeEmpty();
   expect(await markdownPreview.innerHTML()).toContain(parsedMockMarkdownHtml);
 });
 

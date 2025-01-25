@@ -1,4 +1,5 @@
-import { copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from "@/utils/lib";
+import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
+import { parseMarkdown } from "@/utils/markdown-parser";
 import { defineStore } from "pinia";
 
 interface StoreState {
@@ -52,7 +53,7 @@ export const useStore = defineStore<
       this.unloadWarning = null;
     },
     async handleParseMarkdown(rawMarkdown: string) {
-      this.setMarkup((await parseMarkdown(rawMarkdown)).toString());
+      this.setMarkup(await parseMarkdown(rawMarkdown));
     },
     handleCopyToClipboard() {
       copyToClipboard(this.markdown ?? '');

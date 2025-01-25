@@ -1,13 +1,17 @@
 import { initialState, useStore } from '@/store';
-import { copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from "@/utils/lib";
+import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
+import { parseMarkdown } from "@/utils/markdown-parser";
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock("@/utils/lib", () => ({
   copyToClipboard: vi.fn(),
   downloadMarkdownFile: vi.fn(),
-  parseMarkdown: vi.fn(),
   warnBeforeUnload: vi.fn(() => () => { })
+}));
+
+vi.mock("@/utils/markdown-parser", () => ({
+  parseMarkdown: vi.fn(),
 }));
 
 describe('Store', () => {

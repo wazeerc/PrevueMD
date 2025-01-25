@@ -1,8 +1,7 @@
 /* eslint-disable */
 //? Disabling linting because this is a test file and several functions are mocked
-import { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload } from '@/utils/lib';
-import { unified } from "unified";
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cn, copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from '@/utils/lib';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the toastification library
 vi.mock('vue-toastification', () => ({
@@ -27,52 +26,6 @@ describe('cn utility function', () => {
 
   it('should handle null and undefined values', () => {
     expect(cn('valid', null, undefined, 'also-valid')).toBe('valid also-valid');
-  });
-});
-
-describe('parseMarkdown function', () => {
-  vi.mock('unified', () => ({
-    unified: vi.fn()
-  }));
-
-  const mockProcess = vi.fn();
-  const mockUse = vi.fn();
-
-  beforeEach(() => {
-    mockProcess.mockRejectedValue(new Error('Mock parsing error'));
-    mockUse.mockReturnThis();
-    vi.mocked(unified).mockReturnValue({
-      use: mockUse,
-      process: mockProcess
-    } as any);
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('should convert markdown to HTML', async () => {
-    mockProcess.mockResolvedValue({ value: '<h1>Hello</h1>\n<p>This is <strong>bold</strong></p>' });
-
-    const markdown = '# Hello\n\nThis is **bold**';
-    const result = await parseMarkdown(markdown);
-
-    expect(result).toContain('<h1>Hello</h1>');
-    expect(result).toContain('<strong>bold</strong>');
-  });
-
-  it('should throw an error if markdown parsing fails', async () => {
-    await expect(parseMarkdown('# test'))
-      .rejects
-      .toThrow('Failed to parse markdown: Error: Mock parsing error');
-  });
-
-  it('should not allow dangerous HTML', async () => {
-    const markdown = '<script>alert("xss")</script>';
-
-    await expect(parseMarkdown(markdown))
-      .rejects
-      .toThrow('Failed to parse markdown: Error: Mock parsing error');
   });
 });
 

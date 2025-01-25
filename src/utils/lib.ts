@@ -1,4 +1,4 @@
-export { cn, copyToClipboard, downloadMarkdownFile, parseMarkdown, warnBeforeUnload };
+export { cn, copyToClipboard, downloadMarkdownFile, warnBeforeUnload };
 
 //#region: Tailwind Utils
 import { clsx, type ClassValue } from "clsx";
@@ -16,44 +16,7 @@ function cn(...inputs: ClassValue[]): string {
 //#endregion
 
 //#region: Markdown utils
-import type { VFile } from "node_modules/rehype-raw/lib";
 import { useToast } from "vue-toastification";
-
-const markdownProcessorPromise = Promise.all([
-  import('unified'),
-  import('remark-parse'),
-  import('remark-gfm'),
-  import('remark-rehype'),
-  import('rehype-raw'),
-  import('rehype-format'),
-  import('rehype-stringify')
-]).then(([
-  { unified },
-  { default: remarkParse },
-  { default: remarkGfm },
-  { default: remarkRehype },
-  { default: rehypeRaw },
-  { default: rehypeFormat },
-  { default: rehypeStringify }
-]) => {
-  return unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: false })
-    .use(rehypeRaw)
-    .use(rehypeFormat)
-    .use(rehypeStringify);
-});
-
-async function parseMarkdown(markdownTextToParseIntoMarkup: string): Promise<VFile["value"]> {
-  try {
-    const markdownProcessor = await markdownProcessorPromise;
-    return (await markdownProcessor.process(markdownTextToParseIntoMarkup)).value;
-  }
-  catch (error) {
-    throw new Error(`Failed to parse markdown: ${error}`);
-  }
-};
 
 /**
  * Copies the provided text to the system clipboard asynchronously.
