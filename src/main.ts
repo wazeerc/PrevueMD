@@ -10,6 +10,8 @@ import Toast, { POSITION } from "vue-toastification";
 const app = createApp(App);
 const store = createPinia();
 
+console.log("🚀");
+
 app.use(store);
 app.use(Toast, {
   position: POSITION.BOTTOM_RIGHT,
