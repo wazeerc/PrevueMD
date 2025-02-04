@@ -9,7 +9,7 @@ on:
 env:
   PROJECT_ID: 'prevue-md'
   REGION: 'us-central1'
-  SERVICE: 'prevue-md'
+  SERVICE: 'prevuemd'
 
 jobs:
   deploy:
