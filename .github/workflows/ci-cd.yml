@@ -38,6 +38,12 @@ jobs:
       - name: Run unit tests
         run: pnpm test:unit
 
+      - name: Upload unit tests coverage to Coveralls
+        uses: coverallsapp/github-action@v4
+        with:
+              github-token: ${{ secrets.GITHUB_TOKEN }}
+              path-to-lcov: coverage/lcov.info
+
       - name: Run E2E tests
         run: pnpm test:e2e
 
