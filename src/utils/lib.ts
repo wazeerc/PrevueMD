@@ -112,4 +112,36 @@ function warnBeforeUnload(): () => void {
     throw new Error(`Failed to set up warning before unload: ${error}`);
   }
 }
+
+/**
+ * Creates a debounced version of the provided function that delays its execution
+ * until after a specified time has elapsed since the last time it was called.
+ *
+ * @template T - The type of the function to debounce
+ * @param {T} _function - The function to debounce
+ * @param {number} [delay=250] - The delay in milliseconds before executing the function, defaults to 250ms
+ * @returns {(...args: Parameters<T>) => void} A debounced version of the input function
+ *
+ * @example
+ * ```typescript
+ * const debouncedFn = debounce((text: string) => console.log(text), 1000);
+ * debouncedFn("hello"); // Will only log after 1 second of no calls
+ * ```
+ */
+export function debounce<T extends (...args: unknown[]) => unknown>(
+  _function: T,
+  delay: number = 250
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>): void {
+    clearTimeout(timeoutId as NodeJS.Timeout);
+
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+
+      _function.apply(this, args);
+    }, delay);
+  };
+}
 //#endregion

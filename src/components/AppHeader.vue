@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { cn } from "@/utils/lib";
 import { useStore } from "@/store";
+import { cn, debounce } from "@/utils/lib";
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
+const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
 </script>
 
 <template>
@@ -26,7 +27,7 @@ const store = useStore();
          rel="noopener noreferrer">
         Markdown</a> editor.
     </h2>
-    <IconButton @click="store.handleDownloadMarkdownFile"
+    <IconButton @click="debouncedDownload"
                 :disabled="!store.getMarkdown"
                 icon="download"
                 class="motion-preset-rebound-left motion-delay-150"

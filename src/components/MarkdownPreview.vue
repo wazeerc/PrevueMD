@@ -2,9 +2,11 @@
 import { ref, watch } from 'vue';
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
+import { debounce } from "@/utils/lib";
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
+const debouncedCopyToClipboard = debounce(store.handleCopyToClipboard);
 
 const previewRef = ref<HTMLDivElement | null>(null);
 const { onScroll, syncScroll } = useScrollSync(previewRef);
@@ -21,7 +23,7 @@ watch(() => props.scrollPercentage, syncScroll);
       <h3 class="sub-heading">Preview</h3>
       <div class="flex space-x-2">
         <IconButton :disabled="!store.getMarkdown"
-                    @click="store.handleCopyToClipboard"
+                    @click="debouncedCopyToClipboard"
                     icon="clipboard"
                     tooltip="Copy"
                     variant="secondary"
