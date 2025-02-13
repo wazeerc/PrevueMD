@@ -1,4 +1,4 @@
-export { cn, copyToClipboard, downloadMarkdownFile, warnBeforeUnload };
+export { cn, copyToClipboard, debounce, downloadMarkdownFile, warnBeforeUnload };
 
 //#region: Tailwind Utils
 import { clsx, type ClassValue } from "clsx";
@@ -128,7 +128,7 @@ function warnBeforeUnload(): () => void {
  * debouncedFn("hello"); // Will only log after 1 second of no calls
  * ```
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
+function debounce<T extends (...args: unknown[]) => unknown>(
   _function: T,
   delay: number = 250
 ): (...args: Parameters<T>) => void {

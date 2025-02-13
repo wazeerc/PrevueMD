@@ -1,6 +1,6 @@
 /* eslint-disable */
 //? Disabling linting because this is a test file and several functions are mocked
-import { cn, copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from '@/utils/lib';
+import { cn, copyToClipboard, debounce, downloadMarkdownFile, warnBeforeUnload } from '@/utils/lib';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the toastification library
@@ -133,5 +133,25 @@ describe('warnBeforeUnload function', () => {
     });
 
     expect(() => warnBeforeUnload()).toThrow('Failed to set up warning before unload: Error: Mock error');
+  });
+});
+
+describe('debounce function', () => {
+  it('should debounce function calls', () => {
+    vi.useFakeTimers();
+
+    const mockFn = vi.fn();
+    const debouncedFn = debounce(mockFn);
+
+    debouncedFn();
+    debouncedFn();
+    debouncedFn();
+
+    expect(mockFn).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(251);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+
+    vi.useRealTimers();
   });
 });
