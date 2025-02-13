@@ -55,6 +55,7 @@ test('should copy markdown to clipboard when copy button is clicked', async ({ c
 
   await markdownEditor.fill(mockMarkdownText);
   await copyBtn.click();
+  await page.waitForTimeout(251);
 
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(mockMarkdownText);
 });
