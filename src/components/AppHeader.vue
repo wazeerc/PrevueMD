@@ -2,6 +2,7 @@
 import { useStore } from "@/store";
 import { cn, debounce } from "@/utils/lib";
 import IconButton from "./IconButton.vue";
+import PwaInstall from "./PwaInstall.vue";
 
 const store = useStore();
 const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
@@ -27,12 +28,15 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
          rel="noopener noreferrer">
         Markdown</a> editor.
     </h2>
-    <IconButton @click="debouncedDownload"
-                :disabled="!store.getMarkdown"
-                icon="download"
-                class="motion-preset-rebound-left motion-delay-150"
-                variant="primary"
-                tooltip="Download Markdown"
-                size="md" />
+    <div class="flex gap-2 items-center">
+      <PwaInstall />
+      <IconButton @click="debouncedDownload"
+                  :disabled="!store.getMarkdown"
+                  icon="download"
+                  class="motion-preset-rebound-left motion-delay-150 text-white"
+                  variant="primary"
+                  tooltip="Download Markdown"
+                  size="md" />
+    </div>
   </header>
 </template>

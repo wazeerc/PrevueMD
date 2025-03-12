@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
               'font-sans font-semibold',
               'bg-neutral-200 text-neutral-800',
               'hover:bg-neutral-300',
-              'disabled:opacity-20',
+              'disabled:opacity-50',
             ],
             variant === 'secondary' && [
               'mb-2 mr-1',

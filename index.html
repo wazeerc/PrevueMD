@@ -4,8 +4,18 @@
       <meta charset="UTF-8" />
       <meta name="description"
             content="A real-time markdown editor built with Vue." />
+      <meta name="viewport"
+            content="width=device-width, initial-scale=1.0" />
+      <meta name="theme-color" content="#171717" />
+      <meta name="mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <meta name="apple-mobile-web-app-title" content="PrevueMD">
+      
       <link rel="icon"
             href="/markdown.png" />
+      <link rel="apple-touch-icon" href="/icons/apple-icon-180.png">
+      
       <link rel="preload"
             href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
             as="style"
@@ -20,26 +30,12 @@
             <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap"
                   rel="stylesheet" />
       </noscript>
-      <link rel="manifest"
-            href="manifest.json">
-      <meta name="viewport"
-            content="width=device-width, initial-scale=1.0" />
+      
       <title>PrevueMD</title>
 </head>
 <body>
       <div id="app"></div>
       <script type="module"
               src="/src/main.ts"></script>
-      <script>
-            if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.register('service-worker.ts')
-                        .then(registration => {
-                              console.log('Service Worker registered with scope:', registration.scope);
-                        })
-                        .catch(error => {
-                              console.error('Service Worker registration failed:', error);
-                        });
-            }
-      </script>
 </body>
 </html>

@@ -5,7 +5,27 @@ import "@/styles/toast.css";
 import App from "@/App.vue";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-import Toast, { POSITION } from "vue-toastification";
+import Toast, { POSITION, useToast } from "vue-toastification";
+import { registerSW } from 'virtual:pwa-register';
+
+// Register service worker with auto-update every hour
+const updateSW = registerSW({
+  onNeedRefresh() {
+    const toast = useToast();
+    toast.info('New content available! Click to update.', {
+      timeout: 0,
+      closeOnClick: true,
+      onClick: () => {
+        updateSW();
+      }
+    });
+  },
+  onOfflineReady() {
+    const toast = useToast();
+    toast.success('App ready for offline use!');
+  },
+  immediate: true
+});
 
 const app = createApp(App);
 const store = createPinia();

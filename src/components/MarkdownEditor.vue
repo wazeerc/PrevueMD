@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useScrollSync } from '@/composables/useScrollSync';
 import { cn } from "@/utils/lib";
 import { useStore } from "@/store";
@@ -21,6 +21,17 @@ const emit = defineEmits<{ scroll: [percentage: number]; }>();
 const props = defineProps<{ scrollPercentage: number; }>();
 
 watch(() => props.scrollPercentage, syncScroll);
+
+// Initialize with placeholder text if editor is empty
+onMounted(() => {
+  if (editorRef.value && !store.getMarkdown) {
+    const initialText = editorRef.value.value || editorRef.value.placeholder;
+    if (initialText) {
+      store.setMarkdown(initialText);
+      store.handleParseMarkdown(initialText);
+    }
+  }
+});
 </script>
 
 <template>

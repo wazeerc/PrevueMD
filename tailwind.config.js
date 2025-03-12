@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+import tailwindcssMotion from 'tailwindcss-motion';
+import typography from '@tailwindcss/typography';
+
+export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -12,6 +15,8 @@ module.exports = {
       mono: ["JetBrains Mono", "monospace"],
     },
   },
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  plugins: [require("tailwindcss-motion"), require('@tailwindcss/typography')],
+  plugins: [
+    tailwindcssMotion,
+    typography,
+  ],
 };
