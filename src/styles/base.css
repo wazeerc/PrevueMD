@@ -17,7 +17,8 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100%;
 }
 
 /* semantic color variables for this project */
@@ -42,6 +43,8 @@
 
 body {
   min-height: 100vh;
+  max-height: 100vh;
+  height: 100%;
   color: var(--color-text);
   background: var(--color-background);
   transition:
@@ -61,4 +64,5 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }

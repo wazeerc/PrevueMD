@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { useScrollSync } from '@/composables/useScrollSync';
-import { cn } from "@/utils/lib";
 import { useStore } from "@/store";
+import { cn } from "@/utils/lib";
+import { ref, watch } from 'vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
@@ -24,7 +24,7 @@ watch(() => props.scrollPercentage, syncScroll);
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
       <h3 class="sub-heading">Editor</h3>
       <IconButton :disabled="!store.getMarkdown"
@@ -38,7 +38,7 @@ watch(() => props.scrollPercentage, syncScroll);
     <textarea ref="editorRef"
               autofocus
               placeholder="Write some Markdown"
-              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal')"
+              :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal', 'flex-1', 'w-full')"
               :value="store.getMarkdown"
               @input="handleInput"
               @scroll="() => onScroll(p => emit('scroll', p))">

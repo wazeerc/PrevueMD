@@ -16,7 +16,7 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
             :class="cn('font-sans font-bold text-[--vue-color-primary]', 'text-lg', 'sm:text-xl', 'md:text-2xl')">MD</span>
     </h1>
     <h2 :class="cn('text-neutral-400', 'pl-2', 'mt-4', 'font-medium', 'text-sm', 'sm:text-base',
-      'motion-preset-blur-up-md motion-delay-500')">
+      'motion-preset-blur-up-md motion-delay-500', 'hidden lg:block')">
       A real-time
       <a :class="cn(
         'underline cursor-help',

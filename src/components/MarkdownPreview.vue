@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
 import { debounce } from "@/utils/lib";
+import { ref, watch } from 'vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
@@ -18,7 +18,7 @@ watch(() => props.scrollPercentage, syncScroll);
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
       <h3 class="sub-heading">Preview</h3>
       <div class="flex space-x-2">
@@ -31,9 +31,9 @@ watch(() => props.scrollPercentage, syncScroll);
       </div>
     </div>
     <div ref="previewRef"
-         class="markdown-container"
+         class="markdown-container flex-1"
          @scroll="() => onScroll(p => emit('scroll', p))">
-      <div class="prose prose-invert"
+      <div class="prose prose-invert w-full break-words"
            v-html="store.getMarkup">
       </div>
     </div>

@@ -2,12 +2,13 @@
 
 #app {
   height: 100vh;
+  max-height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 6rem 1fr 5rem;
+  grid-template-rows: auto 1fr auto;
   margin: 0;
   padding: 0;
-  overflow-y: hidden;
+  overflow: hidden;
   scroll-behavior: smooth;
 
   :focus {
@@ -19,12 +20,12 @@
 
 @media (max-width: 768px) {
   #app {
-    grid-template-rows: 4rem 1fr 4rem;
+    grid-template-rows: auto 1fr auto;
   }
 }
 
 @media (max-width: 480px) {
   #app {
-    grid-template-rows: 3rem 1fr 3rem;
+    grid-template-rows: auto 1fr auto;
   }
 }
