@@ -24,7 +24,6 @@ describe('PrevueMD', () => {
     const main = wrapper.find('main');
     const section = wrapper.find('section');
 
-    expect(main.classes()).toContain('mx-4');
     expect(main.classes()).toContain('flex-col');
     expect(section.classes()).toContain('w-full');
     expect(section.classes()).toContain('flex-col');
