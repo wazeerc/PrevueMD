@@ -4,11 +4,23 @@ import "@/styles/toast.css";
 
 import App from "@/App.vue";
 import { createPinia } from "pinia";
+import { registerSW } from 'virtual:pwa-register';
 import { createApp } from "vue";
 import Toast, { POSITION } from "vue-toastification";
 
 const app = createApp(App);
 const store = createPinia();
+
+const updateSW = registerSW({
+  onNeedRefresh() {
+    console.log('New content available');
+    updateSW();
+  },
+  onOfflineReady() {
+    console.log('App ready for offline use');
+  },
+  immediate: true
+});
 
 app.use(store);
 app.use(Toast, {
