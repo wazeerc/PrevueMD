@@ -6,7 +6,7 @@ import App from "@/App.vue";
 import { createPinia } from "pinia";
 import { registerSW } from 'virtual:pwa-register';
 import { createApp } from "vue";
-import Toast, { POSITION } from "vue-toastification";
+import Toast, { POSITION, useToast } from "vue-toastification";
 
 const app = createApp(App);
 const store = createPinia();
@@ -36,3 +36,20 @@ app.use(Toast, {
   rtl: false
 });
 app.mount("#app");
+
+const isMobileDevice = () => {
+  const mobileWidth = window.innerWidth < 768;
+  const mobileAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  return mobileWidth || mobileAgent;
+};
+
+if (isMobileDevice()) {
+  setTimeout(() => {
+    const toast = useToast();
+    toast.warning("Note: PrevueMD works best on desktop.", {
+      timeout: 2000,
+      position: POSITION.BOTTOM_CENTER,
+      closeOnClick: true,
+    });
+  }, 750);
+}
