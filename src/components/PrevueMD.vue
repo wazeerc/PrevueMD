@@ -13,7 +13,7 @@ const handleScroll = (percentage: number) => scrollPercentage.value = percentage
 <template>
   <Header />
   <main :class="cn(
-    'justify-center m-4 flex flex-col gap-4 overflow-hidden',
+    'justify-center m-4 flex flex-col gap-4 overflow-auto',
     'sm:mx-8 sm:my-6',
     'lg:mx-32 lg:my-10',
     'motion-preset-slide-up-sm motion-delay-300'
