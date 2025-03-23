@@ -13,32 +13,32 @@
   }
 
   .markdown-container {
-    height: theme("height.80");
+    height: 100%;
     width: theme("width.full");
     overflow-y: auto;
+    overflow-x: hidden;
     border-radius: theme("borderRadius.sm");
     background-color: theme("colors.zinc.900");
     padding: theme("spacing.4");
     color: theme("colors.neutral.200");
     box-shadow: theme("boxShadow.md");
+    @apply prose prose-invert prose-headings:text-neutral-200 prose-h1:text-2xl prose-h1:font-semibold prose-h1:mb-4 prose-h1:pb-2 prose-h1:border-b prose-h1:border-neutral-800 prose-h2:text-xl prose-h2:font-semibold prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-neutral-800 prose-h3:text-lg prose-h3:font-medium prose-h3:pb-1 prose-h3:border-b prose-h3:border-neutral-800 prose-p:text-neutral-300 prose-p:leading-relaxed prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-200 prose-strong:font-semibold prose-code:before:content-none prose-code:after:content-none prose-code:font-medium prose-code:text-neutral-200 prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-zinc-800 prose-pre:border prose-pre:border-zinc-700 prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-pre:break-words prose-blockquote:border-l-4 prose-blockquote:border-neutral-700 prose-blockquote:text-neutral-400 prose-ul:text-neutral-300 prose-ul:list-disc prose-ol:text-neutral-300 prose-li:marker:text-neutral-500 prose-table:border-zinc-700 prose-th:bg-zinc-800 prose-th:text-neutral-200 prose-td:text-neutral-300 prose-img:rounded-md prose-img:mx-auto prose-img:max-w-full prose-hr:border-neutral-800 max-w-none;
+  }
 
-    @screen xs {
-      height: 20rem;
-    }
+  /* Add custom styles for code blocks and other elements that might overflow */
+  .prose pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
 
-    @screen sm {
-      height: 24rem;
-    }
+  .prose code {
+    word-break: break-word;
+  }
 
-    @screen md {
-      height: 50rem;
-    }
-
-    @screen lg {
-      height: 50rem;
-    }
-
-    @apply prose prose-invert prose-headings:text-neutral-200 prose-h1:text-2xl prose-h1:font-semibold prose-h1:mb-4 prose-h1:pb-2 prose-h1:border-b prose-h1:border-neutral-800 prose-h2:text-xl prose-h2:font-semibold prose-h2:mb-3 prose-h2:pb-2 prose-h2:border-b prose-h2:border-neutral-800 prose-h3:text-lg prose-h3:font-medium prose-h3:pb-1 prose-h3:border-b prose-h3:border-neutral-800 prose-p:text-neutral-300 prose-p:leading-relaxed prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-200 prose-strong:font-semibold prose-code:before:content-none prose-code:after:content-none prose-code:font-medium prose-code:text-neutral-200 prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-zinc-800 prose-pre:border prose-pre:border-zinc-700 prose-blockquote:border-l-4 prose-blockquote:border-neutral-700 prose-blockquote:text-neutral-400 prose-ul:text-neutral-300 prose-ul:list-disc prose-ol:text-neutral-300 prose-li:marker:text-neutral-500 prose-table:border-zinc-700 prose-th:bg-zinc-800 prose-th:text-neutral-200 prose-td:text-neutral-300 prose-img:rounded-md prose-img:mx-auto prose-hr:border-neutral-800 max-w-none;
+  .prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   .header-footer {
@@ -46,7 +46,7 @@
     align-items: center;
     justify-content: space-between;
     border-color: theme("colors.neutral.800");
-    padding: theme("spacing.2") theme("spacing.4");
+    padding: theme("spacing.4");
 
     @screen sm {
       padding: theme("spacing.4") theme("spacing.8");
