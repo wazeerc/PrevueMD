@@ -74,7 +74,7 @@ onMounted(() => {
     <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
          :alt="`${icon} Icon`"
          :class="cn(variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
-          variant === 'secondary' && !disabled && 'group-hover:motion-preset-shake',
+          variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm',
         )" />
   </button>
 </template>
