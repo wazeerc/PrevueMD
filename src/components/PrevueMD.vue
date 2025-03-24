@@ -30,8 +30,7 @@ const handleScroll = (percentage: number) => scrollPercentage.value = percentage
                         :scroll-percentage="scrollPercentage"
                         @scroll="handleScroll" />
       </div>
-      <div class="h-[calc(50%-0.5rem)] md:h-full w-full md:w-1/2"
-           tabindex="-1">
+      <div class="h-[calc(50%-0.5rem)] md:h-full w-full md:w-1/2">
         <MarkdownPreview class="h-full"
                          :scroll-percentage="scrollPercentage"
                          @scroll="handleScroll" />
