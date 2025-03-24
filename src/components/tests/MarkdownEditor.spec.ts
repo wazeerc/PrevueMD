@@ -23,7 +23,10 @@ describe("MarkdownEditor component", () => {
 
   it("should contain text area element with placeholder value", () => {
     expect(textarea.exists()).toBe(true);
-    expect(textarea.attributes("placeholder")).toBe("Write some Markdown");
+
+    const placeholder = textarea.attributes("placeholder");
+    expect(placeholder).toContain("Start typing to edit and preview your Markdown in real-time");
+    expect(placeholder).toContain("You can also copy & paste existing content");
   });
 
   it("should update store when input changes", async () => {
