@@ -58,6 +58,10 @@ pnpm build      # Build for production
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Acknowledgements
+
+- Icons by [Feather Icons](https://feathericons.com/) & [Vijay](https://3dicons.co/)
+
 ## Status
 
 [![CI/CD: Test and Deploy to GCP](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml)
