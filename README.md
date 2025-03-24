@@ -32,9 +32,9 @@ pnpm install
 
 3. **Development**
 ```
-pnpm dev        # Start development server
-pnpm test       # Run tests
-pnpm build      # Build for production
+pnpm dev                             # Start development server
+pnpm test:unit && pnpm test:e2e      # Run tests
+pnpm build                           # Build for production
 ```
 
 4. Access the development server at `http://localhost:5173`
