@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { cn } from '@/utils/lib';
 import { IconLibrary, type Icons, type IconSize, type IconState, type IconVariant } from '@/utils/icons';
 
@@ -21,6 +22,18 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
   size: 'md',
   tooltip: '',
 });
+
+const isMobile = ref(false);
+onMounted(() => {
+  const detectMobile = () => {
+    const mobileWidth = window.innerWidth < 768;
+    const mobileAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    isMobile.value = mobileWidth || mobileAgent;
+  };
+
+  detectMobile();
+  window.addEventListener('resize', detectMobile);
+});
 </script>
 
 <template>
@@ -30,7 +43,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
           :data-tooltip="tooltip"
           @click="onClick"
           :class="cn('group inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed relative',
-            tooltip && !disabled && [
+            tooltip && !disabled && !isMobile && [
               'after:content-[attr(data-tooltip)] after:absolute',
               'after:left-1/2 after:-translate-x-1/2 after:px-2 after:py-1',
               'after:bg-neutral-800/80 after:text-neutral-400 after:outline after:outline-1 after:outline-[--vue-color-secondary]', 'after:font-sans after:text-xs after:rounded-md',
@@ -41,7 +54,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
               'after:invisible after:pointer-events-none',
               'hover:after:visible hover:after:pointer-events-auto hover:after:opacity-100 hover:after:translate-y-0'
             ],
-            tooltip && !disabled && 'hover:after:opacity-100',
+            tooltip && !disabled && !isMobile && 'hover:after:opacity-100',
             variant === 'primary' && [
               'px-2 py-1.5 sm:px-3 sm:py-2',
               'text-xs sm:text-sm',
