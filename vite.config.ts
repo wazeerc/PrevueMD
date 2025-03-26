@@ -17,7 +17,7 @@ export default defineConfig({
     webfontDownload(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['markdown.png', 'icons/*.png', 'icons/*.jpg'],
+      includeAssets: ['markdown.png', 'icons/*.png', 'icons/*.jpg', 'og-image.png'],
       manifest: {
         name: 'PrevueMD',
         short_name: 'PrevueMD',
