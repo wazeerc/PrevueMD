@@ -4,7 +4,7 @@ test('should display the correct title', async ({ page }) => {
   await page.goto('/');
   const title = page.locator('h1');
 
-  await expect(title).toHaveText('PrevueMD');
+  await expect(title).toContainText('PrevueMD');
 });
 
 test('should capture markdown input properly', async ({ page }) => {

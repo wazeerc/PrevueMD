@@ -7,7 +7,7 @@ Disallow: /private/
 Disallow: /api/
 Disallow: /temp/
 
-# Add sitemap when available
+Sitemap: https://prevuemd.com/sitemap.xml
 
 # Crawl-delay for all bots
 Crawl-delay: 10
