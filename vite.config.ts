@@ -19,9 +19,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['markdown.png', 'icons/*.png', 'icons/*.jpg', 'og-image.png'],
       manifest: {
-        name: 'PrevueMD',
+        name: 'PrevueMD - A real-time Markdown editor',
         short_name: 'PrevueMD',
-        description: 'A real-time markdown editor built with Vue.',
+        description: 'A real-time Markdown editor built with Vue. Edit and visualize your Markdown documents instantly.',
         theme_color: '#171717',
         background_color: '#171717',
         display: 'standalone',
@@ -46,16 +46,22 @@ export default defineConfig({
             src: '/icons/apple-splash-2048-1536.jpg',
             sizes: '2048x1536',
             type: 'image/jpeg',
-            form_factor: 'wide'
+            form_factor: 'wide',
+            label: 'PrevueMD Editor Interface - Desktop'
           },
           {
             src: '/pwa-assets/screenshot-narrow.png',
             sizes: '375x667',
             type: 'image/png',
-            form_factor: 'narrow'
+            form_factor: 'narrow',
+            label: 'PrevueMD Editor Interface - Mobile'
           }
         ],
-        categories: ['productivity', 'utilities']
+        categories: ['productivity', 'utilities', 'developer tools', 'writing', 'documentation'],
+        lang: 'en',
+        dir: 'ltr',
+        orientation: 'any',
+        prefer_related_applications: false
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],

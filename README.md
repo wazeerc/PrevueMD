@@ -1,4 +1,4 @@
-## PrevueMD: A real-time Markdown editor built in Vue 3. [Try it out!](https://bit.ly/prevuemd)
+## PrevueMD - A real-time Markdown editor built with Vue 3. [Try it out!](https://bit.ly/prevuemd)
 
 This was the first app I built after learning Vue; from ideation and design to development and deployment. <br>
 I did not like the markdown editor on GitHub, so I decided to build my own.

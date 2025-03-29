@@ -25,7 +25,7 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
          href="https://commonmark.org/help/"
          target="_blank"
          rel="noopener noreferrer">
-        Markdown</a> editor.
+        Markdown</a> editor
     </h2>
     <IconButton @click="debouncedDownload"
                 :disabled="!store.getMarkdown"
