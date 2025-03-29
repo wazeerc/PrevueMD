@@ -18,6 +18,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['markdown.png', 'icons/*.png', 'icons/*.jpg', 'og-image.png'],
+      filename: 'manifest.json',
       manifest: {
         name: 'PrevueMD - A real-time Markdown editor',
         short_name: 'PrevueMD',
