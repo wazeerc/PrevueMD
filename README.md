@@ -1,6 +1,6 @@
 ## PrevueMD - A real-time Markdown editor built with Vue 3
 
-This was the first app I built after learning Vue; from ideation and design to development and deployment. <br>
+This was the first app I built after learning Vue; from ideation and design to development and cloud deployment. <br>
 I did not like the markdown editor on GitHub, so I decided to build my own.
 
 > [Try it out!](https://md.wazeer.dev/)
@@ -68,3 +68,4 @@ pnpm build                           # Build for production
 
 [![CI/CD: Test and Deploy to GCP](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wazeerc/PrevueMD/badge.svg?branch=main)](https://coveralls.io/github/wazeerc/PrevueMD?branch=main)
+![Version](https://img.shields.io/github/package-json/v/wazeerc/prevuemd?style=social)
