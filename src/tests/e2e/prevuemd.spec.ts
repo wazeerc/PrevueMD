@@ -92,3 +92,17 @@ test('should have manifest and service worker for pwa', async ({ page }) => {
   const manifestLink = await page.$('link[rel="manifest"]');
   expect(manifestLink).toBeTruthy();
 });
+
+test('should open preview in maximized mode when maximize button is clicked', async ({ page }) => {
+  const mockMarkdownText = '# Hello, World!';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  await markdownEditor.fill(mockMarkdownText);
+
+  const maximizeBtn = page.locator('button[aria-label="maximize Icon"]');
+  await maximizeBtn.click();
+
+  const markdownPreviewModal = page.locator('div[role="dialog"]');
+  await expect(markdownPreviewModal).toBeVisible();
+});
