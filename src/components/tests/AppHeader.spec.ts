@@ -32,4 +32,49 @@ describe('AppHeader component', () => {
 
     expect(downloadButton.attributes("disabled")).toBe("");
   });
+
+  it('should display sun icon when theme is dark', () => {
+    store.$patch({ theme: 'dark' });
+    
+    const themeButton = wrapper.findAll("button")[0]; // First button is theme toggle
+    expect(themeButton.html()).toContain('sun');
+  });
+
+  it('should display moon icon when theme is light', async () => {
+    await store.$patch({ theme: 'light' });
+    await wrapper.vm.$nextTick();
+    
+    const themeButton = wrapper.findAll("button")[0]; // First button is theme toggle
+    expect(themeButton.html()).toContain('moon');
+  });
+
+  it('should call toggleTheme when theme button is clicked', async () => {
+    // Mock localStorage and document for toggleTheme
+    const setItemMock = vi.fn();
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(),
+        setItem: setItemMock,
+      },
+      writable: true
+    });
+
+    const classListMock = {
+      toggle: vi.fn()
+    };
+    Object.defineProperty(document.documentElement, 'classList', {
+      value: classListMock,
+      writable: true
+    });
+
+    const themeButton = wrapper.findAll("button")[0]; // First button is theme toggle
+    const initialTheme = store.theme;
+
+    await themeButton.trigger('click');
+    await wrapper.vm.$nextTick();
+
+    const newTheme = store.theme;
+    expect(newTheme).not.toBe(initialTheme); // Theme should have toggled
+    expect(setItemMock).toHaveBeenCalledWith('theme', newTheme);
+  });
 });

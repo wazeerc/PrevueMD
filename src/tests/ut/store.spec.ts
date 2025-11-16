@@ -26,6 +26,34 @@ describe('Store', () => {
     expect(store).toMatchObject(initialState);
   });
 
+  it('should initialize theme from localStorage', () => {
+    // Mock localStorage
+    const getItemMock = vi.fn(() => 'light');
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: getItemMock,
+        setItem: vi.fn(),
+      },
+      writable: true
+    });
+
+    // Mock document.documentElement
+    const classListMock = {
+      toggle: vi.fn()
+    };
+    Object.defineProperty(document.documentElement, 'classList', {
+      value: classListMock,
+      writable: true
+    });
+
+    const store = useStore();
+    store.initTheme();
+
+    expect(getItemMock).toHaveBeenCalledWith('theme');
+    expect(store.theme).toBe('light');
+    expect(classListMock.toggle).toHaveBeenCalledWith('dark', false);
+  });
+
   describe('actions', () => {
     let store: ReturnType<typeof useStore>;
 
@@ -76,6 +104,62 @@ describe('Store', () => {
 
       expect(downloadMarkdownFile).toHaveBeenCalledWith('test markdown');
     });
+
+    it('should toggle theme from dark to light', () => {
+      // Mock localStorage
+      const setItemMock = vi.fn();
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: vi.fn(),
+          setItem: setItemMock,
+        },
+        writable: true
+      });
+
+      // Mock document.documentElement
+      const classListMock = {
+        toggle: vi.fn()
+      };
+      Object.defineProperty(document.documentElement, 'classList', {
+        value: classListMock,
+        writable: true
+      });
+
+      store.theme = 'dark';
+      store.toggleTheme();
+
+      expect(store.theme).toBe('light');
+      expect(setItemMock).toHaveBeenCalledWith('theme', 'light');
+      expect(classListMock.toggle).toHaveBeenCalledWith('dark', false);
+    });
+
+    it('should toggle theme from light to dark', () => {
+      // Mock localStorage
+      const setItemMock = vi.fn();
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: vi.fn(),
+          setItem: setItemMock,
+        },
+        writable: true
+      });
+
+      // Mock document.documentElement
+      const classListMock = {
+        toggle: vi.fn()
+      };
+      Object.defineProperty(document.documentElement, 'classList', {
+        value: classListMock,
+        writable: true
+      });
+
+      store.theme = 'light';
+      store.toggleTheme();
+
+      expect(store.theme).toBe('dark');
+      expect(setItemMock).toHaveBeenCalledWith('theme', 'dark');
+      expect(classListMock.toggle).toHaveBeenCalledWith('dark', true);
+    });
   });
 
   describe('getters', () => {
@@ -102,6 +186,14 @@ describe('Store', () => {
     it('should return markup when set', () => {
       store.setMarkup('test');
       expect(store.getMarkup).toBe('test');
+    });
+
+    it('should return current theme', () => {
+      store.theme = 'dark';
+      expect(store.getTheme).toBe('dark');
+      
+      store.theme = 'light';
+      expect(store.getTheme).toBe('light');
     });
   });
 });

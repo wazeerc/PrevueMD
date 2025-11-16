@@ -24,7 +24,7 @@ test('should parse markdown input into correct markup', async ({ page }) => {
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
-  const markdownPreview = page.locator('.prose.prose-invert');
+  const markdownPreview = page.locator('.prose');
 
   await markdownEditor.fill(mockMarkdownText);
 
@@ -105,4 +105,61 @@ test('should open preview in maximized mode when maximize button is clicked', as
 
   const markdownPreviewModal = page.locator('div[role="dialog"]');
   await expect(markdownPreviewModal).toBeVisible();
+});
+
+test('should toggle theme from dark to light when theme button is clicked', async ({ page }) => {
+  await page.goto('/');
+  
+  // Check initial state (dark mode)
+  const htmlElement = page.locator('html');
+  await expect(htmlElement).toHaveClass(/dark/);
+  
+  // Click theme toggle button (should be sun icon initially)
+  const themeToggleBtn = page.locator('button[aria-label="sun Icon"]');
+  await themeToggleBtn.click();
+  
+  // Check that theme switched to light mode
+  await expect(htmlElement).not.toHaveClass(/dark/);
+  
+  // Check that button now shows moon icon
+  const moonBtn = page.locator('button[aria-label="moon Icon"]');
+  await expect(moonBtn).toBeVisible();
+});
+
+test('should toggle theme from light to dark when theme button is clicked', async ({ page }) => {
+  await page.goto('/');
+  
+  // First switch to light mode
+  const sunBtn = page.locator('button[aria-label="sun Icon"]');
+  await sunBtn.click();
+  
+  // Now switch back to dark mode
+  const moonBtn = page.locator('button[aria-label="moon Icon"]');
+  await moonBtn.click();
+  
+  // Check that theme switched back to dark mode
+  const htmlElement = page.locator('html');
+  await expect(htmlElement).toHaveClass(/dark/);
+  
+  // Check that button now shows sun icon again
+  await expect(sunBtn).toBeVisible();
+});
+
+test('should persist theme preference in localStorage', async ({ page }) => {
+  await page.goto('/');
+  
+  // Switch to light mode
+  const themeToggleBtn = page.locator('button[aria-label="sun Icon"]');
+  await themeToggleBtn.click();
+  
+  // Check localStorage
+  const themeValue = await page.evaluate(() => localStorage.getItem('theme'));
+  expect(themeValue).toBe('light');
+  
+  // Reload page
+  await page.reload();
+  
+  // Check that light mode persisted
+  const htmlElement = page.locator('html');
+  await expect(htmlElement).not.toHaveClass(/dark/);
 });
