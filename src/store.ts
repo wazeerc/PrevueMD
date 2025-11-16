@@ -6,6 +6,7 @@ interface StoreState {
   markdown: string | null;
   markup: string | null;
   unloadWarning: (() => void) | null;
+  theme: 'light' | 'dark';
 }
 
 interface StoreActions {
@@ -15,17 +16,21 @@ interface StoreActions {
   handleParseMarkdown(rawMarkdown: string): void;
   handleCopyToClipboard(): void;
   handleDownloadMarkdownFile(): void;
+  toggleTheme(): void;
+  initTheme(): void;
 }
 
-interface StoreGetters extends Record<string, (state: StoreState) => string | null> {
+interface StoreGetters extends Record<string, (state: StoreState) => string | null | 'light' | 'dark'> {
   getMarkdown: (state: StoreState) => string | null;
   getMarkup: (state: StoreState) => string | null;
+  getTheme: (state: StoreState) => 'light' | 'dark';
 }
 
 export const initialState: Readonly<StoreState> = {
   markdown: null,
   markup: null,
-  unloadWarning: null
+  unloadWarning: null,
+  theme: 'dark'
 };
 
 export const useStore = defineStore<
@@ -61,9 +66,20 @@ export const useStore = defineStore<
     handleDownloadMarkdownFile() {
       downloadMarkdownFile(this.markdown ?? '');
     },
+    toggleTheme() {
+      this.theme = this.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', this.theme);
+      document.documentElement.classList.toggle('dark', this.theme === 'dark');
+    },
+    initTheme() {
+      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      this.theme = savedTheme || 'dark';
+      document.documentElement.classList.toggle('dark', this.theme === 'dark');
+    },
   },
   getters: {
     getMarkdown: (state) => state.markdown ?? '',
     getMarkup: (state) => state.markup ?? '',
+    getTheme: (state) => state.theme,
   },
 });

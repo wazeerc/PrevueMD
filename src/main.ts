@@ -3,6 +3,7 @@ import "@/styles/tailwind.css";
 import "@/styles/toast.css";
 
 import App from "@/App.vue";
+import { useStore } from "@/store";
 import { createPinia } from "pinia";
 import { registerSW } from 'virtual:pwa-register';
 import { createApp } from "vue";
@@ -36,6 +37,15 @@ app.use(Toast, {
   rtl: false
 });
 app.mount("#app");
+
+// Initialize theme after app is mounted
+try {
+  const appStore = useStore();
+  appStore.initTheme();
+} catch (error) {
+  // In test environment, store might not be available
+  console.debug('Theme initialization skipped in test environment');
+}
 
 const isMobileDevice = () => {
   const mobileWidth = window.innerWidth < 768;

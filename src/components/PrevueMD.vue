@@ -19,7 +19,7 @@ const handleScroll = (percentage: number) => scrollPercentage.value = percentage
     'motion-preset-slide-up-sm motion-delay-300'
   )">
     <section :class="cn(
-      'w-full flex flex-col h-full rounded-md bg-neutral-800 border-2 border-neutral-500/10',
+      'w-full flex flex-col h-full rounded-md bg-neutral-800 dark:bg-neutral-800 border-2 border-neutral-500/10 dark:border-neutral-500/10',
       'p-2 drop-shadow-xl',
       'md:flex-row md:gap-8 md:p-4',
       'lg:gap-8 lg:p-6',

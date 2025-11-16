@@ -17,7 +17,7 @@ describe('AppHeader component', () => {
   });
 
   it('should download markdown content on download btn click', async () => {
-    const downloadButton = wrapper.get("button");
+    const downloadButton = wrapper.findAll("button")[1]; // Second button is download
 
     await downloadButton.trigger('click');
 
@@ -26,7 +26,7 @@ describe('AppHeader component', () => {
   });
 
   it('should disable download btn when markdown is empty', async () => {
-    const downloadButton = wrapper.get("button");
+    const downloadButton = wrapper.findAll("button")[1]; // Second button is download
 
     await store.$patch({ markdown: '' });
 
