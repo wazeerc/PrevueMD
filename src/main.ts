@@ -42,7 +42,7 @@ app.mount("#app");
 try {
   const appStore = useStore();
   appStore.initTheme();
-} catch (error) {
+} catch {
   // In test environment, store might not be available
   console.debug('Theme initialization skipped in test environment');
 }
