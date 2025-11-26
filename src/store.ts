@@ -76,8 +76,8 @@ export const useStore = defineStore<
       document.documentElement.classList.toggle('dark', this.theme === 'dark');
     },
     initTheme() {
-      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-      this.theme = savedTheme || 'dark';
+      const savedTheme = localStorage.getItem('theme');
+      this.theme = (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'dark';
       document.documentElement.classList.toggle('dark', this.theme === 'dark');
     },
   },
