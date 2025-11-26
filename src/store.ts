@@ -20,7 +20,11 @@ interface StoreActions {
   initTheme(): void;
 }
 
-interface StoreGetters extends Record<string, (state: StoreState) => string | null | 'light' | 'dark'> {
+interface StoreGetters extends Record<string, (state: StoreState) => string | null> {
+  getMarkdown: (state: StoreState) => string | null;
+  getMarkup: (state: StoreState) => string | null;
+  getTheme: (state: StoreState) => 'light' | 'dark';
+}
   getMarkdown: (state: StoreState) => string | null;
   getMarkup: (state: StoreState) => string | null;
   getTheme: (state: StoreState) => 'light' | 'dark';
