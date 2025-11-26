@@ -9,7 +9,7 @@
     font-family: theme("fontFamily.sans");
     font-size: theme("fontSize.base");
     font-weight: theme("fontWeight.medium");
-    color: theme("colors.neutral.400");
+    color: theme("colors.neutral.500");
   }
 
   .markdown-container {
@@ -17,8 +17,8 @@
     width: theme("width.full");
     overflow-y: auto;
     overflow-x: hidden;
-    border-radius: theme("borderRadius.sm");
-    background-color: theme("colors.zinc.50");
+    border-radius: theme("borderRadius.md");
+    background-color: theme("colors.gray.200");
     padding: theme("spacing.4");
     color: theme("colors.neutral.800");
     box-shadow: theme("boxShadow.md");
@@ -51,7 +51,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-color: theme("colors.neutral.300");
+    border-color: theme("colors.neutral.200");
     padding: theme("spacing.4");
 
     @screen sm {

@@ -4,7 +4,7 @@ import { cn } from "@/utils/lib";
 
 <template>
   <footer class="header-footer border-t-2">
-    <p :class="cn('flex items-center gap-2 font-sans font-normal text-neutral-400 dark:text-neutral-400', 'text-xs',
+    <p :class="cn('flex items-center gap-2 font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs',
       'sm:text-sm', 'md:text-xs',
       'motion-preset-fade-lg motion-delay-200',
     )">
@@ -19,12 +19,12 @@ import { cn } from "@/utils/lib";
     <a href="https://github.com/wazeerc/PrevueMD"
        target="_blank"
        :class="cn(
-        'font-sans font-normal text-neutral-400 dark:text-neutral-400',
+        'font-sans font-normal text-neutral-500 dark:text-neutral-400',
         'text-xs',
         'sm:text-sm',
         'md:text-xs',
         'motion-preset-fade-lg motion-delay-200',
-        'hover:underline hover:text-neutral-500 dark:hover:text-neutral-500 transition-colors ease duration-200',
+        'hover:underline hover:text-neutral-600 dark:hover:text-neutral-600 transition-colors ease duration-200',
       )">
       Contribute here!
     </a>

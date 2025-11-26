@@ -106,7 +106,7 @@ watch(() => props.scrollPercentage, syncScroll);
            aria-modal="true"
            aria-labelledby="modal-title"
            tabindex="-1"
-           class="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/50 dark:bg-neutral-950/50 backdrop-blur-md
+           class="fixed inset-0 z-50 flex items-center justify-center bg-neutral-500/40 dark:bg-neutral-950/50 backdrop-blur-md
            motion-preset-focus motion-duration-500"
            @click.self="closeModal">
         <div
@@ -131,7 +131,7 @@ watch(() => props.scrollPercentage, syncScroll);
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-50 dark:bg-neutral-900 border-4 border-neutral-300/30 dark:border-neutral-600/10 rounded-lg p-8"
+          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
                role="document">
             <div class="prose max-w-none w-full break-words dark:prose-invert"
                  v-html="store.getMarkup">
