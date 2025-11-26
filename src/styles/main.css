@@ -32,3 +32,15 @@
     grid-template-rows: auto minmax(0, 1fr) auto;
   }
 }
+
+/* Focus rings inside teleported modals (outside #app) */
+.prevuemd-modal :focus {
+  outline: 2px solid var(--vue-color-secondary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Prefer focus-visible to avoid showing ring on mouse interactions */
+.prevuemd-modal :focus:not(:focus-visible) {
+  outline: none;
+}
