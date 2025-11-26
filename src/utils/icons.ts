@@ -3,22 +3,10 @@ export type IconSize = 'md' | 'lg';
 export type IconVariant = 'primary' | 'secondary';
 export type IconState = 'default' | 'disabled';
 type SVGString = `<svg ${string}</svg>`;
-type HexCode = `#${string}`;
 
 const ICON_SIZES: Record<string, number> = {
   md: 18,
   lg: 28
-} as const;
-
-const VARIANT_COLORS: Record<IconVariant, Record<IconState, HexCode>> = {
-  primary: {
-    default: '#262626', // dark text for light backgrounds
-    disabled: '#737373'
-  },
-  secondary: {
-    default: '#a3a3a3', // light text for dark backgrounds
-    disabled: '#404040'
-  }
 } as const;
 
 /**
@@ -49,13 +37,13 @@ export function IconLibrary(
  * @param variant - Color variant from IconVariant enum to apply to fill color
  * @returns Modified SVG string with updated attributes
  */
-function updateIconAttributes(icon: string, size: IconSize, variant: IconVariant, state: IconState): SVGString {
+function updateIconAttributes(icon: string, size: IconSize, _variant: IconVariant, _state: IconState): SVGString {
   const sizeStr = ICON_SIZES[size].toString();
-  const color = VARIANT_COLORS[variant][state];
-
+  void _variant; void _state;
   return icon
-    .replace(/fill="#000000"/g, `fill="${color}"`)
-    .replace(/width="16"|height="16"/g, `width="${sizeStr}" height="${sizeStr}"`) as SVGString;
+    .replace(/fill="#000000"/g, `fill="currentColor"`)
+    .replace(/width="16"/g, `width="${sizeStr}"`)
+    .replace(/height="16"/g, `height="${sizeStr}"`) as SVGString;
 }
 
 //? To add a new icon, add a new key-value pair to the icons object
