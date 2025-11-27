@@ -21,6 +21,11 @@ export default [
   },
   skipFormatting,
   {
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+    }
+  },
+  {
     files: ["**/*.vue"],
     languageOptions: {
       parser: eslintParserVue,

@@ -39,11 +39,10 @@ export function IconLibrary(
  */
 function updateIconAttributes(icon: string, size: IconSize, _variant: IconVariant, _state: IconState): SVGString {
   const sizeStr = ICON_SIZES[size].toString();
-  void _variant; void _state;
   return icon
-    .replace(/fill="#000000"/g, `fill="currentColor"`)
-    .replace(/width="16"/g, `width="${sizeStr}"`)
-    .replace(/height="16"/g, `height="${sizeStr}"`) as SVGString;
+    .replaceAll('fill="#000000"', `fill="currentColor"`)
+    .replaceAll('width="16"', `width="${sizeStr}"`)
+    .replaceAll('height="16"', `height="${sizeStr}"`) as SVGString;
 }
 
 //? To add a new icon, add a new key-value pair to the icons object
