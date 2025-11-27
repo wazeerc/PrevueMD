@@ -63,18 +63,35 @@ onMounted(() => {
               'font-sans font-semibold',
               'bg-neutral-200 text-neutral-800',
               'hover:bg-neutral-300',
-              'disabled:opacity-20',
+              'disabled:opacity-70',
+              'dark:bg-neutral-200 dark:text-neutral-800',
+              'dark:hover:bg-neutral-300',
             ],
             variant === 'secondary' && [
               'mb-2 mr-1',
               'drop-shadow-md',
+              'text-neutral-800 dark:text-neutral-200',
+              'disabled:opacity-40'
+            ],
+            (icon === 'sun' || icon === 'moon') && [
+              'px-2 py-1.5 sm:px-3 sm:py-2',
+              'text-xs sm:text-sm',
+              'gap-2 sm:gap-3',
+              'rounded-md',
+              'font-sans font-semibold',
+              'border border-neutral-300 dark:border-neutral-400',
+              'text-neutral-800 dark:text-neutral-200',
+              'bg-transparent dark:bg-transparent',
+              'hover:bg-neutral-200 dark:hover:bg-neutral-800',
             ],
             props.class)">
     <slot>{{ text }}</slot>
     <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
          :alt="`${icon} Icon`"
-         :class="cn(variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
-          variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm',
+         :class="cn(
+           variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
+          (icon === 'sun' || icon === 'moon') && 'group-hover:motion-preset-spin',
+           variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm'
         )" />
   </button>
 </template>

@@ -2,8 +2,8 @@ import { IconLibrary } from '@/utils/icons';
 import { describe, expect, it } from 'vitest';
 
 describe('IconLibrary', () => {
-  const defaultColor = '#262626';
-  const disabledColor = '#404040';
+  const defaultColor = 'currentColor';
+  const disabledColor = 'currentColor';
   const defaultWidthStr = 'width="18"';
   const defaultHeightStr = 'height="18"';
 
@@ -31,9 +31,9 @@ describe('IconLibrary', () => {
 
   it('should correctly replace all color and size attributes', () => {
     const result = IconLibrary('download', 'md', 'primary', 'default');
-    const colorMatches = result.match(new RegExp(`fill="${defaultColor}"`, 'g'));
+    const colorMatches = result.match(new RegExp(`fill="${defaultColor}"`, 'g')) || [];
 
-    expect(colorMatches!.length).toBe(2);
+    expect(colorMatches.length).toBe(2);
     expect(result).toContain(defaultWidthStr);
     expect(result).toContain(defaultHeightStr);
   });

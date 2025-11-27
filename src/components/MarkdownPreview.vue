@@ -92,7 +92,7 @@ watch(() => props.scrollPercentage, syncScroll);
     <div ref="previewRef"
          class="markdown-container flex-1"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
-      <div class="prose prose-invert w-full break-words"
+      <div class="prose w-full break-words dark:prose-invert"
            v-html="store.getMarkup">
       </div>
     </div>
@@ -106,14 +106,14 @@ watch(() => props.scrollPercentage, syncScroll);
            aria-modal="true"
            aria-labelledby="modal-title"
            tabindex="-1"
-           class="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/50 backdrop-blur-md
+           class="prevuemd-modal fixed inset-0 z-50 flex items-center justify-center bg-neutral-500/40 dark:bg-neutral-950/50 backdrop-blur-md
            motion-preset-focus motion-duration-500"
            @click.self="closeModal">
         <div
              class="relative w-full h-full max-w-8xl mx-auto p-12 flex flex-col motion-preset-expand">
           <div class="flex justify-between items-center mb-4">
             <h3 id="modal-title"
-                class="text-2xl font-semibold text-neutral-200">Preview</h3>
+                class="text-2xl font-semibold text-neutral-800 dark:text-neutral-200">Preview</h3>
             <div class="flex space-x-4">
               <IconButton :disabled="!store.getMarkdown"
                           @click="debouncedCopyToClipboard"
@@ -131,9 +131,9 @@ watch(() => props.scrollPercentage, syncScroll);
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-900 border-4 border-neutral-600/10 rounded-lg p-8"
+          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
                role="document">
-            <div class="prose prose-invert max-w-none w-full break-words"
+            <div class="prose max-w-none w-full break-words dark:prose-invert"
                  v-html="store.getMarkup">
             </div>
           </div>
