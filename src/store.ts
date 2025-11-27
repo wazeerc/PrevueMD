@@ -25,10 +25,6 @@ interface StoreGetters extends Record<string, (state: StoreState) => string | nu
   getMarkup: (state: StoreState) => string | null;
   getTheme: (state: StoreState) => 'light' | 'dark';
 }
-  getMarkdown: (state: StoreState) => string | null;
-  getMarkup: (state: StoreState) => string | null;
-  getTheme: (state: StoreState) => 'light' | 'dark';
-}
 
 export const initialState: Readonly<StoreState> = {
   markdown: null,
