@@ -29,7 +29,7 @@ describe('Store', () => {
   it('should initialize theme from localStorage', () => {
     // Mock localStorage
     const getItemMock = vi.fn(() => 'light');
-    Object.defineProperty(window, 'localStorage', {
+    Object.defineProperty(globalThis, 'localStorage', {
       value: {
         getItem: getItemMock,
         setItem: vi.fn(),
@@ -108,7 +108,7 @@ describe('Store', () => {
     it('should toggle theme from dark to light', () => {
       // Mock localStorage
       const setItemMock = vi.fn();
-      Object.defineProperty(window, 'localStorage', {
+      Object.defineProperty(globalThis, 'localStorage', {
         value: {
           getItem: vi.fn(),
           setItem: setItemMock,
@@ -136,7 +136,7 @@ describe('Store', () => {
     it('should toggle theme from light to dark', () => {
       // Mock localStorage
       const setItemMock = vi.fn();
-      Object.defineProperty(window, 'localStorage', {
+      Object.defineProperty(globalThis, 'localStorage', {
         value: {
           getItem: vi.fn(),
           setItem: setItemMock,
@@ -191,7 +191,7 @@ describe('Store', () => {
     it('should return current theme', () => {
       store.theme = 'dark';
       expect(store.getTheme).toBe('dark');
-      
+
       store.theme = 'light';
       expect(store.getTheme).toBe('light');
     });

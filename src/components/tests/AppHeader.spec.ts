@@ -1,6 +1,6 @@
 import { useStore } from "@/store";
 import { VueWrapper } from "@vue/test-utils";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import AppHeader from "../AppHeader.vue";
 import { setupTest } from "./test-utils";
 
@@ -35,7 +35,7 @@ describe('AppHeader component', () => {
 
   it('should display sun icon when theme is dark', () => {
     store.$patch({ theme: 'dark' });
-    
+
     const themeButton = wrapper.findAll("button")[0]; // First button is theme toggle
     expect(themeButton.html()).toContain('sun');
   });
@@ -43,7 +43,7 @@ describe('AppHeader component', () => {
   it('should display moon icon when theme is light', async () => {
     await store.$patch({ theme: 'light' });
     await wrapper.vm.$nextTick();
-    
+
     const themeButton = wrapper.findAll("button")[0]; // First button is theme toggle
     expect(themeButton.html()).toContain('moon');
   });
@@ -51,7 +51,7 @@ describe('AppHeader component', () => {
   it('should call toggleTheme when theme button is clicked', async () => {
     // Mock localStorage and document for toggleTheme
     const setItemMock = vi.fn();
-    Object.defineProperty(window, 'localStorage', {
+    Object.defineProperty(globalThis, 'localStorage', {
       value: {
         getItem: vi.fn(),
         setItem: setItemMock,
