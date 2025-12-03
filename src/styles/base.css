@@ -92,12 +92,16 @@ body {
   line-height: 1.6;
   font-family:
     'DM Sans',
+    'DM Serif',
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
     Roboto,
     'DM Mono',
+    Georgia,
+    'Times New Roman',
+    serif,
     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
