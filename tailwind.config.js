@@ -10,7 +10,8 @@ module.exports = {
     },
     fontFamily: {
       sans: ["DM Sans", "sans-serif"],
-      mono: ["JetBrains Mono", "monospace"],
+      serif: ["DM Serif", "serif"],
+      mono: ["DM Mono", "monospace"],
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports
