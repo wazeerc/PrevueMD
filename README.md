@@ -7,6 +7,12 @@ I did not like the markdown editor on GitHub, so I decided to build my own.
 
 > [Learn about the development process.](https://wazeerc.github.io/blog/learning-vue/)
 
+## Status
+
+[![CI/CD: Test and Deploy to GCP](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml)
+[![Coverage Status](https://coveralls.io/repos/github/wazeerc/PrevueMD/badge.svg?branch=main)](https://coveralls.io/github/wazeerc/PrevueMD?branch=main)
+![Version](https://img.shields.io/github/package-json/v/wazeerc/prevuemd?style=social)
+
 ## Features
 
 - 🚀 Real-time preview as you type
@@ -64,9 +70,3 @@ pnpm build                           # Build for production
 ## Acknowledgements
 
 - Icons by [Feather Icons](https://feathericons.com/) & [Vijay](https://3dicons.co/)
-
-## Status
-
-[![CI/CD: Test and Deploy to GCP](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml)
-[![Coverage Status](https://coveralls.io/repos/github/wazeerc/PrevueMD/badge.svg?branch=main)](https://coveralls.io/github/wazeerc/PrevueMD?branch=main)
-![Version](https://img.shields.io/github/package-json/v/wazeerc/prevuemd?style=social)
