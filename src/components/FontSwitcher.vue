@@ -51,7 +51,7 @@ const handleKeydown = (e: KeyboardEvent) => {
             :aria-checked="props.font === 'sans'"
             aria-label="Sans-serif font"
             @click="setFont('sans')">
-      T
+      Aa
     </button>
     <button ref="serifButtonRef"
             class="font-serif font-bold px-2 rounded-full
@@ -69,7 +69,7 @@ const handleKeydown = (e: KeyboardEvent) => {
             :aria-checked="props.font === 'serif'"
             aria-label="Serif font"
             @click="setFont('serif')">
-      T
+      Aa
     </button>
   </div>
 </template>
