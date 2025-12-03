@@ -3,6 +3,7 @@ import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
 import { debounce } from "@/utils/lib";
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import FontSwitcher from './FontSwitcher.vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
@@ -68,6 +69,8 @@ const emit = defineEmits<{ scroll: [percentage: number]; }>();
 const props = defineProps<{ scrollPercentage: number; }>();
 
 watch(() => props.scrollPercentage, syncScroll);
+
+const previewFont = ref<'sans' | 'serif'>('sans');
 </script>
 
 <template>
@@ -111,9 +114,11 @@ watch(() => props.scrollPercentage, syncScroll);
            @click.self="closeModal">
         <div
              class="relative w-full h-full max-w-8xl mx-auto p-12 flex flex-col motion-preset-expand">
-          <div class="flex justify-between items-center mb-4">
+          <div
+               class="flex justify-between items-center mb-4 motion-preset-slide-up-lg motion-delay-500">
             <h3 id="modal-title"
                 class="text-2xl font-semibold text-neutral-800 dark:text-neutral-200">Preview</h3>
+            <FontSwitcher v-model:font="previewFont" />
             <div class="flex space-x-4">
               <IconButton :disabled="!store.getMarkdown"
                           @click="debouncedCopyToClipboard"
@@ -133,7 +138,8 @@ watch(() => props.scrollPercentage, syncScroll);
           </div>
           <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
                role="document">
-            <div class="prose max-w-none w-full break-words dark:prose-invert"
+            <div :class="['prose max-w-none w-full break-words dark:prose-invert',
+              previewFont === 'serif' ? 'font-serif' : 'font-sans']"
                  v-html="store.getMarkup">
             </div>
           </div>
