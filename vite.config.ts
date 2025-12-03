@@ -65,7 +65,7 @@ export default defineConfig({
         prefer_related_applications: false
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,ttf,woff,woff2}']
       },
       devOptions: {
         enabled: true,
