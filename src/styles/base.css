@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/DMSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/fonts/DMMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
@@ -73,7 +89,7 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     Roboto,
-    'JetBrains Mono',
+    'DM Mono',
     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
