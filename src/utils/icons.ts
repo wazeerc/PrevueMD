@@ -6,7 +6,7 @@ type SVGString = `<svg ${string}</svg>`;
 
 const ICON_SIZES: Record<string, number> = {
   md: 18,
-  lg: 28
+  lg: 24
 } as const;
 
 /**
