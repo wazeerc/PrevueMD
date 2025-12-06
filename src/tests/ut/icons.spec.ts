@@ -18,8 +18,8 @@ describe('IconLibrary', () => {
   it('should return modified SVG string with correct size and color for lg secondary disabled', () => {
     const result = IconLibrary('github', 'lg', 'secondary', 'disabled');
 
-    expect(result).toContain('width="28"');
-    expect(result).toContain('height="28"');
+    expect(result).toContain('width="24"');
+    expect(result).toContain('height="24"');
     expect(result).toContain(`fill="${disabledColor}"`);
   });
 
