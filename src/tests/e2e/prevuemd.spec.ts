@@ -24,7 +24,7 @@ test('should parse markdown input into correct markup', async ({ page }) => {
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
-  const markdownPreview = page.locator('.prose');
+  const markdownPreview = page.locator('.prose-markdown');
 
   await markdownEditor.fill(mockMarkdownText);
 
