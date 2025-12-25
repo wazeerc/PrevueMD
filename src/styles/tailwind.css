@@ -39,16 +39,16 @@
   }
 
   /* Add custom styles for code blocks and other elements that might overflow */
-  .prose pre {
+  .prose-markdown pre {
     max-width: 100%;
     overflow-x: auto;
   }
 
-  .prose code {
+  .prose-markdown code {
     word-break: break-word;
   }
 
-  .prose table {
+  .prose-markdown table {
     display: block;
     max-width: 100%;
     overflow-x: auto;
