@@ -17,14 +17,14 @@ describe("MarkdownPreview component", () => {
 
   it('should contain "Markdown Preview" text', () => {
     const markdownContainer = wrapper.find(".markdown-container");
-    const markdownText = markdownContainer.find(".prose");
+    const markdownText = markdownContainer.find(".prose-markdown");
 
     expect(markdownContainer.exists()).toBe(true);
     expect(markdownText.exists()).toBe(true);
   });
 
   it('should render parsed mock markdown text', () => {
-    const markdownText = wrapper.find(".prose");
+    const markdownText = wrapper.find(".prose-markdown");
 
     expect(markdownText.html()).toContain(mockMarkup);
     expect(markdownText.text()).toBe("Hello");
