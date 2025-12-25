@@ -139,9 +139,9 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8 prose-markdown"
                role="document">
-            <div :class="['prose max-w-none w-full break-words dark:prose-invert',
+            <div :class="['max-w-none w-full break-words',
               previewFont === 'serif' ? 'font-serif' : 'font-sans']"
                  v-html="store.getMarkup">
             </div>
