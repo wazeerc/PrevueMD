@@ -95,7 +95,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
     <div ref="previewRef"
          class="markdown-container flex-1"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
-      <div class="prose w-full break-words dark:prose-invert"
+      <div class="w-full break-words prose-markdown"
            v-html="store.getMarkup">
       </div>
     </div>
@@ -139,9 +139,9 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8 prose-markdown"
+          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
                role="document">
-            <div :class="['max-w-none w-full break-words',
+            <div :class="['w-full break-words prose-markdown',
               previewFont === 'serif' ? 'font-serif' : 'font-sans']"
                  v-html="store.getMarkup">
             </div>

@@ -22,7 +22,6 @@
     padding: theme("spacing.4");
     color: theme("colors.neutral.800");
     box-shadow: theme("boxShadow.md");
-    @apply prose-markdown;
   }
 
   .dark .markdown-container {
