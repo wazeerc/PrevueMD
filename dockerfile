@@ -4,8 +4,8 @@ FROM node:24-alpine AS build
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package.json pnpm-lock.yaml ./
+# Copy dependency manifests
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
