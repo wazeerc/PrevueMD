@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { cn } from '@/utils/lib';
 import { IconLibrary, type Icons, type IconSize, type IconState, type IconVariant } from '@/utils/icons';
+import { cn } from '@/utils/lib';
+import { onMounted, ref } from 'vue';
 
 type IconButtonProps = {
   icon: Icons;
@@ -61,7 +61,7 @@ onMounted(() => {
               'gap-2 sm:gap-3',
               'rounded-md',
               'font-sans font-semibold',
-              'bg-neutral-200 text-neutral-800',
+              'bg-neutral-700 text-neutral-100',
               'hover:bg-neutral-300',
               'disabled:opacity-70',
               'dark:bg-neutral-200 dark:text-neutral-800',
@@ -79,7 +79,7 @@ onMounted(() => {
               'gap-2 sm:gap-3',
               'rounded-md',
               'font-sans font-semibold',
-              'border border-neutral-300 dark:border-neutral-400',
+              'border-2 border-neutral-300 dark:border-neutral-400',
               'text-neutral-800 dark:text-neutral-200',
               'bg-transparent dark:bg-transparent',
               'hover:bg-neutral-200 dark:hover:bg-neutral-800',
@@ -89,9 +89,9 @@ onMounted(() => {
     <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
          :alt="`${icon} Icon`"
          :class="cn(
-           variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
+          variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
           (icon === 'sun' || icon === 'moon') && 'group-hover:motion-preset-spin',
-           variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm'
+          variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm'
         )" />
   </button>
 </template>
