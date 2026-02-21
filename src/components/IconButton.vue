@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { cn } from '@/utils/lib';
 import { IconLibrary, type Icons, type IconSize, type IconState, type IconVariant } from '@/utils/icons';
+import { cn } from '@/utils/lib';
+import { onMounted, ref } from 'vue';
 
 type IconButtonProps = {
   icon: Icons;
@@ -89,9 +89,9 @@ onMounted(() => {
     <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
          :alt="`${icon} Icon`"
          :class="cn(
-           variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
+          variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
           (icon === 'sun' || icon === 'moon') && 'group-hover:motion-preset-spin',
-           variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm'
+          variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm'
         )" />
   </button>
 </template>
