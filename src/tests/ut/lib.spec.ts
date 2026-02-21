@@ -75,12 +75,12 @@ describe('downloadMarkdownFile function', () => {
   });
 
   it('should prepare the markdown file for download', () => {
-    const originalURL = global.URL;
-    global.URL = {
+    const originalURL = globalThis.URL;
+    globalThis.URL = {
       ...originalURL,
       createObjectURL: vi.fn().mockReturnValue('blob:test-url'),
       revokeObjectURL: vi.fn()
-    } as unknown as typeof global.URL;
+    } as unknown as typeof globalThis.URL;
 
     const markdown = '# Hello\n\nThis is a markdown file';
     const anchor = document.createElement('a');
@@ -95,6 +95,8 @@ describe('downloadMarkdownFile function', () => {
     expect(anchor.href).toBe('blob:test-url');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:test-url');
     expect(mockToast.info).toHaveBeenCalledWith('Markdown file queued for download!');
+
+    globalThis.URL = originalURL;
 
     vi.restoreAllMocks();
   });
