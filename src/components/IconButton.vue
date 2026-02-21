@@ -61,7 +61,7 @@ onMounted(() => {
               'gap-2 sm:gap-3',
               'rounded-md',
               'font-sans font-semibold',
-              'bg-neutral-200 text-neutral-800',
+              'bg-neutral-700 text-neutral-100',
               'hover:bg-neutral-300',
               'disabled:opacity-70',
               'dark:bg-neutral-200 dark:text-neutral-800',
