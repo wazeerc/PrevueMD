@@ -62,7 +62,7 @@ onMounted(() => {
               'rounded-md',
               'font-sans font-semibold',
               'bg-neutral-700 text-neutral-100',
-              'hover:bg-neutral-300',
+              'hover:bg-neutral-600',
               'disabled:opacity-70',
               'dark:bg-neutral-200 dark:text-neutral-800',
               'dark:hover:bg-neutral-300',
