@@ -79,7 +79,7 @@ onMounted(() => {
               'gap-2 sm:gap-3',
               'rounded-md',
               'font-sans font-semibold',
-              'border border-neutral-300 dark:border-neutral-400',
+              'border-2 border-neutral-300 dark:border-neutral-400',
               'text-neutral-800 dark:text-neutral-200',
               'bg-transparent dark:bg-transparent',
               'hover:bg-neutral-200 dark:hover:bg-neutral-800',
