@@ -28,14 +28,23 @@ type EditorOrPreview = HTMLTextAreaElement | HTMLDivElement;
  */
 function useScrollSync(elementRef: Ref<EditorOrPreview | null>): ScrollSync {
   const isScrolling = ref(false);
+  let scrollFrame: number | null = null;
 
   const onScroll = (callback: (percentage: number) => void) => {
     if (isScrolling.value || !elementRef.value) return;
+    if (scrollFrame !== null) return;
 
-    const targetElement = elementRef.value;
-    const percentage = targetElement.scrollTop / (targetElement.scrollHeight - targetElement.clientHeight);
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = null;
 
-    callback(percentage);
+      if (isScrolling.value || !elementRef.value) return;
+
+      const targetElement = elementRef.value;
+      const scrollableHeight = targetElement.scrollHeight - targetElement.clientHeight;
+      const percentage = scrollableHeight > 0 ? targetElement.scrollTop / scrollableHeight : 0;
+
+      callback(percentage);
+    });
   };
 
   const syncScroll = (percentage: number) => {

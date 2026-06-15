@@ -8,6 +8,7 @@ const ICON_SIZES: Record<string, number> = {
   md: 18,
   lg: 24
 } as const;
+const iconCache = new Map<string, SVGString>();
 
 /**
  * Returns an SVG string representation of the specified icon with updated size and variant attributes.
@@ -27,7 +28,13 @@ export function IconLibrary(
   const selectedIcon = icons[iconName];
   if (!selectedIcon) throw new Error(`Icon ${iconName} not found`);
 
-  return updateIconAttributes(selectedIcon, size, variant, state);
+  const cacheKey = `${iconName}:${size}:${variant}:${state}`;
+  const cachedIcon = iconCache.get(cacheKey);
+  if (cachedIcon) return cachedIcon;
+
+  const updatedIcon = updateIconAttributes(selectedIcon, size, variant, state);
+  iconCache.set(cacheKey, updatedIcon);
+  return updatedIcon;
 }
 
 /**

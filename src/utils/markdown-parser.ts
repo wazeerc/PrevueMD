@@ -15,11 +15,21 @@ async function createProcessor() {
     .use(rehypeStringify);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let markdownProcessor: any = null;
+type MarkdownProcessor = Awaited<ReturnType<typeof createProcessor>>;
+
+let markdownProcessorPromise: Promise<MarkdownProcessor> | null = null;
+
+/**
+ * Loads and configures the markdown processor before the first parse request.
+ */
+export function preloadMarkdownParser(): Promise<MarkdownProcessor> {
+  if (!markdownProcessorPromise) markdownProcessorPromise = createProcessor();
+  return markdownProcessorPromise;
+}
+
 export async function parseMarkdown(markdownTextToParse: string): Promise<string> {
   try {
-    if (!markdownProcessor) markdownProcessor = await createProcessor();
+    const markdownProcessor = await preloadMarkdownParser();
 
     const parsedMarkdown = await markdownProcessor.process(markdownTextToParse);
     return String(parsedMarkdown.value);
