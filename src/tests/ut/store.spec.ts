@@ -2,7 +2,7 @@ import { initialState, useStore } from '@/store';
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
 import { parseMarkdown } from "@/utils/markdown-parser";
 import { createPinia, setActivePinia } from 'pinia';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock("@/utils/lib", () => ({
   copyToClipboard: vi.fn(),
@@ -18,6 +18,11 @@ describe('Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it('should initialize with correct default state', () => {
@@ -89,6 +94,63 @@ describe('Store', () => {
 
       expect(parseMarkdown).toHaveBeenCalledWith('raw markdown');
       expect(store.markup).toBe('parsed markdown');
+    });
+
+    it('should avoid showing loader for fast small parses', async () => {
+      vi.mocked(parseMarkdown).mockResolvedValue('parsed markdown');
+
+      await store.handleParseMarkdown('raw markdown');
+
+      expect(store.isParsing).toBe(false);
+    });
+
+    it('should show loader for slow small parses', async () => {
+      vi.useFakeTimers();
+
+      let resolveParse: (value: string) => void = () => { };
+      vi.mocked(parseMarkdown).mockReturnValue(new Promise((resolve) => {
+        resolveParse = resolve;
+      }));
+
+      const parsePromise = store.handleParseMarkdown('raw markdown');
+
+      expect(store.isParsing).toBe(false);
+      vi.advanceTimersByTime(149);
+      expect(store.isParsing).toBe(false);
+
+      vi.advanceTimersByTime(1);
+      expect(store.isParsing).toBe(true);
+
+      resolveParse('parsed markdown');
+      await parsePromise;
+
+      expect(store.isParsing).toBe(false);
+      vi.useRealTimers();
+    });
+
+    it('should show loader immediately for large parses', async () => {
+      vi.useFakeTimers();
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+        setTimeout(() => callback(0), 0);
+        return 1;
+      });
+
+      let resolveParse: (value: string) => void = () => { };
+      vi.mocked(parseMarkdown).mockReturnValue(new Promise((resolve) => {
+        resolveParse = resolve;
+      }));
+
+      const parsePromise = store.handleParseMarkdown('x'.repeat(5000));
+
+      expect(store.isParsing).toBe(true);
+      vi.runOnlyPendingTimers();
+      vi.runOnlyPendingTimers();
+      await Promise.resolve();
+
+      resolveParse('parsed markdown');
+      await parsePromise;
+
+      expect(store.isParsing).toBe(false);
     });
 
     it('should call copyToClipboard with current markdown', () => {

@@ -38,6 +38,17 @@ export const initialState: Readonly<StoreState> = {
   parseRequestId: 0,
 };
 
+const LARGE_MARKDOWN_LENGTH = 5000;
+const SLOW_PARSE_LOADER_DELAY = 150;
+let parsingLoaderTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function clearParsingLoaderTimeout(): void {
+  if (!parsingLoaderTimeout) return;
+
+  clearTimeout(parsingLoaderTimeout);
+  parsingLoaderTimeout = null;
+}
+
 function waitForPreviewPaint(): Promise<void> {
   return new Promise((resolve) => {
     if (typeof window === 'undefined' || !window.requestAnimationFrame) {
@@ -69,6 +80,7 @@ export const useStore = defineStore<
     clearMarkdown() {
       this.markdown = null;
       this.markup = null;
+      clearParsingLoaderTimeout();
       this.isParsing = false;
       this.parseRequestId += 1;
 
@@ -77,17 +89,31 @@ export const useStore = defineStore<
     },
     async handleParseMarkdown(rawMarkdown: string) {
       const requestId = this.parseRequestId + 1;
-      this.parseRequestId = requestId;
-      this.isParsing = true;
+      const showLoaderImmediately = rawMarkdown.length >= LARGE_MARKDOWN_LENGTH;
 
-      await waitForPreviewPaint();
+      this.parseRequestId = requestId;
+      clearParsingLoaderTimeout();
+
+      if (showLoaderImmediately) {
+        this.isParsing = true;
+      } else {
+        this.isParsing = false;
+        parsingLoaderTimeout = setTimeout(() => {
+          if (requestId === this.parseRequestId) this.isParsing = true;
+        }, SLOW_PARSE_LOADER_DELAY);
+      }
+
+      if (showLoaderImmediately) await waitForPreviewPaint();
 
       try {
         const parsedMarkup = await parseMarkdown(rawMarkdown);
 
         if (requestId === this.parseRequestId) this.setMarkup(parsedMarkup);
       } finally {
-        if (requestId === this.parseRequestId) this.isParsing = false;
+        if (requestId === this.parseRequestId) {
+          clearParsingLoaderTimeout();
+          this.isParsing = false;
+        }
       }
     },
     handleCopyToClipboard() {
