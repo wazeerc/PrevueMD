@@ -17,11 +17,15 @@ interface MarkdownStats {
   words: number;
 }
 
+interface ParseMarkdownOptions {
+  showLoaderImmediately?: boolean;
+}
+
 interface StoreActions {
   setMarkdown(markdownText: string): void;
   setMarkup(markupText: string): void;
   clearMarkdown(): void;
-  handleParseMarkdown(rawMarkdown: string): void;
+  handleParseMarkdown(rawMarkdown: string, options?: ParseMarkdownOptions): void;
   handleCopyToClipboard(): void;
   handleDownloadMarkdownFile(): void;
   toggleTheme(): void;
@@ -124,7 +128,7 @@ export const useStore = defineStore<
       this.unloadWarning?.();
       this.unloadWarning = null;
     },
-    async handleParseMarkdown(rawMarkdown: string) {
+    async handleParseMarkdown(rawMarkdown: string, options: ParseMarkdownOptions = {}) {
       if (rawMarkdown === this.lastParsedMarkdown && this.markup !== null) return;
 
       const cachedMarkup = getCachedMarkdown(rawMarkdown);
@@ -138,7 +142,7 @@ export const useStore = defineStore<
       }
 
       const requestId = this.parseRequestId + 1;
-      const showLoaderImmediately = rawMarkdown.length >= LARGE_MARKDOWN_LENGTH;
+      const showLoaderImmediately = options.showLoaderImmediately ?? rawMarkdown.length >= LARGE_MARKDOWN_LENGTH;
 
       this.parseRequestId = requestId;
       clearParsingLoaderTimeout();
