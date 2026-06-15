@@ -59,7 +59,7 @@ test('should show preview loader for large markdown input while parser is loadin
   await markdownEditor.fill(largeMarkdown);
 
   await expect(previewLoader).toBeVisible();
-  await expect(previewLoader).toContainText('Rendering preview...');
+  await expect(previewLoader).toHaveAttribute('aria-label', 'Rendering preview');
 });
 
 test('should reset markdown editor when reset button is clicked', async ({ page }) => {

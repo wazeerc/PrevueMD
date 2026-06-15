@@ -97,12 +97,12 @@ const previewFont = ref<'sans' | 'serif'>('sans');
          :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
       <div v-if="store.getIsParsing"
-           class="absolute inset-x-4 top-4 z-10 flex items-center gap-2 rounded-md border border-neutral-300/80 bg-neutral-50/90 px-3 py-2 text-sm text-neutral-700 shadow-sm backdrop-blur dark:border-neutral-700/80 dark:bg-neutral-900/90 dark:text-neutral-200"
+           class="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200/40 backdrop-blur-sm pointer-events-none dark:bg-neutral-800/40"
            role="status"
-           aria-live="polite">
-        <span class="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-[--vue-color-secondary] dark:border-neutral-700 dark:border-t-[--vue-color-primary]"
+           aria-live="polite"
+           aria-label="Rendering preview">
+        <span class="h-16 w-16 animate-spin rounded-full border-4 border-neutral-400/50 border-t-[--vue-color-primary]"
               aria-hidden="true"></span>
-        Rendering preview...
       </div>
       <div class="w-full break-words prose-markdown"
            v-html="store.getMarkup">
