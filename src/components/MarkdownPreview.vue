@@ -117,7 +117,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
           <div
                class="flex justify-between items-center mb-4 motion-preset-slide-up-lg motion-delay-500">
             <h3 id="modal-title"
-                class="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 hidden md:block">
+                class="text-xl font-semibold text-neutral-800 dark:text-neutral-200 hidden md:block">
               Preview</h3>
             <FontSwitcher v-model:font="previewFont" />
             <div class="flex space-x-4">
