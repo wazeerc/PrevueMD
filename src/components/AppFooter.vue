@@ -7,8 +7,7 @@ const version = pkg.version;
 
 <template>
   <footer class="header-footer border-t-2">
-    <p :class="cn('flex items-center gap-2 font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs',
-      'sm:text-sm', 'md:text-xs',
+    <p :class="cn('flex items-center gap-2 font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-sm',
       'motion-preset-fade-lg motion-delay-200',
     )">
       Built with
@@ -19,8 +18,7 @@ const version = pkg.version;
              :class="cn('h-4 w-4', 'md:h-5 md:w-5', 'hover:motion-preset-wiggle', 'grayscale hover:grayscale-0 transition-all duration-200')" />
       </a>
     </p>
-    <span :class="cn('font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs',
-      'sm:text-sm', 'md:text-xs', 'select-none',
+    <span :class="cn('font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs', 'select-none',
       'motion-preset-fade-lg motion-delay-200',
     )">
       v{{ version }}
@@ -29,9 +27,7 @@ const version = pkg.version;
        target="_blank"
        :class="cn(
         'font-sans font-normal text-neutral-500 dark:text-neutral-400',
-        'text-xs',
-        'sm:text-sm',
-        'md:text-xs',
+        'text-sm',
         'motion-preset-fade-lg motion-delay-200',
         'hover:underline hover:text-neutral-600 dark:hover:text-neutral-600 transition-colors ease duration-200',
       )">
