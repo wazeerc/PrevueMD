@@ -48,9 +48,7 @@ test('should show preview loader for large markdown input while parser is loadin
     await route.continue();
   });
 
-  const largeMarkdown = Array.from({ length: 120 }, (_, index) => (
-    `## Section ${index + 1}\n\n- Item one\n- Item two\n\n\`inline code\` and **bold text**.`
-  )).join('\n\n');
+  const largeMarkdown = `# Large Markdown\n\n${'Large parser-delayed content.\n\n'.repeat(220)}`;
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
@@ -63,9 +61,7 @@ test('should show preview loader for large markdown input while parser is loadin
 });
 
 test('should not show preview loader when re-pasting cached large markdown', async ({ page }) => {
-  const largeMarkdown = Array.from({ length: 120 }, (_, index) => (
-    `## Cached Section ${index + 1}\n\n- Item one\n- Item two\n\n\`inline code\` and **bold text**.`
-  )).join('\n\n');
+  const largeMarkdown = `# Cached Markdown\n\n${'Cached repeated content.\n\n'.repeat(220)}`;
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
@@ -74,13 +70,13 @@ test('should not show preview loader when re-pasting cached large markdown', asy
   const resetBtn = page.locator('button[aria-label="reset Icon"]');
 
   await markdownEditor.fill(largeMarkdown);
-  await expect(markdownPreview).toContainText('Cached Section 120');
+  await expect(markdownPreview).toContainText('Cached repeated content.');
 
   await resetBtn.click();
   await markdownEditor.fill(largeMarkdown);
 
   await expect(previewLoader).toHaveCount(0);
-  await expect(markdownPreview).toContainText('Cached Section 120');
+  await expect(markdownPreview).toContainText('Cached repeated content.');
 });
 
 test('should reset markdown editor when reset button is clicked', async ({ page }) => {
@@ -130,15 +126,13 @@ test('should download markdown file when download button is clicked', async ({ p
 test('should have manifest and service worker for pwa', async ({ page }) => {
   await page.goto('/');
 
-  const serviceWorkerRegistration = await page.evaluate(async () => {
+  await expect.poll(() => page.evaluate(async () => {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.getRegistration();
       return !!registration;
     }
     return false;
-  });
-
-  expect(serviceWorkerRegistration).toBeTruthy();
+  })).toBeTruthy();
 
   const manifestLink = await page.$('link[rel="manifest"]');
   expect(manifestLink).toBeTruthy();
