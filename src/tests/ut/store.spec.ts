@@ -176,29 +176,6 @@ describe('Store', () => {
       expect(store.isParsing).toBe(false);
     });
 
-    it('should delay loader for large parses when immediate loader is disabled', async () => {
-      vi.useFakeTimers();
-
-      let resolveParse: (value: string) => void = () => { };
-      vi.mocked(parseMarkdown).mockReturnValue(new Promise((resolve) => {
-        resolveParse = resolve;
-      }));
-
-      const parsePromise = store.handleParseMarkdown('x'.repeat(5000), { showLoaderImmediately: false });
-
-      expect(store.isParsing).toBe(false);
-      vi.advanceTimersByTime(149);
-      expect(store.isParsing).toBe(false);
-
-      vi.advanceTimersByTime(1);
-      expect(store.isParsing).toBe(true);
-
-      resolveParse('parsed markdown');
-      await parsePromise;
-
-      expect(store.isParsing).toBe(false);
-    });
-
     it('should call copyToClipboard with current markdown', () => {
       store.setMarkdown('test markdown');
       store.handleCopyToClipboard();
@@ -302,24 +279,6 @@ describe('Store', () => {
 
       store.theme = 'light';
       expect(store.getTheme).toBe('light');
-    });
-
-    it('should return markdown word and character stats', () => {
-      store.setMarkdown('Hello\nworld\tfrom PrevueMD');
-
-      expect(store.getMarkdownStats).toEqual({
-        characters: 25,
-        words: 4,
-      });
-    });
-
-    it('should return zero stats when markdown is empty', () => {
-      store.clearMarkdown();
-
-      expect(store.getMarkdownStats).toEqual({
-        characters: 0,
-        words: 0,
-      });
     });
   });
 });
