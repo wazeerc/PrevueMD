@@ -1,12 +1,10 @@
 async function createProcessor() {
-  const [unified, remarkParse, remarkGfm, remarkRehype, rehypeRaw, rehypeFormat, rehypeStringify] =
+  const [unified, remarkParse, remarkGfm, remarkRehype, rehypeStringify] =
     await Promise.all([
       import('unified').then(m => m.unified),
       import('remark-parse').then(m => m.default),
       import('remark-gfm').then(m => m.default),
       import('remark-rehype').then(m => m.default),
-      import('rehype-raw').then(m => m.default),
-      import('rehype-format').then(m => m.default),
       import('rehype-stringify').then(m => m.default),
     ]);
 
@@ -14,8 +12,6 @@ async function createProcessor() {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: false })
-    .use(rehypeRaw)
-    .use(rehypeFormat)
     .use(rehypeStringify);
 }
 

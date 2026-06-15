@@ -93,8 +93,17 @@ const previewFont = ref<'sans' | 'serif'>('sans');
       </div>
     </div>
     <div ref="previewRef"
-         class="markdown-container flex-1"
+         class="markdown-container flex-1 relative"
+         :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
+      <div v-if="store.getIsParsing"
+           class="absolute inset-x-4 top-4 z-10 flex items-center gap-2 rounded-md border border-neutral-300/80 bg-neutral-50/90 px-3 py-2 text-sm text-neutral-700 shadow-sm backdrop-blur dark:border-neutral-700/80 dark:bg-neutral-900/90 dark:text-neutral-200"
+           role="status"
+           aria-live="polite">
+        <span class="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-[--vue-color-secondary] dark:border-neutral-700 dark:border-t-[--vue-color-primary]"
+              aria-hidden="true"></span>
+        Rendering preview...
+      </div>
       <div class="w-full break-words prose-markdown"
            v-html="store.getMarkup">
       </div>
@@ -139,10 +148,11 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
-               role="document">
-            <div :class="['w-full break-words prose-markdown',
-              previewFont === 'serif' ? 'font-serif' : 'font-sans']"
+           <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+                :aria-busy="store.getIsParsing"
+                role="document">
+             <div :class="['w-full break-words prose-markdown',
+               previewFont === 'serif' ? 'font-serif' : 'font-sans']"
                  v-html="store.getMarkup">
             </div>
           </div>

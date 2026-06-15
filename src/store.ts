@@ -7,6 +7,8 @@ interface StoreState {
   markup: string | null;
   unloadWarning: (() => void) | null;
   theme: 'light' | 'dark';
+  isParsing: boolean;
+  parseRequestId: number;
 }
 
 interface StoreActions {
@@ -20,18 +22,32 @@ interface StoreActions {
   initTheme(): void;
 }
 
-interface StoreGetters extends Record<string, (state: StoreState) => string | null> {
+interface StoreGetters extends Record<string, (state: StoreState) => unknown> {
   getMarkdown: (state: StoreState) => string | null;
   getMarkup: (state: StoreState) => string | null;
   getTheme: (state: StoreState) => 'light' | 'dark';
+  getIsParsing: (state: StoreState) => boolean;
 }
 
 export const initialState: Readonly<StoreState> = {
   markdown: null,
   markup: null,
   unloadWarning: null,
-  theme: 'dark'
+  theme: 'dark',
+  isParsing: false,
+  parseRequestId: 0,
 };
+
+function waitForPreviewPaint(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.requestAnimationFrame) {
+      setTimeout(resolve, 0);
+      return;
+    }
+
+    window.requestAnimationFrame(() => setTimeout(resolve, 0));
+  });
+}
 
 export const useStore = defineStore<
   'useStore',
@@ -53,12 +69,26 @@ export const useStore = defineStore<
     clearMarkdown() {
       this.markdown = null;
       this.markup = null;
+      this.isParsing = false;
+      this.parseRequestId += 1;
 
       this.unloadWarning?.();
       this.unloadWarning = null;
     },
     async handleParseMarkdown(rawMarkdown: string) {
-      this.setMarkup(await parseMarkdown(rawMarkdown));
+      const requestId = this.parseRequestId + 1;
+      this.parseRequestId = requestId;
+      this.isParsing = true;
+
+      await waitForPreviewPaint();
+
+      try {
+        const parsedMarkup = await parseMarkdown(rawMarkdown);
+
+        if (requestId === this.parseRequestId) this.setMarkup(parsedMarkup);
+      } finally {
+        if (requestId === this.parseRequestId) this.isParsing = false;
+      }
     },
     handleCopyToClipboard() {
       copyToClipboard(this.markdown ?? '');
@@ -81,5 +111,6 @@ export const useStore = defineStore<
     getMarkdown: (state) => state.markdown ?? '',
     getMarkup: (state) => state.markup ?? '',
     getTheme: (state) => state.theme,
+    getIsParsing: (state) => state.isParsing,
   },
 });
