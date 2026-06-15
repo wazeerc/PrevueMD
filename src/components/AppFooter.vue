@@ -35,7 +35,7 @@ const version = pkg.version;
         'motion-preset-fade-lg motion-delay-200',
         'hover:underline hover:text-neutral-600 dark:hover:text-neutral-600 transition-colors ease duration-200',
       )">
-      A project by @wazeerc
+      by @wazeerc
     </a>
   </footer>
 </template>
