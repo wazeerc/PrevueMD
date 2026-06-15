@@ -40,6 +40,39 @@ describe('markdown-parser', () => {
     expect(unifiedSpy).not.toHaveBeenCalledTimes(2);
   });
 
+  it('should return cached markup for repeated markdown', async () => {
+    const { parseMarkdown } = await import('@/utils/markdown-parser');
+
+    const result1 = await parseMarkdown('# Cached');
+    const result2 = await parseMarkdown('# Cached');
+
+    expect(result1).toBe('<h1>Test</h1>');
+    expect(result2).toBe('<h1>Test</h1>');
+    expect(mockProcess).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not cache oversized markdown', async () => {
+    const { parseMarkdown } = await import('@/utils/markdown-parser');
+    const oversizedMarkdown = 'x'.repeat(250_001);
+
+    await parseMarkdown(oversizedMarkdown);
+    await parseMarkdown(oversizedMarkdown);
+
+    expect(mockProcess).toHaveBeenCalledTimes(2);
+  });
+
+  it('should evict old cached markdown entries', async () => {
+    const { parseMarkdown } = await import('@/utils/markdown-parser');
+
+    for (let index = 0; index < 11; index += 1) {
+      await parseMarkdown(`# Entry ${index}`);
+    }
+
+    await parseMarkdown('# Entry 0');
+
+    expect(mockProcess).toHaveBeenCalledTimes(12);
+  });
+
   it('should throw an error if the markdown parsing fails', async () => {
     mockProcess.mockRejectedValueOnce(new Error('Test error'));
 

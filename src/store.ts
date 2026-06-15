@@ -1,5 +1,5 @@
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
-import { parseMarkdown } from "@/utils/markdown-parser";
+import { getCachedMarkdown, parseMarkdown } from "@/utils/markdown-parser";
 import { defineStore } from "pinia";
 
 interface StoreState {
@@ -9,6 +9,7 @@ interface StoreState {
   theme: 'light' | 'dark';
   isParsing: boolean;
   parseRequestId: number;
+  lastParsedMarkdown: string | null;
 }
 
 interface StoreActions {
@@ -36,6 +37,7 @@ export const initialState: Readonly<StoreState> = {
   theme: 'dark',
   isParsing: false,
   parseRequestId: 0,
+  lastParsedMarkdown: null,
 };
 
 const LARGE_MARKDOWN_LENGTH = 5000;
@@ -66,7 +68,7 @@ export const useStore = defineStore<
   StoreGetters,
   StoreActions
 >('useStore', {
-  state: () => (initialState),
+  state: () => ({ ...initialState }),
   actions: {
     setMarkdown(markdownText: string) {
       this.markdown = markdownText;
@@ -80,6 +82,7 @@ export const useStore = defineStore<
     clearMarkdown() {
       this.markdown = null;
       this.markup = null;
+      this.lastParsedMarkdown = null;
       clearParsingLoaderTimeout();
       this.isParsing = false;
       this.parseRequestId += 1;
@@ -88,6 +91,18 @@ export const useStore = defineStore<
       this.unloadWarning = null;
     },
     async handleParseMarkdown(rawMarkdown: string) {
+      if (rawMarkdown === this.lastParsedMarkdown && this.markup !== null) return;
+
+      const cachedMarkup = getCachedMarkdown(rawMarkdown);
+      if (cachedMarkup !== null) {
+        clearParsingLoaderTimeout();
+        this.parseRequestId += 1;
+        this.isParsing = false;
+        this.lastParsedMarkdown = rawMarkdown;
+        this.setMarkup(cachedMarkup);
+        return;
+      }
+
       const requestId = this.parseRequestId + 1;
       const showLoaderImmediately = rawMarkdown.length >= LARGE_MARKDOWN_LENGTH;
 
@@ -108,7 +123,10 @@ export const useStore = defineStore<
       try {
         const parsedMarkup = await parseMarkdown(rawMarkdown);
 
-        if (requestId === this.parseRequestId) this.setMarkup(parsedMarkup);
+        if (requestId === this.parseRequestId) {
+          this.lastParsedMarkdown = rawMarkdown;
+          this.setMarkup(parsedMarkup);
+        }
       } finally {
         if (requestId === this.parseRequestId) {
           clearParsingLoaderTimeout();

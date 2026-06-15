@@ -62,6 +62,27 @@ test('should show preview loader for large markdown input while parser is loadin
   await expect(previewLoader).toHaveAttribute('aria-label', 'Rendering preview');
 });
 
+test('should not show preview loader when re-pasting cached large markdown', async ({ page }) => {
+  const largeMarkdown = Array.from({ length: 120 }, (_, index) => (
+    `## Cached Section ${index + 1}\n\n- Item one\n- Item two\n\n\`inline code\` and **bold text**.`
+  )).join('\n\n');
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const previewLoader = page.locator('[role="status"]');
+  const markdownPreview = page.locator('.prose-markdown').first();
+  const resetBtn = page.locator('button[aria-label="reset Icon"]');
+
+  await markdownEditor.fill(largeMarkdown);
+  await expect(markdownPreview).toContainText('Cached Section 120');
+
+  await resetBtn.click();
+  await markdownEditor.fill(largeMarkdown);
+
+  await expect(previewLoader).toHaveCount(0);
+  await expect(markdownPreview).toContainText('Cached Section 120');
+});
+
 test('should reset markdown editor when reset button is clicked', async ({ page }) => {
   const mockMarkdownText = '# Hello, World!';
 

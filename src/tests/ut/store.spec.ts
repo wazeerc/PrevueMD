@@ -1,8 +1,8 @@
 import { initialState, useStore } from '@/store';
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
-import { parseMarkdown } from "@/utils/markdown-parser";
+import { getCachedMarkdown, parseMarkdown } from "@/utils/markdown-parser";
 import { createPinia, setActivePinia } from 'pinia';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock("@/utils/lib", () => ({
   copyToClipboard: vi.fn(),
@@ -11,6 +11,7 @@ vi.mock("@/utils/lib", () => ({
 }));
 
 vi.mock("@/utils/markdown-parser", () => ({
+  getCachedMarkdown: vi.fn(() => null),
   parseMarkdown: vi.fn(),
 }));
 
@@ -18,6 +19,7 @@ describe('Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    vi.mocked(getCachedMarkdown).mockReturnValue(null);
   });
 
   afterEach(() => {
@@ -62,7 +64,7 @@ describe('Store', () => {
   describe('actions', () => {
     let store: ReturnType<typeof useStore>;
 
-    beforeAll(() => store = useStore());
+    beforeEach(() => store = useStore());
 
     it('should update markdown and set unload warning', () => {
       store.setMarkdown('test markdown');
@@ -94,6 +96,27 @@ describe('Store', () => {
 
       expect(parseMarkdown).toHaveBeenCalledWith('raw markdown');
       expect(store.markup).toBe('parsed markdown');
+    });
+
+    it('should use cached markup without parsing or showing loader', async () => {
+      vi.mocked(getCachedMarkdown).mockReturnValue('cached markup');
+
+      await store.handleParseMarkdown('raw markdown');
+
+      expect(parseMarkdown).not.toHaveBeenCalled();
+      expect(store.markup).toBe('cached markup');
+      expect(store.isParsing).toBe(false);
+    });
+
+    it('should skip parsing when markdown is already current', async () => {
+      vi.mocked(parseMarkdown).mockResolvedValue('parsed markdown');
+
+      await store.handleParseMarkdown('raw markdown');
+      await store.handleParseMarkdown('raw markdown');
+
+      expect(parseMarkdown).toHaveBeenCalledTimes(1);
+      expect(store.markup).toBe('parsed markdown');
+      expect(store.isParsing).toBe(false);
     });
 
     it('should avoid showing loader for fast small parses', async () => {
@@ -227,7 +250,7 @@ describe('Store', () => {
   describe('getters', () => {
     let store: ReturnType<typeof useStore>;
 
-    beforeAll(() => {
+    beforeEach(() => {
       store = useStore();
       store.clearMarkdown();
     });

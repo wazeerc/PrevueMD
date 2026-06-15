@@ -34,7 +34,8 @@ export function setupTest(
   mockData?: MockData,
   options?: TestOptions
 ): TestSetup {
-  setActivePinia(createPinia());
+  const pinia = createPinia();
+  setActivePinia(pinia);
   const store = useStore();
 
   if (mockData) {
@@ -46,7 +47,7 @@ export function setupTest(
 
   const wrapper = mount(component, {
     global: {
-      plugins: [createPinia()]
+      plugins: [pinia]
     },
     ...options
   });
