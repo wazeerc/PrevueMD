@@ -20,7 +20,7 @@ const version = pkg.version;
       </a>
     </p>
     <span :class="cn('font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs',
-      'sm:text-sm', 'md:text-xs',
+      'sm:text-sm', 'md:text-xs', 'select-none',
       'motion-preset-fade-lg motion-delay-200',
     )">
       v{{ version }}
