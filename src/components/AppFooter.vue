@@ -11,7 +11,7 @@ const version = pkg.version;
       'sm:text-sm', 'md:text-xs',
       'motion-preset-fade-lg motion-delay-200',
     )">
-      Built with Vue
+      Built with
       <a href="https://vuejs.org"
          target="_blank">
         <img src="/vue.svg"
@@ -35,7 +35,7 @@ const version = pkg.version;
         'motion-preset-fade-lg motion-delay-200',
         'hover:underline hover:text-neutral-600 dark:hover:text-neutral-600 transition-colors ease duration-200',
       )">
-      Contribute here!
+      A project by @wazeerc
     </a>
   </footer>
 </template>
