@@ -17,7 +17,7 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
     </h1>
     <h2 :class="cn('text-neutral-500 dark:text-neutral-400', 'pl-2', 'mt-4', 'font-medium', 'text-sm', 'sm:text-base',
       'motion-preset-blur-up-md motion-delay-500', 'hidden lg:block')">
-      A real-time
+      Real-time
       <a :class="cn(
         'underline cursor-help',
         'hover:text-neutral-600 dark:hover:text-neutral-500 transition-colors ease duration-200'
