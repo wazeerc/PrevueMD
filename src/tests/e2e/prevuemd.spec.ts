@@ -18,6 +18,15 @@ test('should capture markdown input properly', async ({ page }) => {
   expect(await markdownEditor.inputValue()).toBe(mockMarkdownText);
 });
 
+test('should display editor word and character counts', async ({ page }) => {
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+
+  await markdownEditor.fill('# Hello World');
+
+  await expect(page.getByText('(3 words, 13 characters)')).toBeVisible();
+});
+
 test('should parse markdown input into correct markup', async ({ page }) => {
   const mockMarkdownText = '# Hello, World!';
   const parsedMockMarkdownHtml = '<h1>Hello, World!</h1>';

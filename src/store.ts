@@ -12,6 +12,11 @@ interface StoreState {
   lastParsedMarkdown: string | null;
 }
 
+interface MarkdownStats {
+  characters: number;
+  words: number;
+}
+
 interface StoreActions {
   setMarkdown(markdownText: string): void;
   setMarkup(markupText: string): void;
@@ -28,6 +33,7 @@ interface StoreGetters extends Record<string, (state: StoreState) => unknown> {
   getMarkup: (state: StoreState) => string | null;
   getTheme: (state: StoreState) => 'light' | 'dark';
   getIsParsing: (state: StoreState) => boolean;
+  getMarkdownStats: (state: StoreState) => MarkdownStats;
 }
 
 export const initialState: Readonly<StoreState> = {
@@ -60,6 +66,34 @@ function waitForPreviewPaint(): Promise<void> {
 
     window.requestAnimationFrame(() => setTimeout(resolve, 0));
   });
+}
+
+function isWhitespaceCode(code: number): boolean {
+  return code <= 32
+    || code === 160
+    || code === 5760
+    || (code >= 8192 && code <= 8202)
+    || code === 8232
+    || code === 8233
+    || code === 8239
+    || code === 8287
+    || code === 12288;
+}
+
+function countWords(text: string): number {
+  let wordCount = 0;
+  let isInsideWord = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    if (isWhitespaceCode(text.charCodeAt(index))) {
+      isInsideWord = false;
+    } else if (!isInsideWord) {
+      wordCount += 1;
+      isInsideWord = true;
+    }
+  }
+
+  return wordCount;
 }
 
 export const useStore = defineStore<
@@ -156,5 +190,13 @@ export const useStore = defineStore<
     getMarkup: (state) => state.markup ?? '',
     getTheme: (state) => state.theme,
     getIsParsing: (state) => state.isParsing,
+    getMarkdownStats: (state) => {
+      const markdown = state.markdown ?? '';
+
+      return {
+        characters: markdown.length,
+        words: countWords(markdown),
+      };
+    },
   },
 });
