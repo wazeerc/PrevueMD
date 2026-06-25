@@ -76,10 +76,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
   <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <h3 class="sub-heading"
-            :class="{ 'motion-preset-pulse-sm': store.getIsParsing }"
-            role="status"
-            :aria-label="store.getIsParsing ? 'Rendering preview' : undefined">Preview</h3>
+      <h3 class="sub-heading">Preview</h3>
       </div>
       <div class="relative z-20 flex space-x-2">
         <IconButton :disabled="!store.getMarkdown"
@@ -95,6 +92,9 @@ const previewFont = ref<'sans' | 'serif'>('sans');
          :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
       <div class="w-full break-words prose-markdown"
+           :class="{ 'motion-preset-pulse-sm': store.getIsParsing }"
+           role="status"
+           :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
            v-html="store.getMarkup">
       </div>
     </div>
@@ -117,12 +117,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                class="flex justify-between items-center mb-4 motion-preset-slide-up-lg motion-delay-500">
             <div class="flex items-center gap-2">
               <h3 id="modal-title"
-                  :class="cn('text-xl font-semibold hidden md:block', {
-                    'motion-preset-pulse-sm': store.getIsParsing,
-                    'text-neutral-800 dark:text-neutral-200': !store.getIsParsing
-                  })"
-                  role="status"
-                  :aria-label="store.getIsParsing ? 'Rendering preview' : undefined">
+                  class="text-xl font-semibold hidden md:block text-neutral-800 dark:text-neutral-200">
                 Preview</h3>
             </div>
             <FontSwitcher v-model:font="previewFont" />
@@ -141,8 +136,11 @@ const previewFont = ref<'sans' | 'serif'>('sans');
           <div class="relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
                :aria-busy="store.getIsParsing"
                role="document">
-            <div :class="['w-full break-words prose-markdown',
-              previewFont === 'serif' ? 'font-serif' : 'font-sans']"
+            <div :class="cn('w-full break-words prose-markdown',
+              previewFont === 'serif' ? 'font-serif' : 'font-sans',
+              store.getIsParsing && 'motion-preset-pulse-sm')"
+                 role="status"
+                 :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
                  v-html="store.getMarkup">
             </div>
           </div>
