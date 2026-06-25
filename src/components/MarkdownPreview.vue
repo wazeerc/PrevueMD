@@ -92,7 +92,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
          :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
       <div class="w-full break-words prose-markdown"
-           :class="{ 'motion-preset-pulse-sm': store.getIsParsing }"
+           :class="{ 'motion-preset-pulse-sm motion-duration-2000': store.getIsParsing }"
            role="status"
            :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
            v-html="store.getMarkup">
@@ -138,7 +138,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                role="document">
             <div :class="cn('w-full break-words prose-markdown',
               previewFont === 'serif' ? 'font-serif' : 'font-sans',
-              store.getIsParsing && 'motion-preset-pulse-sm')"
+              store.getIsParsing && 'motion-preset-pulse-sm motion-duration-2000')"
                  role="status"
                  :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
                  v-html="store.getMarkup">

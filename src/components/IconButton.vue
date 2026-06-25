@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { IconLibrary, type Icons, type IconSize, type IconState, type IconVariant } from '@/utils/icons';
 import { cn } from '@/utils/lib';
+import AppTooltip from './AppTooltip.vue';
 
 type IconButtonProps = {
   icon: Icons;
@@ -27,63 +28,50 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
 </script>
 
 <template>
-  <button :disabled="disabled"
-          :aria-disabled="disabled"
-          :aria-label="`${icon} Icon`"
-           :data-tooltip="tooltip"
-           @click="onClick"
-            :class="cn('group inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed relative',
-              tooltip && !disabled && [
-                'after:content-[attr(data-tooltip)] after:absolute',
-                'after:hidden md:after:block',
-                'after:left-1/2 after:-translate-x-1/2 after:px-2 after:py-1',
-                'after:bg-neutral-800/80 after:text-neutral-400 after:outline after:outline-1 after:outline-[--vue-color-secondary]', 'after:font-sans after:text-xs after:rounded-md',
-                'after:whitespace-nowrap after:z-40',
-                tooltipDirection === 'top'
-                  ? ['after:bottom-full after:mb-2', 'after:opacity-0 after:-translate-y-2']
-                  : ['after:top-[100%] after:mt-2', 'after:opacity-0 after:translate-y-2'],
-               'after:transition-all after:duration-200 after:ease-in',
-                'after:invisible after:pointer-events-none',
-                'hover:after:visible hover:after:pointer-events-auto hover:after:opacity-100 hover:after:translate-y-0'
+  <AppTooltip :text="!disabled ? tooltip : ''" :direction="tooltipDirection">
+    <button :disabled="disabled"
+            :aria-disabled="disabled"
+            :aria-label="`${icon} Icon`"
+            @click="onClick"
+            :class="cn('inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed relative',
+              variant === 'primary' && [
+                'px-2 py-1.5 sm:px-3 sm:py-2',
+                'text-xs sm:text-sm',
+                'gap-2 sm:gap-3',
+                'rounded-md',
+                'font-sans font-semibold',
+                'bg-neutral-700 text-neutral-100',
+                'hover:bg-neutral-600',
+                'disabled:opacity-70',
+                'dark:bg-neutral-200 dark:text-neutral-800',
+                'dark:hover:bg-neutral-300',
               ],
-              tooltip && !disabled && 'hover:after:opacity-100',
-            variant === 'primary' && [
-              'px-2 py-1.5 sm:px-3 sm:py-2',
-              'text-xs sm:text-sm',
-              'gap-2 sm:gap-3',
-              'rounded-md',
-              'font-sans font-semibold',
-              'bg-neutral-700 text-neutral-100',
-              'hover:bg-neutral-600',
-              'disabled:opacity-70',
-              'dark:bg-neutral-200 dark:text-neutral-800',
-              'dark:hover:bg-neutral-300',
-            ],
-            variant === 'secondary' && [
-              'mb-2 mr-1',
-              'drop-shadow-md',
-              'text-neutral-800 dark:text-neutral-200',
-              'disabled:opacity-40'
-            ],
-            (icon === 'sun' || icon === 'moon') && [
-              'px-2 py-1.5 sm:px-3 sm:py-2',
-              'text-xs sm:text-sm',
-              'gap-2 sm:gap-3',
-              'rounded-md',
-              'font-sans font-semibold',
-              'border-2 border-neutral-300 dark:border-neutral-400',
-              'text-neutral-800 dark:text-neutral-200',
-              'bg-transparent dark:bg-transparent',
-              'hover:bg-neutral-200 dark:hover:bg-neutral-800',
-            ],
-            props.class)">
-    <slot>{{ text }}</slot>
-    <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
-         :alt="`${icon} Icon`"
-         :class="cn(
-          variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
-          (icon === 'sun' || icon === 'moon') && 'group-hover:motion-preset-spin',
-          variant === 'secondary' && !disabled && 'group-hover:motion-preset-shake'
-        )" />
-  </button>
+              variant === 'secondary' && [
+                'mb-2 mr-1',
+                'drop-shadow-md',
+                'text-neutral-800 dark:text-neutral-200',
+                'disabled:opacity-40'
+              ],
+              (icon === 'sun' || icon === 'moon') && [
+                'px-2 py-1.5 sm:px-3 sm:py-2',
+                'text-xs sm:text-sm',
+                'gap-2 sm:gap-3',
+                'rounded-md',
+                'font-sans font-semibold',
+                'border-2 border-neutral-300 dark:border-neutral-400',
+                'text-neutral-800 dark:text-neutral-200',
+                'bg-transparent dark:bg-transparent',
+                'hover:bg-neutral-200 dark:hover:bg-neutral-800',
+              ],
+              props.class)">
+      <slot>{{ text }}</slot>
+      <div v-html="IconLibrary(icon, size, variant, disabled ? 'disabled' : 'default')"
+           :alt="`${icon} Icon`"
+           :class="cn(
+             variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
+             (icon === 'sun' || icon === 'moon') && 'group-hover:motion-preset-spin',
+             variant === 'secondary' && !disabled && 'group-hover:motion-preset-shake motion-duration-1000'
+           )" />
+    </button>
+  </AppTooltip>
 </template>
