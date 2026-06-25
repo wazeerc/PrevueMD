@@ -1,6 +1,7 @@
 import { useStore } from "@/store";
 import { VueWrapper } from "@vue/test-utils";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import AppHeader from "../AppHeader.vue";
 import { setupTest } from "./test-utils";
 
@@ -17,19 +18,20 @@ describe('AppHeader component', () => {
   });
 
   it('should download markdown content on download btn click', async () => {
-    const downloadButton = wrapper.findAll("button")[1]; // Second button is download
+    let downloadButton = wrapper.findAll("button")[1]; // Second button is download
 
     await downloadButton.trigger('click');
 
+    downloadButton = wrapper.findAll("button")[1];
     expect(downloadButton.attributes("class")).toContain('motion-preset-rebound-left');
     expect(downloadButton.attributes("disabled")).toBeFalsy();
   });
 
   it('should disable download btn when markdown is empty', async () => {
+    store.$patch({ markdown: '' });
+    await nextTick();
+
     const downloadButton = wrapper.findAll("button")[1]; // Second button is download
-
-    await store.$patch({ markdown: '' });
-
     expect(downloadButton.attributes("disabled")).toBe("");
   });
 

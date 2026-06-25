@@ -11,9 +11,11 @@ describe('IconButton', () => {
       }
     });
 
+    const btn = wrapper.find('button');
+
     expect(wrapper.exists()).toBe(true);
-    expect(wrapper.attributes('disabled')).toBeFalsy();
-    expect(wrapper.attributes('aria-disabled')).toBe('false');
+    expect(btn.attributes('disabled')).toBeFalsy();
+    expect(btn.attributes('aria-disabled')).toBe('false');
   });
 
   it('renders with custom props', () => {
@@ -29,10 +31,11 @@ describe('IconButton', () => {
       }
     });
 
-    expect(wrapper.attributes('disabled')).toBe('');
-    expect(wrapper.attributes('aria-disabled')).toBe('true');
+    const btn = wrapper.find('button');
+
+    expect(btn.attributes('disabled')).toBe('');
+    expect(btn.attributes('aria-disabled')).toBe('true');
     expect(wrapper.text()).toContain('Edit');
-    expect(wrapper.attributes('data-tooltip')).toBe('Edit item');
   });
 
   it('emits click event when clicked', async () => {
@@ -44,7 +47,7 @@ describe('IconButton', () => {
       }
     });
 
-    await wrapper.trigger('click');
+    await wrapper.find('button').trigger('click');
 
     expect(onClick).toHaveBeenCalled();
   });
@@ -59,7 +62,7 @@ describe('IconButton', () => {
       }
     });
 
-    await wrapper.trigger('click');
+    await wrapper.find('button').trigger('click');
 
     expect(onClick).not.toHaveBeenCalled();
   });

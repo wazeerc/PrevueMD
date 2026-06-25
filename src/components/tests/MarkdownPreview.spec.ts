@@ -56,7 +56,7 @@ describe("MarkdownPreview component", () => {
 
     expect(document.body.querySelector('[role="dialog"]')).toBeTruthy();
 
-    const closeButton = document.body.querySelector('button[aria-label="Close fullscreen preview"]') as HTMLButtonElement;
+    const closeButton = document.body.querySelector('button[aria-label="minimize Icon"]') as HTMLButtonElement;
     closeButton.click();
     await nextTick();
 
