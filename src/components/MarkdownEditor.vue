@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
-import { cn } from "@/utils/lib";
+import { cn, debounce } from "@/utils/lib";
 import { computed, ref, watch } from 'vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
+
+const debouncedParse = debounce((markdown: unknown) => {
+  store.handleParseMarkdown(markdown as string);
+}, 300);
 
 const handleInput = (event: Event): void => {
   const markdownInput: string = (event.target as HTMLTextAreaElement).value;
   if (markdownInput === store.getMarkdown) return;
 
   store.setMarkdown(markdownInput);
-  store.handleParseMarkdown(markdownInput);
+  debouncedParse(markdownInput);
 };
 const handleClearInput = (): void => store.clearMarkdown();
 
