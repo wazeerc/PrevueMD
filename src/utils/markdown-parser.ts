@@ -89,6 +89,9 @@ export function preloadMarkdownParser(): Promise<MarkdownProcessor> {
   return markdownProcessorPromise;
 }
 
+/**
+ * Parses markdown text to HTML, using the in-memory cache or the shared parser.
+ */
 export async function parseMarkdown(markdownTextToParse: string): Promise<string> {
   try {
     const cachedMarkup = getCachedMarkdown(markdownTextToParse);

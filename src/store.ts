@@ -57,6 +57,10 @@ function clearParsingLoaderTimeout(): void {
   parsingLoaderTimeout = null;
 }
 
+/**
+ * Waits for the next animation frame before resolving, ensuring the preview
+ * has painted before the parsing loader is displayed.
+ */
 function waitForPreviewPaint(): Promise<void> {
   return new Promise((resolve) => {
     if (typeof window === 'undefined' || !window.requestAnimationFrame) {
@@ -80,6 +84,10 @@ function isWhitespaceCode(code: number): boolean {
     || code === 12288;
 }
 
+/**
+ * Counts words in the given text using Unicode-aware whitespace rules.
+ * A word is any contiguous sequence of non-whitespace characters.
+ */
 function countWords(text: string): number {
   let wordCount = 0;
   let isInsideWord = false;
