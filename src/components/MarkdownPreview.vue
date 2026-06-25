@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
-import { debounce } from "@/utils/lib";
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import FontSwitcher from './FontSwitcher.vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
-const debouncedCopyToClipboard = debounce(store.handleCopyToClipboard);
 
 const previewRef = ref<HTMLDivElement | null>(null);
 const { onScroll, syncScroll } = useScrollSync(previewRef);
@@ -90,12 +88,6 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                     tooltip="Maximize"
                     variant="secondary"
                     size="md" />
-        <IconButton :disabled="!store.getMarkdown"
-                    @click="debouncedCopyToClipboard"
-                    icon="clipboard"
-                    tooltip="Copy"
-                    variant="secondary"
-                    size="md" />
       </div>
     </div>
     <div ref="previewRef"
@@ -134,19 +126,12 @@ const previewFont = ref<'sans' | 'serif'>('sans');
             </div>
             <FontSwitcher v-model:font="previewFont" />
             <div class="relative z-20 flex space-x-4">
-              <IconButton :disabled="!store.getMarkdown"
-                          @click="debouncedCopyToClipboard"
-                          class="mb-0"
-                          icon="clipboard"
-                          tooltip="Copy"
-                          variant="secondary"
-                          size="lg"
-                          aria-label="Copy markdown to clipboard" />
               <IconButton ref="closeModalRef"
                           class="mb-0"
                           @click="closeModal"
                           icon="minimize"
                           tooltip="Close"
+                          tooltip-direction="top"
                           variant="secondary"
                           size="lg"
                           aria-label="Close fullscreen preview" />

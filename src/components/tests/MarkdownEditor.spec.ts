@@ -49,7 +49,7 @@ describe("MarkdownEditor component", () => {
   it("should clear input when reset button is clicked", async () => {
     store.setMarkdown("# Test");
     await nextTick();
-    const resetButton = wrapper.find("button");
+    const resetButton = wrapper.find('button[aria-label="reset Icon"]');
 
     await resetButton.trigger("click");
 

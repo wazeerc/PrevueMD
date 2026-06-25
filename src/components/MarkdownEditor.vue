@@ -11,6 +11,8 @@ const debouncedParse = debounce((markdown: unknown) => {
   store.handleParseMarkdown(markdown as string);
 }, 300);
 
+const debouncedCopy = debounce(store.handleCopyToClipboard);
+
 const handleInput = (event: Event): void => {
   const markdownInput: string = (event.target as HTMLTextAreaElement).value;
   if (markdownInput === store.getMarkdown) return;
@@ -65,13 +67,21 @@ watch(() => props.scrollPercentage, syncScroll);
           ({{ editorStats.words }} words, {{ editorStats.characters }} characters)
         </span>
       </div>
-      <IconButton :disabled="!store.getMarkdown"
-                  @click="handleClearInput"
-                  :state="!store.getMarkdown ? 'disabled' : 'default'"
-                  icon="reset"
-                  tooltip="Reset"
-                  variant="secondary"
-                  size="md" />
+      <div class="flex gap-2">
+        <IconButton :disabled="!store.getMarkdown"
+                    @click="debouncedCopy"
+                    icon="clipboard"
+                    tooltip="Copy"
+                    variant="secondary"
+                    size="md" />
+        <IconButton :disabled="!store.getMarkdown"
+                    @click="handleClearInput"
+                    :state="!store.getMarkdown ? 'disabled' : 'default'"
+                    icon="reset"
+                    tooltip="Reset"
+                    variant="secondary"
+                    size="md" />
+      </div>
     </div>
     <textarea ref="editorRef"
               autofocus
