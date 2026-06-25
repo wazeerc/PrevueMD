@@ -31,6 +31,7 @@ describe('useScrollSync composable', () => {
 
     mockElement.scrollTop = 250;
     onScroll(mockCallback);
+    vi.advanceTimersByTime(16);
 
     expect(mockCallback).toHaveBeenCalledWith(0.5);
   });

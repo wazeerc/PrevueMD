@@ -18,6 +18,15 @@ test('should capture markdown input properly', async ({ page }) => {
   expect(await markdownEditor.inputValue()).toBe(mockMarkdownText);
 });
 
+test('should display editor word and character counts', async ({ page }) => {
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+
+  await markdownEditor.fill('# Hello World');
+
+  await expect(page.getByText('(3 words, 13 characters)')).toBeVisible();
+});
+
 test('should parse markdown input into correct markup', async ({ page }) => {
   const mockMarkdownText = '# Hello, World!';
   const parsedMockMarkdownHtml = '<h1>Hello, World!</h1>';
@@ -30,6 +39,53 @@ test('should parse markdown input into correct markup', async ({ page }) => {
 
   await expect(markdownPreview).not.toBeEmpty();
   expect(await markdownPreview.innerHTML()).toContain(parsedMockMarkdownHtml);
+});
+
+test('should not show preview loader for small markdown input', async ({ page }) => {
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const previewLoader = page.locator('[role="status"]');
+
+  await markdownEditor.fill('# Hello, World!');
+
+  await expect(previewLoader).toHaveCount(0);
+});
+
+test('should show preview loader for large markdown input while parser is loading', async ({ page }) => {
+  await page.route('**/*remark-parse*', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await route.continue();
+  });
+
+  const largeMarkdown = `# Large Markdown\n\n${'Large parser-delayed content.\n\n'.repeat(220)}`;
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const previewLoader = page.locator('[role="status"]');
+
+  await markdownEditor.fill(largeMarkdown);
+
+  await expect(previewLoader).toBeVisible();
+  await expect(previewLoader).toHaveAttribute('aria-label', 'Rendering preview');
+});
+
+test('should not show preview loader when re-pasting cached large markdown', async ({ page }) => {
+  const largeMarkdown = `# Cached Markdown\n\n${'Cached repeated content.\n\n'.repeat(220)}`;
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const previewLoader = page.locator('[role="status"]');
+  const markdownPreview = page.locator('.prose-markdown').first();
+  const resetBtn = page.locator('button[aria-label="reset Icon"]');
+
+  await markdownEditor.fill(largeMarkdown);
+  await expect(markdownPreview).toContainText('Cached repeated content.');
+
+  await resetBtn.click();
+  await markdownEditor.fill(largeMarkdown);
+
+  await expect(previewLoader).toHaveCount(0);
+  await expect(markdownPreview).toContainText('Cached repeated content.');
 });
 
 test('should reset markdown editor when reset button is clicked', async ({ page }) => {
@@ -79,15 +135,13 @@ test('should download markdown file when download button is clicked', async ({ p
 test('should have manifest and service worker for pwa', async ({ page }) => {
   await page.goto('/');
 
-  const serviceWorkerRegistration = await page.evaluate(async () => {
+  await expect.poll(() => page.evaluate(async () => {
     if ('serviceWorker' in navigator) {
       const registration = await navigator.serviceWorker.getRegistration();
       return !!registration;
     }
     return false;
-  });
-
-  expect(serviceWorkerRegistration).toBeTruthy();
+  })).toBeTruthy();
 
   const manifestLink = await page.$('link[rel="manifest"]');
   expect(manifestLink).toBeTruthy();
@@ -105,6 +159,24 @@ test('should open preview in maximized mode when maximize button is clicked', as
 
   const markdownPreviewModal = page.locator('div[role="dialog"]');
   await expect(markdownPreviewModal).toBeVisible();
+});
+
+test('should not show loader inside maximized preview', async ({ page }) => {
+  const mockMarkdownText = '# Hello, World!';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+  const markdownPreview = page.locator('.prose-markdown').first();
+
+  await markdownEditor.fill(mockMarkdownText);
+  await expect(markdownPreview).toContainText('Hello, World!');
+
+  const maximizeBtn = page.locator('button[aria-label="maximize Icon"]');
+  await maximizeBtn.click();
+
+  const markdownPreviewModal = page.locator('div[role="dialog"]');
+  await expect(markdownPreviewModal).toBeVisible();
+  await expect(markdownPreviewModal.getByRole('status', { name: /rendering preview/i })).toHaveCount(0);
 });
 
 test('should toggle theme from dark to light when theme button is clicked', async ({ page }) => {

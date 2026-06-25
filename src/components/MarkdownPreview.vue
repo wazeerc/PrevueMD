@@ -77,7 +77,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
   <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
       <h3 class="sub-heading">Preview</h3>
-      <div class="flex space-x-2">
+      <div class="relative z-20 flex space-x-2">
         <IconButton :disabled="!store.getMarkdown"
                     @click="maximizePreview"
                     icon="maximize"
@@ -93,8 +93,17 @@ const previewFont = ref<'sans' | 'serif'>('sans');
       </div>
     </div>
     <div ref="previewRef"
-         class="markdown-container flex-1"
+         class="markdown-container flex-1 relative"
+         :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
+      <div v-if="store.getIsParsing"
+           class="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200/40 backdrop-blur-sm pointer-events-none dark:bg-neutral-800/40"
+           role="status"
+           aria-live="polite"
+           aria-label="Rendering preview">
+        <span class="h-16 w-16 animate-spin rounded-full border-4 border-neutral-400/50 border-t-[--vue-color-primary]"
+              aria-hidden="true"></span>
+      </div>
       <div class="w-full break-words prose-markdown"
            v-html="store.getMarkup">
       </div>
@@ -117,10 +126,10 @@ const previewFont = ref<'sans' | 'serif'>('sans');
           <div
                class="flex justify-between items-center mb-4 motion-preset-slide-up-lg motion-delay-500">
             <h3 id="modal-title"
-                class="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 hidden md:block">
+                class="text-xl font-semibold text-neutral-800 dark:text-neutral-200 hidden md:block">
               Preview</h3>
             <FontSwitcher v-model:font="previewFont" />
-            <div class="flex space-x-4">
+            <div class="relative z-20 flex space-x-4">
               <IconButton :disabled="!store.getMarkdown"
                           @click="debouncedCopyToClipboard"
                           class="mb-0"
@@ -139,8 +148,17 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+          <div class="relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+               :aria-busy="store.getIsParsing"
                role="document">
+            <div v-if="store.getIsParsing"
+                 class="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200/40 backdrop-blur-sm pointer-events-none dark:bg-neutral-800/40"
+                 role="status"
+                 aria-live="polite"
+                 aria-label="Rendering preview">
+              <span class="h-16 w-16 animate-spin rounded-full border-4 border-neutral-400/50 border-t-[--vue-color-primary]"
+                    aria-hidden="true"></span>
+            </div>
             <div :class="['w-full break-words prose-markdown',
               previewFont === 'serif' ? 'font-serif' : 'font-sans']"
                  v-html="store.getMarkup">

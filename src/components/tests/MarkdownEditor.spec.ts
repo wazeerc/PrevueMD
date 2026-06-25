@@ -1,6 +1,7 @@
 import { useStore } from "@/store";
 import { VueWrapper } from "@vue/test-utils";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { nextTick } from "vue";
 import MarkdownEditor from "../MarkdownEditor.vue";
 import { setupTest } from "./test-utils";
 
@@ -9,7 +10,7 @@ describe("MarkdownEditor component", () => {
   let wrapper: VueWrapper;
   let textarea: ReturnType<typeof wrapper.find>;
 
-  beforeAll(() => {
+  beforeEach(() => {
     const testStore = setupTest(MarkdownEditor, undefined, {
       props: {
         scrollPercentage: 0
@@ -20,6 +21,8 @@ describe("MarkdownEditor component", () => {
 
     textarea = wrapper.find("textarea");
   });
+
+  afterEach(() => wrapper.unmount());
 
   it("should contain text area element with placeholder value", () => {
     expect(textarea.exists()).toBe(true);
@@ -37,8 +40,15 @@ describe("MarkdownEditor component", () => {
     expect(store.getMarkdown).toBe(testInput);
   });
 
+  it("should display word and character counts", async () => {
+    await textarea.setValue("# Hello World");
+
+    expect(wrapper.text()).toContain("(3 words, 13 characters)");
+  });
+
   it("should clear input when reset button is clicked", async () => {
     store.setMarkdown("# Test");
+    await nextTick();
     const resetButton = wrapper.find("button");
 
     await resetButton.trigger("click");

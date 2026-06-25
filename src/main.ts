@@ -4,6 +4,7 @@ import "@/styles/toast.css";
 
 import App from "@/App.vue";
 import { useStore } from "@/store";
+import { preloadMarkdownParser } from "@/utils/markdown-parser";
 import { createPinia } from "pinia";
 import { registerSW } from 'virtual:pwa-register';
 import { createApp } from "vue";
@@ -63,3 +64,6 @@ if (isMobileDevice()) {
     });
   }, 750);
 }
+
+const scheduleParserPreload = window.requestIdleCallback ?? ((callback: IdleRequestCallback) => setTimeout(callback, 1));
+scheduleParserPreload(() => void preloadMarkdownParser());

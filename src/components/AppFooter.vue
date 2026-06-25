@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { cn } from "@/utils/lib";
+import pkg from "../../package.json";
+
+const version = pkg.version;
 </script>
 
 <template>
   <footer class="header-footer border-t-2">
-    <p :class="cn('flex items-center gap-2 font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs',
-      'sm:text-sm', 'md:text-xs',
+    <p :class="cn('flex items-center gap-2 font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-sm',
       'motion-preset-fade-lg motion-delay-200',
     )">
-      Built with Vue
+      Built with
       <a href="https://vuejs.org"
          target="_blank">
         <img src="/vue.svg"
@@ -16,17 +18,20 @@ import { cn } from "@/utils/lib";
              :class="cn('h-4 w-4', 'md:h-5 md:w-5', 'hover:motion-preset-wiggle', 'grayscale hover:grayscale-0 transition-all duration-200')" />
       </a>
     </p>
+    <span :class="cn('font-sans font-normal text-neutral-500 dark:text-neutral-400', 'text-xs', 'select-none',
+      'motion-preset-fade-lg motion-delay-200',
+    )">
+      v{{ version }}
+    </span>
     <a href="https://github.com/wazeerc/PrevueMD"
        target="_blank"
        :class="cn(
         'font-sans font-normal text-neutral-500 dark:text-neutral-400',
-        'text-xs',
-        'sm:text-sm',
-        'md:text-xs',
+        'text-sm',
         'motion-preset-fade-lg motion-delay-200',
         'hover:underline hover:text-neutral-600 dark:hover:text-neutral-600 transition-colors ease duration-200',
       )">
-      Contribute here!
+      by @wazeerc
     </a>
   </footer>
 </template>

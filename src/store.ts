@@ -1,5 +1,5 @@
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
-import { parseMarkdown } from "@/utils/markdown-parser";
+import { getCachedMarkdown, parseMarkdown } from "@/utils/markdown-parser";
 import { defineStore } from "pinia";
 
 interface StoreState {
@@ -7,6 +7,14 @@ interface StoreState {
   markup: string | null;
   unloadWarning: (() => void) | null;
   theme: 'light' | 'dark';
+  isParsing: boolean;
+  parseRequestId: number;
+  lastParsedMarkdown: string | null;
+}
+
+interface MarkdownStats {
+  characters: number;
+  words: number;
 }
 
 interface StoreActions {
@@ -20,18 +28,81 @@ interface StoreActions {
   initTheme(): void;
 }
 
-interface StoreGetters extends Record<string, (state: StoreState) => string | null> {
+interface StoreGetters extends Record<string, (state: StoreState) => unknown> {
   getMarkdown: (state: StoreState) => string | null;
   getMarkup: (state: StoreState) => string | null;
   getTheme: (state: StoreState) => 'light' | 'dark';
+  getIsParsing: (state: StoreState) => boolean;
+  getMarkdownStats: (state: StoreState) => MarkdownStats;
 }
 
 export const initialState: Readonly<StoreState> = {
   markdown: null,
   markup: null,
   unloadWarning: null,
-  theme: 'dark'
+  theme: 'dark',
+  isParsing: false,
+  parseRequestId: 0,
+  lastParsedMarkdown: null,
 };
+
+const LARGE_MARKDOWN_LENGTH = 5000;
+const SLOW_PARSE_LOADER_DELAY = 150;
+let parsingLoaderTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function clearParsingLoaderTimeout(): void {
+  if (!parsingLoaderTimeout) return;
+
+  clearTimeout(parsingLoaderTimeout);
+  parsingLoaderTimeout = null;
+}
+
+/**
+ * Waits for the next animation frame before resolving, ensuring the preview
+ * has painted before the parsing loader is displayed.
+ */
+function waitForPreviewPaint(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.requestAnimationFrame) {
+      setTimeout(resolve, 0);
+      return;
+    }
+
+    window.requestAnimationFrame(() => setTimeout(resolve, 0));
+  });
+}
+
+function isWhitespaceCode(code: number): boolean {
+  return code <= 32
+    || code === 160
+    || code === 5760
+    || (code >= 8192 && code <= 8202)
+    || code === 8232
+    || code === 8233
+    || code === 8239
+    || code === 8287
+    || code === 12288;
+}
+
+/**
+ * Counts words in the given text using Unicode-aware whitespace rules.
+ * A word is any contiguous sequence of non-whitespace characters.
+ */
+function countWords(text: string): number {
+  let wordCount = 0;
+  let isInsideWord = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    if (isWhitespaceCode(text.charCodeAt(index))) {
+      isInsideWord = false;
+    } else if (!isInsideWord) {
+      wordCount += 1;
+      isInsideWord = true;
+    }
+  }
+
+  return wordCount;
+}
 
 export const useStore = defineStore<
   'useStore',
@@ -39,7 +110,7 @@ export const useStore = defineStore<
   StoreGetters,
   StoreActions
 >('useStore', {
-  state: () => (initialState),
+  state: () => ({ ...initialState }),
   actions: {
     setMarkdown(markdownText: string) {
       this.markdown = markdownText;
@@ -53,12 +124,62 @@ export const useStore = defineStore<
     clearMarkdown() {
       this.markdown = null;
       this.markup = null;
+      this.lastParsedMarkdown = null;
+      clearParsingLoaderTimeout();
+      this.isParsing = false;
+      this.parseRequestId += 1;
 
       this.unloadWarning?.();
       this.unloadWarning = null;
     },
     async handleParseMarkdown(rawMarkdown: string) {
-      this.setMarkup(await parseMarkdown(rawMarkdown));
+      if (rawMarkdown === this.lastParsedMarkdown && this.markup !== null) {
+        clearParsingLoaderTimeout();
+        this.parseRequestId += 1;
+        this.isParsing = false;
+        return;
+      }
+
+      const cachedMarkup = getCachedMarkdown(rawMarkdown);
+      if (cachedMarkup !== null) {
+        clearParsingLoaderTimeout();
+        this.parseRequestId += 1;
+        this.isParsing = false;
+        this.lastParsedMarkdown = rawMarkdown;
+        this.setMarkup(cachedMarkup);
+        return;
+      }
+
+      const requestId = this.parseRequestId + 1;
+      const showLoaderImmediately = rawMarkdown.length >= LARGE_MARKDOWN_LENGTH;
+
+      this.parseRequestId = requestId;
+      clearParsingLoaderTimeout();
+
+      if (showLoaderImmediately) {
+        this.isParsing = true;
+      } else {
+        this.isParsing = false;
+        parsingLoaderTimeout = setTimeout(() => {
+          if (requestId === this.parseRequestId) this.isParsing = true;
+        }, SLOW_PARSE_LOADER_DELAY);
+      }
+
+      if (showLoaderImmediately) await waitForPreviewPaint();
+
+      try {
+        const parsedMarkup = await parseMarkdown(rawMarkdown);
+
+        if (requestId === this.parseRequestId) {
+          this.lastParsedMarkdown = rawMarkdown;
+          this.setMarkup(parsedMarkup);
+        }
+      } finally {
+        if (requestId === this.parseRequestId) {
+          clearParsingLoaderTimeout();
+          this.isParsing = false;
+        }
+      }
     },
     handleCopyToClipboard() {
       copyToClipboard(this.markdown ?? '');
@@ -81,5 +202,14 @@ export const useStore = defineStore<
     getMarkdown: (state) => state.markdown ?? '',
     getMarkup: (state) => state.markup ?? '',
     getTheme: (state) => state.theme,
+    getIsParsing: (state) => state.isParsing,
+    getMarkdownStats: (state) => {
+      const markdown = state.markdown ?? '';
+
+      return {
+        characters: Array.from(markdown).length,
+        words: countWords(markdown),
+      };
+    },
   },
 });
