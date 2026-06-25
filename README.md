@@ -5,13 +5,14 @@ I did not like the markdown editor on GitHub, so I decided to build my own.
 
 > [Try it out!](https://md.wazeer.dev/)
 
-> [Learn about the development process.](https://wazeerc.github.io/blog/learning-vue/)
+> [Learn about the development process.](https://wazeer.dev/blog/learning-vue/)
 
 ## Status
 
-[![CI/CD: Test and Deploy to GCP](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml)
-[![Coverage Status](https://coveralls.io/repos/github/wazeerc/PrevueMD/badge.svg?branch=main)](https://coveralls.io/github/wazeerc/PrevueMD?branch=main)
 ![Version](https://img.shields.io/github/package-json/v/wazeerc/prevuemd?style=social)
+[![Coverage Status](https://coveralls.io/repos/github/wazeerc/PrevueMD/badge.svg?branch=main)](https://coveralls.io/github/wazeerc/PrevueMD?branch=main) \
+[![CI/CD: Test and Deploy to GCP](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/ci-cd.yml)
+[![Dependabot Updates](https://github.com/wazeerc/PrevueMD/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/wazeerc/PrevueMD/actions/workflows/dependabot/dependabot-updates)
 
 ## Features
 
