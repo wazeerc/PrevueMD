@@ -119,6 +119,31 @@ describe('Store', () => {
       expect(store.isParsing).toBe(false);
     });
 
+    it('should ignore stale parse results when a more recent call completes first', async () => {
+      vi.useFakeTimers();
+
+      vi.mocked(parseMarkdown).mockResolvedValue('parsed markdown');
+      await store.handleParseMarkdown('abc');
+      expect(store.lastParsedMarkdown).toBe('abc');
+
+      let resolveSlowParse: (value: string) => void = () => {};
+      vi.mocked(parseMarkdown).mockReturnValue(new Promise((resolve) => {
+        resolveSlowParse = resolve;
+      }));
+
+      const slowParse = store.handleParseMarkdown('def');
+
+      await store.handleParseMarkdown('abc');
+
+      resolveSlowParse('stale result');
+      await slowParse;
+
+      expect(store.markup).toBe('parsed markdown');
+      expect(store.isParsing).toBe(false);
+
+      vi.useRealTimers();
+    });
+
     it('should avoid showing loader for fast small parses', async () => {
       vi.mocked(parseMarkdown).mockResolvedValue('parsed markdown');
 
