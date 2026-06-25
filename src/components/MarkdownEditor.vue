@@ -60,7 +60,7 @@ watch(() => props.scrollPercentage, syncScroll);
     <div class="flex justify-between items-center">
       <div class="flex items-baseline gap-1">
         <h3 class="sub-heading">Editor</h3>
-        <span class="text-sm text-neutral-500 dark:text-neutral-400"
+        <span class="text-sm text-neutral-500"
               aria-live="polite">
           ({{ editorStats.words }} words, {{ editorStats.characters }} characters)
         </span>
