@@ -37,7 +37,7 @@ function countWords(text: string): number {
 const editorStats = computed(() => {
   const markdown = store.getMarkdown;
   return {
-    characters: markdown?.length,
+    characters: (markdown ?? '').length,
     words: countWords(markdown ?? ""),
   };
 });

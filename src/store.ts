@@ -125,7 +125,12 @@ export const useStore = defineStore<
       this.unloadWarning = null;
     },
     async handleParseMarkdown(rawMarkdown: string) {
-      if (rawMarkdown === this.lastParsedMarkdown && this.markup !== null) return;
+      if (rawMarkdown === this.lastParsedMarkdown && this.markup !== null) {
+        clearParsingLoaderTimeout();
+        this.parseRequestId += 1;
+        this.isParsing = false;
+        return;
+      }
 
       const cachedMarkup = getCachedMarkdown(rawMarkdown);
       if (cachedMarkup !== null) {
@@ -194,7 +199,7 @@ export const useStore = defineStore<
       const markdown = state.markdown ?? '';
 
       return {
-        characters: markdown.length,
+        characters: Array.from(markdown).length,
         words: countWords(markdown),
       };
     },

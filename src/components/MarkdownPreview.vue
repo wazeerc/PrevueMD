@@ -148,9 +148,17 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+          <div class="relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
                :aria-busy="store.getIsParsing"
                role="document">
+            <div v-if="store.getIsParsing"
+                 class="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200/40 backdrop-blur-sm pointer-events-none dark:bg-neutral-800/40"
+                 role="status"
+                 aria-live="polite"
+                 aria-label="Rendering preview">
+              <span class="h-16 w-16 animate-spin rounded-full border-4 border-neutral-400/50 border-t-[--vue-color-primary]"
+                    aria-hidden="true"></span>
+            </div>
             <div :class="['w-full break-words prose-markdown',
               previewFont === 'serif' ? 'font-serif' : 'font-sans']"
                  v-html="store.getMarkup">

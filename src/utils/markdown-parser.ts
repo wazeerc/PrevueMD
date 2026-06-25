@@ -80,14 +80,19 @@ export function clearMarkdownParseCache(): void {
  * Loads and configures the markdown processor before the first parse request.
  */
 export function preloadMarkdownParser(): Promise<MarkdownProcessor> {
-  if (!markdownProcessorPromise) markdownProcessorPromise = createProcessor();
+  if (!markdownProcessorPromise) {
+    markdownProcessorPromise = createProcessor().catch((error) => {
+      markdownProcessorPromise = null;
+      throw error;
+    });
+  }
   return markdownProcessorPromise;
 }
 
 export async function parseMarkdown(markdownTextToParse: string): Promise<string> {
   try {
     const cachedMarkup = getCachedMarkdown(markdownTextToParse);
-    if (cachedMarkup) return cachedMarkup;
+    if (cachedMarkup !== null) return cachedMarkup;
 
     const markdownProcessor = await preloadMarkdownParser();
 
