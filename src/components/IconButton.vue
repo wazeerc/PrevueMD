@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
                'after:hidden md:after:block',
                'after:left-1/2 after:-translate-x-1/2 after:px-2 after:py-1',
                'after:bg-neutral-800/80 after:text-neutral-400 after:outline after:outline-1 after:outline-[--vue-color-secondary]', 'after:font-sans after:text-xs after:rounded-md',
-              'after:whitespace-nowrap after:z-10',
+               'after:whitespace-nowrap after:z-40',
               'after:top-[100%] after:mt-2',
               'after:opacity-0 after:translate-y-2',
               'after:transition-all after:duration-200 after:ease-in',
