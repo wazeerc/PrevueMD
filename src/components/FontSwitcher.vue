@@ -36,9 +36,10 @@ const handleKeydown = (e: KeyboardEvent) => {
        aria-label="Font style"
        @keydown="handleKeydown">
     <button ref="sansButtonRef"
+            data-tooltip="Sans-serif"
             class="font-sans font-bold px-2 rounded-full
                    transition-all duration-200 ease-in-out
-                   hover:opacity-80 cursor-pointer"
+                   hover:opacity-80 cursor-pointer tooltip-top"
             :class="{
               'bg-neutral-700 text-neutral-200 dark:bg-neutral-200 dark:text-neutral-800'
                 : props.font === 'sans',
@@ -54,9 +55,10 @@ const handleKeydown = (e: KeyboardEvent) => {
       Aa
     </button>
     <button ref="serifButtonRef"
+            data-tooltip="Serif"
             class="font-serif font-bold px-2 rounded-full
                    transition-all duration-200 ease-in-out
-                   hover:opacity-80 cursor-pointer"
+                   hover:opacity-80 cursor-pointer tooltip-top"
             :class="{
               'bg-neutral-700 text-neutral-200 dark:bg-neutral-200 dark:text-neutral-800'
                 : props.font === 'serif',
@@ -73,3 +75,43 @@ const handleKeydown = (e: KeyboardEvent) => {
     </button>
   </div>
 </template>
+
+<style scoped>
+.tooltip-top {
+  position: relative;
+}
+
+.tooltip-top::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: rgb(38 38 38 / 0.8);
+  color: #a3a3a3;
+  outline: 1px solid var(--vue-color-secondary);
+  font-family: theme('fontFamily.sans');
+  font-size: 0.75rem;
+  line-height: 1rem;
+  border-radius: 0.375rem;
+  white-space: nowrap;
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  visibility: hidden;
+}
+
+@media (max-width: 767px) {
+  .tooltip-top::after {
+    display: none;
+  }
+}
+
+.tooltip-top:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+</style>

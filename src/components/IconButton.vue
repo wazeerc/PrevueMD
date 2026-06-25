@@ -83,7 +83,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
          :class="cn(
           variant === 'primary' && !disabled && 'group-hover:motion-preset-seesaw-lg',
           (icon === 'sun' || icon === 'moon') && 'group-hover:motion-preset-spin',
-          variant === 'secondary' && !disabled && 'group-hover:motion-preset-pulse-sm'
+          variant === 'secondary' && !disabled && 'group-hover:motion-preset-shake'
         )" />
   </button>
 </template>

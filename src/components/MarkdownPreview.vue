@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
+import { cn } from "@/utils/lib";
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import FontSwitcher from './FontSwitcher.vue';
 import IconButton from "./IconButton.vue";
@@ -75,11 +76,10 @@ const previewFont = ref<'sans' | 'serif'>('sans');
   <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <h3 class="sub-heading">Preview</h3>
-        <span v-if="store.getIsParsing"
-              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-neutral-400/50 border-t-[--vue-color-primary]"
-              role="status"
-              aria-label="Rendering preview"></span>
+        <h3 class="sub-heading"
+            :class="{ 'motion-preset-pulse-sm': store.getIsParsing }"
+            role="status"
+            :aria-label="store.getIsParsing ? 'Rendering preview' : undefined">Preview</h3>
       </div>
       <div class="relative z-20 flex space-x-2">
         <IconButton :disabled="!store.getMarkdown"
@@ -117,12 +117,13 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                class="flex justify-between items-center mb-4 motion-preset-slide-up-lg motion-delay-500">
             <div class="flex items-center gap-2">
               <h3 id="modal-title"
-                  class="text-xl font-semibold text-neutral-800 dark:text-neutral-200 hidden md:block">
+                  :class="cn('text-xl font-semibold hidden md:block', {
+                    'motion-preset-pulse-sm': store.getIsParsing,
+                    'text-neutral-800 dark:text-neutral-200': !store.getIsParsing
+                  })"
+                  role="status"
+                  :aria-label="store.getIsParsing ? 'Rendering preview' : undefined">
                 Preview</h3>
-              <span v-if="store.getIsParsing"
-                    class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-neutral-400/50 border-t-[--vue-color-primary] hidden md:inline-block"
-                    role="status"
-                    aria-label="Rendering preview"></span>
             </div>
             <FontSwitcher v-model:font="previewFont" />
             <div class="relative z-20 flex space-x-4">
@@ -159,4 +160,6 @@ const previewFont = ref<'sans' | 'serif'>('sans');
 .modal-leave-to {
   opacity: 0;
 }
+
+
 </style>
