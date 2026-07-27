@@ -1,6 +1,6 @@
 import { useStore } from "@/store";
 import { VueWrapper } from "@vue/test-utils";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import MarkdownEditor from "../MarkdownEditor.vue";
 import { setupTest } from "./test-utils";
@@ -29,7 +29,7 @@ describe("MarkdownEditor component", () => {
 
     const placeholder = textarea.attributes("placeholder");
     expect(placeholder).toContain("Start typing to edit and preview your Markdown in real-time");
-    expect(placeholder).toContain("You can also copy & paste existing content");
+    expect(placeholder).toContain("import a .md file");
   });
 
   it("should update store when input changes", async () => {
@@ -54,5 +54,32 @@ describe("MarkdownEditor component", () => {
     await resetButton.trigger("click");
 
     expect(store.getMarkdown).toBe("");
+  });
+
+  it("should have an import button that triggers file input", async () => {
+    const importButton = wrapper.find('button[aria-label="upload Icon"]');
+    expect(importButton.exists()).toBe(true);
+
+    const fileInput = wrapper.find('input[type="file"]');
+    expect(fileInput.exists()).toBe(true);
+    expect(fileInput.attributes("accept")).toBe(".md");
+  });
+
+  it("should populate editor with file content on import", async () => {
+    const fileInput = wrapper.find('input[type="file"]');
+
+    const content = "# Imported Content";
+    const file = new File([content], "test.md", { type: "text/markdown" });
+
+    Object.defineProperty(fileInput.element, "files", {
+      value: [file],
+      writable: false,
+    });
+
+    await fileInput.trigger("change");
+
+    await vi.waitFor(() => {
+      expect(store.getMarkdown).toBe(content);
+    });
   });
 });

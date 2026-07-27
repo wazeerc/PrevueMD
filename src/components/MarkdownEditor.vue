@@ -11,7 +11,26 @@ const debouncedParse = debounce((markdown: unknown) => {
   store.handleParseMarkdown(markdown as string);
 }, 300);
 
-const debouncedCopy = debounce(store.handleCopyToClipboard);
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const handleImport = (): void => {
+  fileInputRef.value?.click();
+};
+
+const handleFileSelected = (event: Event): void => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    const content = e.target?.result as string;
+    store.setMarkdown(content);
+    store.handleParseMarkdown(content);
+  };
+  reader.readAsText(file);
+  target.value = '';
+};
 
 const handleInput = (event: Event): void => {
   const markdownInput: string = (event.target as HTMLTextAreaElement).value;
@@ -68,10 +87,9 @@ watch(() => props.scrollPercentage, syncScroll);
         </span>
       </div>
       <div class="flex gap-2">
-        <IconButton :disabled="!store.getMarkdown"
-                    @click="debouncedCopy"
-                    icon="clipboard"
-                    tooltip="Copy"
+        <IconButton icon="upload"
+                    @click="handleImport"
+                    tooltip="Import"
                     variant="secondary"
                     size="md" />
         <IconButton :disabled="!store.getMarkdown"
@@ -85,13 +103,16 @@ watch(() => props.scrollPercentage, syncScroll);
     </div>
     <textarea ref="editorRef"
               autofocus
-              placeholder="✏️ Start typing to edit and preview your Markdown in real-time.
-
-📝 You can also copy & paste existing content."
+              placeholder="Start typing to edit and preview your Markdown in real-time. You can also import a .md file using the Import button above."
               :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal', 'flex-1', 'w-full')"
               :value="store.getMarkdown"
               @input="handleInput"
               @scroll="() => onScroll(p => emit('scroll', p))">
     </textarea>
+    <input ref="fileInputRef"
+           type="file"
+           accept=".md"
+           class="hidden"
+           @change="handleFileSelected">
   </div>
 </template>

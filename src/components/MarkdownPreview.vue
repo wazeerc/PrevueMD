@@ -64,6 +64,10 @@ const handleKeydown = (e: KeyboardEvent) => {
 onMounted(() => document.addEventListener('keydown', handleKeydown));
 onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown));
 
+const handleCopy = (): void => {
+  store.handleCopyToClipboard();
+};
+
 const emit = defineEmits<{ scroll: [percentage: number]; }>();
 const props = defineProps<{ scrollPercentage: number; }>();
 
@@ -79,6 +83,12 @@ const previewFont = ref<'sans' | 'serif'>('sans');
       <h3 class="sub-heading">Preview</h3>
       </div>
       <div class="relative z-20 flex space-x-2">
+        <IconButton :disabled="!store.getMarkdown"
+                    @click="handleCopy"
+                    icon="clipboard"
+                    tooltip="Copy"
+                    variant="secondary"
+                    size="md" />
         <IconButton :disabled="!store.getMarkdown"
                     @click="maximizePreview"
                     icon="maximize"

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { expect, test } from '@playwright/test';
 
 test('should display the correct title', async ({ page }) => {
@@ -130,6 +131,44 @@ test('should download markdown file when download button is clicked', async ({ p
   const download = await downloadPromise;
 
   expect(download.suggestedFilename()).toBe('prevued.md');
+});
+
+test('should import markdown file and populate editor', async ({ page }) => {
+  const mockMarkdownText = '# Imported Markdown';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+
+  const fileChooserPromise = page.waitForEvent('filechooser');
+  await page.locator('button[aria-label="upload Icon"]').click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles({
+    name: 'test.md',
+    mimeType: 'text/markdown',
+    buffer: Buffer.from(mockMarkdownText),
+  });
+
+  await expect(markdownEditor).toHaveValue(mockMarkdownText);
+});
+
+test('should parse imported markdown into correct markup', async ({ page }) => {
+  const mockMarkdownText = '# Imported Markdown';
+  const parsedHtml = '<h1>Imported Markdown</h1>';
+
+  await page.goto('/');
+  const markdownPreview = page.locator('.prose-markdown');
+
+  const fileChooserPromise = page.waitForEvent('filechooser');
+  await page.locator('button[aria-label="upload Icon"]').click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles({
+    name: 'test.md',
+    mimeType: 'text/markdown',
+    buffer: Buffer.from(mockMarkdownText),
+  });
+
+  await expect(markdownPreview).not.toBeEmpty();
+  expect(await markdownPreview.innerHTML()).toContain(parsedHtml);
 });
 
 test('should have manifest and service worker for pwa', async ({ page }) => {
