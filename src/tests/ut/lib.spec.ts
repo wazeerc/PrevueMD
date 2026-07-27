@@ -94,7 +94,7 @@ describe('downloadMarkdownFile function', () => {
     expect(anchor.download).toBe('prevued.md');
     expect(anchor.href).toBe('blob:test-url');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:test-url');
-    expect(mockToast.info).toHaveBeenCalledWith('Markdown file queued for download!');
+    expect(mockToast.info).toHaveBeenCalledWith('Markdown file downloading...');
 
     globalThis.URL = originalURL;
 

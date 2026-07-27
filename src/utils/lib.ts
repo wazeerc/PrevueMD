@@ -74,7 +74,7 @@ function downloadMarkdownFile(markdownContentToDownload: string): void {
     a.click();
     URL.revokeObjectURL(url);
 
-    toast.info('Markdown file queued for download!');
+    toast.info('Markdown file downloading...');
   } catch (error) {
     toast.error(`Failed to download markdown file: ${error}.`);
   }
