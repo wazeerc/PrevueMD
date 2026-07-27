@@ -103,7 +103,9 @@ watch(() => props.scrollPercentage, syncScroll);
     </div>
     <textarea ref="editorRef"
               autofocus
-              placeholder="Start typing to edit and preview your Markdown in real-time. You can also import a .md file using the Import button above."
+              placeholder="✏️ Start typing to edit and preview your Markdown in real-time.
+
+📝 You can also paste existing content or import a .md file."
               :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal', 'flex-1', 'w-full')"
               :value="store.getMarkdown"
               @input="handleInput"
