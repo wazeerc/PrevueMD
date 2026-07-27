@@ -40,7 +40,7 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
                   icon="download"
                   class="motion-preset-rebound-left motion-delay-150"
                   variant="primary"
-                  tooltip="Download Markdown"
+                  tooltip="Download"
                   size="md" />
     </div>
   </header>
