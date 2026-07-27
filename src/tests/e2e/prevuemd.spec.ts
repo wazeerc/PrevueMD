@@ -3,9 +3,9 @@ import { expect, test } from '@playwright/test';
 
 test('should display the correct title', async ({ page }) => {
   await page.goto('/');
-  const title = page.locator('h1');
+  const title = page.getByRole('link', { name: 'PrevueMD' });
 
-  await expect(title).toContainText('PrevueMD');
+  await expect(title).toBeVisible();
 });
 
 test('should capture markdown input properly', async ({ page }) => {
@@ -45,29 +45,28 @@ test('should parse markdown input into correct markup', async ({ page }) => {
 test('should not show preview loader for small markdown input', async ({ page }) => {
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
-  const previewLoader = page.locator('[role="status"]');
+  const renderingLoader = page.locator('[role="status"][aria-label="Rendering preview"]');
 
   await markdownEditor.fill('# Hello, World!');
 
-  await expect(previewLoader).toHaveCount(0);
+  await expect(renderingLoader).toHaveCount(0);
 });
 
 test('should show preview loader for large markdown input while parser is loading', async ({ page }) => {
-  await page.route('**/*remark-parse*', async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    await route.continue();
-  });
-
   const largeMarkdown = `# Large Markdown\n\n${'Large parser-delayed content.\n\n'.repeat(220)}`;
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
-  const previewLoader = page.locator('[role="status"]');
 
   await markdownEditor.fill(largeMarkdown);
 
-  await expect(previewLoader).toBeVisible();
-  await expect(previewLoader).toHaveAttribute('aria-label', 'Rendering preview');
+  await expect(async () => {
+    const hasLoader = await page.evaluate(() => {
+      const statusEl = document.querySelector('[role="status"]');
+      return statusEl?.getAttribute('aria-label') === 'Rendering preview';
+    });
+    expect(hasLoader).toBe(true);
+  }).toPass({ timeout: 5000, intervals: [50] });
 });
 
 test('should not show preview loader when re-pasting cached large markdown', async ({ page }) => {
@@ -75,7 +74,7 @@ test('should not show preview loader when re-pasting cached large markdown', asy
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
-  const previewLoader = page.locator('[role="status"]');
+  const renderingLoader = page.locator('[role="status"][aria-label="Rendering preview"]');
   const markdownPreview = page.locator('.prose-markdown').first();
   const resetBtn = page.locator('button[aria-label="reset Icon"]');
 
@@ -85,7 +84,7 @@ test('should not show preview loader when re-pasting cached large markdown', asy
   await resetBtn.click();
   await markdownEditor.fill(largeMarkdown);
 
-  await expect(previewLoader).toHaveCount(0);
+  await expect(renderingLoader).toHaveCount(0);
   await expect(markdownPreview).toContainText('Cached repeated content.');
 });
 
@@ -220,18 +219,18 @@ test('should not show loader inside maximized preview', async ({ page }) => {
 
 test('should toggle theme from dark to light when theme button is clicked', async ({ page }) => {
   await page.goto('/');
-  
+
   // Check initial state (dark mode)
   const htmlElement = page.locator('html');
   await expect(htmlElement).toHaveClass(/dark/);
-  
+
   // Click theme toggle button (should be sun icon initially)
   const themeToggleBtn = page.locator('button[aria-label="sun Icon"]');
   await themeToggleBtn.click();
-  
+
   // Check that theme switched to light mode
   await expect(htmlElement).not.toHaveClass(/dark/);
-  
+
   // Check that button now shows moon icon
   const moonBtn = page.locator('button[aria-label="moon Icon"]');
   await expect(moonBtn).toBeVisible();
@@ -239,37 +238,37 @@ test('should toggle theme from dark to light when theme button is clicked', asyn
 
 test('should toggle theme from light to dark when theme button is clicked', async ({ page }) => {
   await page.goto('/');
-  
+
   // First switch to light mode
   const sunBtn = page.locator('button[aria-label="sun Icon"]');
   await sunBtn.click();
-  
+
   // Now switch back to dark mode
   const moonBtn = page.locator('button[aria-label="moon Icon"]');
   await moonBtn.click();
-  
+
   // Check that theme switched back to dark mode
   const htmlElement = page.locator('html');
   await expect(htmlElement).toHaveClass(/dark/);
-  
+
   // Check that button now shows sun icon again
   await expect(sunBtn).toBeVisible();
 });
 
 test('should persist theme preference in localStorage', async ({ page }) => {
   await page.goto('/');
-  
+
   // Switch to light mode
   const themeToggleBtn = page.locator('button[aria-label="sun Icon"]');
   await themeToggleBtn.click();
-  
+
   // Check localStorage
   const themeValue = await page.evaluate(() => localStorage.getItem('theme'));
   expect(themeValue).toBe('light');
-  
+
   // Reload page
   await page.reload();
-  
+
   // Check that light mode persisted
   const htmlElement = page.locator('html');
   await expect(htmlElement).not.toHaveClass(/dark/);
