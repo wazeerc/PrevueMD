@@ -70,7 +70,7 @@ function downloadMarkdownFile(markdownContentToDownload: string): void {
     const a = document.createElement('a');
 
     a.href = url;
-    a.download = 'prevued.md';
+    a.download = `prevued-${Date.now()}.md`;
     a.click();
     URL.revokeObjectURL(url);
 
