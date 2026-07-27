@@ -8,10 +8,10 @@ defineProps<{
 </script>
 
 <template>
-  <div v-if="text"
-       class="group relative">
+  <div class="group relative inline-flex">
     <slot />
-    <span role="tooltip"
+    <span v-if="text"
+          role="tooltip"
           class="hidden md:block absolute left-1/2 -translate-x-1/2 px-2 py-1
                  whitespace-nowrap font-sans text-xs rounded-md z-40
                  bg-neutral-800/80 text-neutral-400
@@ -26,5 +26,4 @@ defineProps<{
       {{ text }}
     </span>
   </div>
-  <slot v-else />
 </template>
