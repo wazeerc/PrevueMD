@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<IconButtonProps>(), {
             :aria-disabled="disabled"
             :aria-label="`${icon} Icon`"
             @click="onClick"
-            :class="cn('inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed relative',
+            :class="cn('inline-flex items-center drop-shadow-sm disabled:cursor-not-allowed relative transition-all duration-200',
               variant === 'primary' && [
                 'px-2 py-1.5 sm:px-3 sm:py-2',
                 'text-xs sm:text-sm',
