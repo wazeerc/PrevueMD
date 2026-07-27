@@ -80,7 +80,11 @@ const previewFont = ref<'sans' | 'serif'>('sans');
   <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-      <h3 class="sub-heading">Preview</h3>
+        <h3 class="sub-heading">Preview</h3>
+        <span v-if="store.getIsParsing"
+              class="inline-block h-4 w-4 mb-2 animate-spin rounded-full border-2 border-neutral-400/50 border-t-[--vue-color-primary]"
+              role="status"
+              aria-label="Rendering preview"></span>
       </div>
       <div class="relative z-20 flex space-x-2">
         <IconButton :disabled="!store.getMarkdown"
@@ -99,10 +103,10 @@ const previewFont = ref<'sans' | 'serif'>('sans');
     </div>
     <div ref="previewRef"
          class="markdown-container flex-1 relative"
+         :class="{ 'cursor-progress': store.getIsParsing }"
          :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
       <div class="w-full break-words prose-markdown"
-           :class="{ 'motion-preset-pulse-sm motion-duration-2000': store.getIsParsing }"
            role="status"
            :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
            v-html="store.getMarkup">
@@ -129,6 +133,10 @@ const previewFont = ref<'sans' | 'serif'>('sans');
               <h3 id="modal-title"
                   class="text-xl font-semibold hidden md:block text-neutral-800 dark:text-neutral-200">
                 Preview</h3>
+              <span v-if="store.getIsParsing"
+                    class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-neutral-400/50 border-t-[--vue-color-primary] md:inline-block"
+                    role="status"
+                    aria-label="Rendering preview"></span>
             </div>
             <FontSwitcher v-model:font="previewFont" />
             <div class="relative z-20 flex space-x-4">
@@ -143,12 +151,12 @@ const previewFont = ref<'sans' | 'serif'>('sans');
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+          <div :class="cn('relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8',
+            store.getIsParsing && 'cursor-progress')"
                :aria-busy="store.getIsParsing"
                role="document">
             <div :class="cn('w-full break-words prose-markdown',
-              previewFont === 'serif' ? 'font-serif' : 'font-sans',
-              store.getIsParsing && 'motion-preset-pulse-sm motion-duration-2000')"
+              previewFont === 'serif' ? 'font-serif' : 'font-sans')"
                  role="status"
                  :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
                  v-html="store.getMarkup">
@@ -168,6 +176,4 @@ const previewFont = ref<'sans' | 'serif'>('sans');
 .modal-leave-to {
   opacity: 0;
 }
-
-
 </style>
