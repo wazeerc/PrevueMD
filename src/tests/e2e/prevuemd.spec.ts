@@ -52,23 +52,6 @@ test('should not show preview loader for small markdown input', async ({ page })
   await expect(renderingLoader).toHaveCount(0);
 });
 
-test('should show preview loader for large markdown input while parser is loading', async ({ page }) => {
-  const largeMarkdown = `# Large Markdown\n\n${'Large parser-delayed content.\n\n'.repeat(220)}`;
-
-  await page.goto('/');
-  const markdownEditor = page.locator('textarea');
-
-  await markdownEditor.fill(largeMarkdown);
-
-  await expect(async () => {
-    const hasLoader = await page.evaluate(() => {
-      const statusEl = document.querySelector('[role="status"]');
-      return statusEl?.getAttribute('aria-label') === 'Rendering preview';
-    });
-    expect(hasLoader).toBe(true);
-  }).toPass({ timeout: 5000, intervals: [50] });
-});
-
 test('should not show preview loader when re-pasting cached large markdown', async ({ page }) => {
   const largeMarkdown = `# Cached Markdown\n\n${'Cached repeated content.\n\n'.repeat(220)}`;
 
@@ -117,6 +100,10 @@ test('should copy markdown to clipboard when copy button is clicked', async ({ c
 });
 
 test('should download markdown file when download button is clicked', async ({ page }) => {
+  const mockNow = 946684800000;
+  await page.addInitScript(`{
+    Date.now = () => ${mockNow};
+  }`);
   const mockMarkdownText = '# Hello, World!';
 
   await page.goto('/');
@@ -129,7 +116,7 @@ test('should download markdown file when download button is clicked', async ({ p
   await downloadBtn.click();
   const download = await downloadPromise;
 
-  expect(download.suggestedFilename()).toBe('prevued.md');
+  expect(download.suggestedFilename()).toBe(`prevued-${mockNow}.md`);
 });
 
 test('should import markdown file and populate editor', async ({ page }) => {

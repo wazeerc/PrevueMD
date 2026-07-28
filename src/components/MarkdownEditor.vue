@@ -22,6 +22,8 @@ const handleFileSelected = (event: Event): void => {
   const file = target.files?.[0];
   if (!file) return;
 
+  debouncedParse.cancel();
+
   const reader = new FileReader();
   reader.onload = (e: ProgressEvent<FileReader>) => {
     const content = e.target?.result as string;
@@ -39,7 +41,10 @@ const handleInput = (event: Event): void => {
   store.setMarkdown(markdownInput);
   debouncedParse(markdownInput);
 };
-const handleClearInput = (): void => store.clearMarkdown();
+const handleClearInput = (): void => {
+  debouncedParse.cancel();
+  store.clearMarkdown();
+};
 
 function countWords(text: string): number {
   let wordCount = 0;

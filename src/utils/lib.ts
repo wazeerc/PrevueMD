@@ -131,10 +131,10 @@ function warnBeforeUnload(): () => void {
 function debounce<T extends (...args: unknown[]) => unknown>(
   _function: T,
   delay: number = 250
-): (...args: Parameters<T>) => void {
+): ((...args: Parameters<T>) => void) & { cancel: () => void } {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>): void {
+  const debounced = function (this: ThisParameterType<T>, ...args: Parameters<T>): void {
     clearTimeout(timeoutId as ReturnType<typeof setTimeout>);
 
     timeoutId = setTimeout(() => {
@@ -143,5 +143,14 @@ function debounce<T extends (...args: unknown[]) => unknown>(
       _function.apply(this, args);
     }, delay);
   };
+
+  debounced.cancel = (): void => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+
+  return debounced;
 }
 //#endregion

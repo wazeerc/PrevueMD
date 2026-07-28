@@ -19,10 +19,11 @@ defineProps<{
                  pointer-events-none
                  opacity-0 invisible
                  transition-all duration-200 ease-in
-                 group-hover:visible group-hover:pointer-events-auto group-hover:opacity-100"
+                 group-hover:visible group-hover:pointer-events-auto group-hover:opacity-100
+                  group-focus-within:visible group-focus-within:pointer-events-auto group-focus-within:opacity-100"
           :class="direction === 'top'
-            ? 'bottom-full mb-2 -translate-y-2 group-hover:translate-y-0'
-            : 'top-full mt-2 translate-y-2 group-hover:translate-y-0'">
+            ? 'bottom-full mb-2 -translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0'
+            : 'top-full mt-2 translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0'">
       {{ text }}
     </span>
   </div>

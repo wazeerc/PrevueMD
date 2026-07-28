@@ -9,6 +9,7 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
 
 <template>
   <header class="header-footer border-b-2">
+    <h1>
     <a href="/"
        :class="cn('font-sans font-bold text-neutral-700 dark:text-neutral-200', 'text-lg', 'sm:text-xl', 'md:text-2xl',
          'motion-preset-rebound-right motion-delay-75',
@@ -16,6 +17,7 @@ const debouncedDownload = debounce(store.handleDownloadMarkdownFile);
       Prevue<span
             :class="cn('font-sans font-bold text-[--vue-color-primary]', 'text-lg', 'sm:text-xl', 'md:text-2xl')">MD</span>
     </a>
+  </h1>
     <h2 :class="cn('text-neutral-500 dark:text-neutral-400', 'pl-2', 'mt-4', 'font-medium', 'text-sm', 'sm:text-base',
       'motion-preset-blur-up-md motion-delay-500', 'hidden lg:block')">
       Real-time
