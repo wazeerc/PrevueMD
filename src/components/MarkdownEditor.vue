@@ -1,20 +1,50 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
-import { cn } from "@/utils/lib";
+import { cn, debounce } from "@/utils/lib";
 import { computed, ref, watch } from 'vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
+
+const debouncedParse = debounce((markdown: unknown) => {
+  store.handleParseMarkdown(markdown as string);
+}, 300);
+
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const handleImport = (): void => {
+  fileInputRef.value?.click();
+};
+
+const handleFileSelected = (event: Event): void => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (!file) return;
+
+  debouncedParse.cancel();
+
+  const reader = new FileReader();
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    const content = e.target?.result as string;
+    store.setMarkdown(content);
+    store.handleParseMarkdown(content);
+  };
+  reader.readAsText(file);
+  target.value = '';
+};
 
 const handleInput = (event: Event): void => {
   const markdownInput: string = (event.target as HTMLTextAreaElement).value;
   if (markdownInput === store.getMarkdown) return;
 
   store.setMarkdown(markdownInput);
-  store.handleParseMarkdown(markdownInput);
+  debouncedParse(markdownInput);
 };
-const handleClearInput = (): void => store.clearMarkdown();
+const handleClearInput = (): void => {
+  debouncedParse.cancel();
+  store.clearMarkdown();
+};
 
 function countWords(text: string): number {
   let wordCount = 0;
@@ -56,28 +86,40 @@ watch(() => props.scrollPercentage, syncScroll);
     <div class="flex justify-between items-center">
       <div class="flex items-baseline gap-1">
         <h3 class="sub-heading">Editor</h3>
-        <span class="text-sm text-neutral-500 dark:text-neutral-400"
+        <span class="text-sm text-neutral-500"
               aria-live="polite">
           ({{ editorStats.words }} words, {{ editorStats.characters }} characters)
         </span>
       </div>
-      <IconButton :disabled="!store.getMarkdown"
-                  @click="handleClearInput"
-                  :state="!store.getMarkdown ? 'disabled' : 'default'"
-                  icon="reset"
-                  tooltip="Reset"
-                  variant="secondary"
-                  size="md" />
+      <div class="flex gap-2">
+        <IconButton icon="upload"
+                    @click="handleImport"
+                    tooltip="Import"
+                    variant="secondary"
+                    size="md" />
+        <IconButton :disabled="!store.getMarkdown"
+                    @click="handleClearInput"
+                    :state="!store.getMarkdown ? 'disabled' : 'default'"
+                    icon="reset"
+                    tooltip="Reset"
+                    variant="secondary"
+                    size="md" />
+      </div>
     </div>
     <textarea ref="editorRef"
               autofocus
               placeholder="✏️ Start typing to edit and preview your Markdown in real-time.
 
-📝 You can also copy & paste existing content."
+📝 You can also paste existing content or import a .md file."
               :class="cn('markdown-container', 'resize-none', 'text-sm font-mono font-normal', 'flex-1', 'w-full')"
               :value="store.getMarkdown"
               @input="handleInput"
               @scroll="() => onScroll(p => emit('scroll', p))">
     </textarea>
+    <input ref="fileInputRef"
+           type="file"
+           accept=".md"
+           class="hidden"
+           @change="handleFileSelected">
   </div>
 </template>

@@ -75,6 +75,7 @@ describe('downloadMarkdownFile function', () => {
   });
 
   it('should prepare the markdown file for download', () => {
+    const mockNow = 946684800000;
     const originalURL = globalThis.URL;
     globalThis.URL = {
       ...originalURL,
@@ -87,14 +88,15 @@ describe('downloadMarkdownFile function', () => {
 
     vi.spyOn(document, 'createElement').mockReturnValue(anchor);
     vi.spyOn(anchor, 'click').mockImplementation(() => { });
+    vi.spyOn(Date, 'now').mockReturnValue(mockNow);
 
     downloadMarkdownFile(markdown);
 
     expect(URL.createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
-    expect(anchor.download).toBe('prevued.md');
+    expect(anchor.download).toBe(`prevued-${mockNow}.md`);
     expect(anchor.href).toBe('blob:test-url');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:test-url');
-    expect(mockToast.info).toHaveBeenCalledWith('Markdown file queued for download!');
+    expect(mockToast.info).toHaveBeenCalledWith('Markdown file downloading...');
 
     globalThis.URL = originalURL;
 

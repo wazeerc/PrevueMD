@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
-import { debounce } from "@/utils/lib";
+import { cn } from "@/utils/lib";
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import FontSwitcher from './FontSwitcher.vue';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
-const debouncedCopyToClipboard = debounce(store.handleCopyToClipboard);
 
 const previewRef = ref<HTMLDivElement | null>(null);
 const { onScroll, syncScroll } = useScrollSync(previewRef);
@@ -65,6 +64,10 @@ const handleKeydown = (e: KeyboardEvent) => {
 onMounted(() => document.addEventListener('keydown', handleKeydown));
 onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown));
 
+const handleCopy = (): void => {
+  store.handleCopyToClipboard();
+};
+
 const emit = defineEmits<{ scroll: [percentage: number]; }>();
 const props = defineProps<{ scrollPercentage: number; }>();
 
@@ -76,35 +79,36 @@ const previewFont = ref<'sans' | 'serif'>('sans');
 <template>
   <div class="flex flex-col h-full p-1">
     <div class="flex justify-between items-center">
-      <h3 class="sub-heading">Preview</h3>
+      <div class="flex items-center gap-2">
+        <h3 class="sub-heading">Preview</h3>
+        <span v-if="store.getIsParsing"
+              class="inline-block h-4 w-4 mb-2 animate-spin rounded-full border-2 border-neutral-400/50 border-t-[--vue-color-primary]"
+              role="status"
+              aria-label="Rendering preview"></span>
+      </div>
       <div class="relative z-20 flex space-x-2">
+        <IconButton :disabled="!store.getMarkdown"
+                    @click="handleCopy"
+                    icon="clipboard"
+                    tooltip="Copy"
+                    variant="secondary"
+                    size="md" />
         <IconButton :disabled="!store.getMarkdown"
                     @click="maximizePreview"
                     icon="maximize"
                     tooltip="Maximize"
                     variant="secondary"
                     size="md" />
-        <IconButton :disabled="!store.getMarkdown"
-                    @click="debouncedCopyToClipboard"
-                    icon="clipboard"
-                    tooltip="Copy"
-                    variant="secondary"
-                    size="md" />
       </div>
     </div>
     <div ref="previewRef"
          class="markdown-container flex-1 relative"
+         :class="{ 'cursor-progress': store.getIsParsing }"
          :aria-busy="store.getIsParsing"
          @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
-      <div v-if="store.getIsParsing"
-           class="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200/40 backdrop-blur-sm pointer-events-none dark:bg-neutral-800/40"
-           role="status"
-           aria-live="polite"
-           aria-label="Rendering preview">
-        <span class="h-16 w-16 animate-spin rounded-full border-4 border-neutral-400/50 border-t-[--vue-color-primary]"
-              aria-hidden="true"></span>
-      </div>
       <div class="w-full break-words prose-markdown"
+           role="status"
+           :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
            v-html="store.getMarkup">
       </div>
     </div>
@@ -125,42 +129,36 @@ const previewFont = ref<'sans' | 'serif'>('sans');
              class="relative w-full h-full max-w-8xl mx-auto p-12 flex flex-col motion-preset-expand">
           <div
                class="flex justify-between items-center mb-4 motion-preset-slide-up-lg motion-delay-500">
-            <h3 id="modal-title"
-                class="text-xl font-semibold text-neutral-800 dark:text-neutral-200 hidden md:block">
-              Preview</h3>
+            <div class="flex items-center gap-2">
+              <h3 id="modal-title"
+                  class="text-xl font-semibold hidden md:block text-neutral-800 dark:text-neutral-200">
+                Preview</h3>
+              <span v-if="store.getIsParsing"
+                    class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-neutral-400/50 border-t-[--vue-color-primary] md:inline-block"
+                    role="status"
+                    aria-label="Rendering preview"></span>
+            </div>
             <FontSwitcher v-model:font="previewFont" />
             <div class="relative z-20 flex space-x-4">
-              <IconButton :disabled="!store.getMarkdown"
-                          @click="debouncedCopyToClipboard"
-                          class="mb-0"
-                          icon="clipboard"
-                          tooltip="Copy"
-                          variant="secondary"
-                          size="lg"
-                          aria-label="Copy markdown to clipboard" />
               <IconButton ref="closeModalRef"
                           class="mb-0"
                           @click="closeModal"
                           icon="minimize"
                           tooltip="Close"
+                          tooltip-direction="top"
                           variant="secondary"
                           size="lg"
                           aria-label="Close fullscreen preview" />
             </div>
           </div>
-          <div class="relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8"
+          <div :class="cn('relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8',
+            store.getIsParsing && 'cursor-progress')"
                :aria-busy="store.getIsParsing"
                role="document">
-            <div v-if="store.getIsParsing"
-                 class="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200/40 backdrop-blur-sm pointer-events-none dark:bg-neutral-800/40"
+            <div :class="cn('w-full break-words prose-markdown',
+              previewFont === 'serif' ? 'font-serif' : 'font-sans')"
                  role="status"
-                 aria-live="polite"
-                 aria-label="Rendering preview">
-              <span class="h-16 w-16 animate-spin rounded-full border-4 border-neutral-400/50 border-t-[--vue-color-primary]"
-                    aria-hidden="true"></span>
-            </div>
-            <div :class="['w-full break-words prose-markdown',
-              previewFont === 'serif' ? 'font-serif' : 'font-sans']"
+                 :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
                  v-html="store.getMarkup">
             </div>
           </div>
