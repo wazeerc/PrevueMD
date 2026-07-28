@@ -18,6 +18,7 @@ I did not like the markdown editor on GitHub, so I decided to build my own.
 
 - 🚀 Real-time preview as you type
 - 💾 Export to markdown file
+- ☁️ Import existing markdown files
 - 📋 Copy to clipboard functionality
 - 🖥️ Fullscreen preview with selectable font options
 
