@@ -2,7 +2,7 @@
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
 import { cn, createFocusTrap } from "@/utils/lib";
-import { nextTick, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import FontSwitcher from './FontSwitcher.vue';
 import IconButton from "./IconButton.vue";
 
@@ -41,6 +41,15 @@ const closeModal = () => {
     previousActiveElement?.focus();
   });
 };
+
+onBeforeUnmount(() => {
+  if (isMaximized.value) {
+    activeTrap?.deactivate();
+    activeTrap = null;
+    document.body.style.overflow = '';
+    document.getElementById('app')?.removeAttribute('inert');
+  }
+});
 
 const handleCopy = (): void => {
   store.handleCopyToClipboard();
