@@ -260,3 +260,56 @@ test('should persist theme preference in localStorage', async ({ page }) => {
   const htmlElement = page.locator('html');
   await expect(htmlElement).not.toHaveClass(/dark/);
 });
+
+test.describe('Fullscreen preview focus management', () => {
+  test('should focus close button when modal opens', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('textarea').fill('# Focus Test');
+
+    await page.locator('button[aria-label="maximize Icon"]').click();
+
+    const modal = page.locator('div[role="dialog"]');
+    await expect(modal).toBeVisible();
+    await expect(page.locator('button[aria-label="minimize Icon"]')).toBeFocused();
+  });
+
+  test('should close modal on Escape and restore focus', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('textarea').fill('# Escape Test');
+
+    const maximizeBtn = page.locator('button[aria-label="maximize Icon"]');
+    await maximizeBtn.click();
+    await expect(page.locator('div[role="dialog"]')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('div[role="dialog"]')).not.toBeVisible();
+    await expect(maximizeBtn).toBeFocused();
+  });
+
+  test('should set and remove inert on #app', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('textarea').fill('# Inert Test');
+
+    const maximizeBtn = page.locator('button[aria-label="maximize Icon"]');
+    await maximizeBtn.click();
+    await expect(page.locator('div[role="dialog"]')).toBeVisible();
+    expect(await page.evaluate(() => document.getElementById('app')?.hasAttribute('inert'))).toBe(true);
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('div[role="dialog"]')).not.toBeVisible();
+    expect(await page.evaluate(() => document.getElementById('app')?.hasAttribute('inert'))).toBe(false);
+  });
+
+  test('should lock and restore body scroll', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('textarea').fill('# Scroll Test');
+
+    await page.locator('button[aria-label="maximize Icon"]').click();
+    await expect(page.locator('div[role="dialog"]')).toBeVisible();
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe('hidden');
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('div[role="dialog"]')).not.toBeVisible();
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe('');
+  });
+});
