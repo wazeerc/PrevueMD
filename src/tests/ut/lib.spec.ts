@@ -1,6 +1,6 @@
 /* eslint-disable */
 //? Disabling linting because this is a test file and several functions are mocked
-import { cn, copyToClipboard, debounce, downloadMarkdownFile, warnBeforeUnload } from '@/utils/lib';
+import { cn, copyToClipboard, createFocusTrap, debounce, downloadMarkdownFile, warnBeforeUnload } from '@/utils/lib';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the toastification library
@@ -157,5 +157,86 @@ describe('debounce function', () => {
     expect(mockFn).toHaveBeenCalledTimes(1);
 
     vi.useRealTimers();
+  });
+});
+
+describe('createFocusTrap', () => {
+  function createContainer(): HTMLElement {
+    const container = document.createElement('div');
+    const btn1 = document.createElement('button');
+    const btn2 = document.createElement('button');
+    const btn3 = document.createElement('button');
+    container.append(btn1, btn2, btn3);
+    document.body.appendChild(container);
+    return container;
+  }
+
+  function removeContainer(container: HTMLElement): void {
+    document.body.removeChild(container);
+  }
+
+  it('should focus the first focusable element on activate', () => {
+    const container = createContainer();
+    const trap = createFocusTrap(container);
+    trap.activate();
+
+    const firstButton = container.querySelector('button') as HTMLElement;
+    expect(document.activeElement).toBe(firstButton);
+
+    trap.deactivate();
+    removeContainer(container);
+  });
+
+  it('should wrap focus from last to first on Tab', () => {
+    const container = createContainer();
+    const trap = createFocusTrap(container);
+    trap.activate();
+
+    const buttons = container.querySelectorAll('button');
+    buttons[buttons.length - 1].focus();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    expect(document.activeElement).toBe(buttons[0]);
+
+    trap.deactivate();
+    removeContainer(container);
+  });
+
+  it('should wrap focus from first to last on Shift+Tab', () => {
+    const container = createContainer();
+    const trap = createFocusTrap(container);
+    trap.activate();
+
+    const buttons = container.querySelectorAll('button');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }));
+    expect(document.activeElement).toBe(buttons[buttons.length - 1]);
+
+    trap.deactivate();
+    removeContainer(container);
+  });
+
+  it('should call onEscape callback when Escape is pressed', () => {
+    const container = createContainer();
+    const onEscape = vi.fn();
+    const trap = createFocusTrap(container, { onEscape });
+    trap.activate();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(onEscape).toHaveBeenCalledTimes(1);
+
+    trap.deactivate();
+    removeContainer(container);
+  });
+
+  it('should return last focused element on deactivate', () => {
+    const container = createContainer();
+    const trap = createFocusTrap(container);
+    trap.activate();
+
+    const buttons = container.querySelectorAll('button');
+    buttons[1].focus();
+
+    expect(trap.deactivate()).toBe(buttons[1]);
+    removeContainer(container);
   });
 });
