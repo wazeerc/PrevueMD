@@ -44,7 +44,7 @@
     "eslint": "^9.39.4",
     "eslint-plugin-vue": "^9.33.0",
     "jsdom": "^25.0.1",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.18",
     "tailwind-merge": "^2.6.1",
     "tailwindcss": "^3.4.19",
     "tailwindcss-motion": "^1.1.1",
