@@ -1,4 +1,4 @@
-export { cn, copyToClipboard, debounce, downloadMarkdownFile, warnBeforeUnload };
+export { cn, copyToClipboard, createFocusTrap, debounce, downloadMarkdownFile, warnBeforeUnload };
 
 //#region: Tailwind Utils
 import { clsx, type ClassValue } from "clsx";
@@ -81,6 +81,67 @@ function downloadMarkdownFile(markdownContentToDownload: string): void {
 }
 //#endregion
 
+//#region: Focus Trap
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), a[href]:not([href=""]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])';
+
+type FocusTrap = {
+  activate: () => void;
+  deactivate: () => HTMLElement | null;
+};
+
+function createFocusTrap(container: HTMLElement, options?: { onEscape?: () => void; initialFocus?: HTMLElement; }): FocusTrap {
+  let handleKeydown: ((e: KeyboardEvent) => void) | null = null;
+
+  const activate = (): void => {
+    const focusableElements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    if (focusableElements.length === 0) return;
+
+    (options?.initialFocus ?? focusableElements[0]).focus();
+
+    handleKeydown = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        options?.onEscape?.();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const elements = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+        if (elements.length === 0) return;
+
+        const first = elements[0];
+        const last = elements[elements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+  };
+
+  const deactivate = (): HTMLElement | null => {
+    if (handleKeydown) {
+      document.removeEventListener('keydown', handleKeydown);
+      handleKeydown = null;
+    }
+
+    return document.activeElement as HTMLElement | null;
+  };
+
+  return { activate, deactivate };
+}
+//#endregion
+
 //#region: Others
 /**
  * Sets up a warning dialog when attempting to leave/reload the page.
@@ -131,7 +192,7 @@ function warnBeforeUnload(): () => void {
 function debounce<T extends (...args: unknown[]) => unknown>(
   _function: T,
   delay: number = 250
-): ((...args: Parameters<T>) => void) & { cancel: () => void } {
+): ((...args: Parameters<T>) => void) & { cancel: () => void; } {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   const debounced = function (this: ThisParameterType<T>, ...args: Parameters<T>): void {

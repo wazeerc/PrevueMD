@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
-import { cn } from "@/utils/lib";
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { cn, createFocusTrap } from "@/utils/lib";
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import FontSwitcher from './FontSwitcher.vue';
 import IconButton from "./IconButton.vue";
 
@@ -12,57 +12,44 @@ const previewRef = ref<HTMLDivElement | null>(null);
 const { onScroll, syncScroll } = useScrollSync(previewRef);
 
 const modalRef = ref<HTMLDivElement | null>(null);
-const closeModalRef = ref<HTMLButtonElement | null>(null);
 const isMaximized = ref(false);
 let previousActiveElement: HTMLElement | null = null;
+let activeTrap: ReturnType<typeof createFocusTrap> | null = null;
 
 const maximizePreview = async () => {
   previousActiveElement = document.activeElement as HTMLElement;
   isMaximized.value = true;
 
   await nextTick();
-  (modalRef.value?.querySelector('button[aria-label="Close fullscreen preview"]') as HTMLElement)?.focus();
+  document.getElementById('app')?.setAttribute('inert', '');
+  document.body.style.overflow = 'hidden';
+
+  activeTrap = createFocusTrap(modalRef.value!, {
+    onEscape: closeModal,
+    initialFocus: modalRef.value!.querySelector('button[aria-label="minimize Icon"]') as HTMLElement,
+  });
+  activeTrap.activate();
 };
 
 const closeModal = () => {
+  activeTrap?.deactivate();
+  activeTrap = null;
   isMaximized.value = false;
-  nextTick(() => previousActiveElement?.focus());
+  document.body.style.overflow = '';
+  nextTick(() => {
+    document.getElementById('app')?.removeAttribute('inert');
+    previousActiveElement?.focus();
+  });
 };
 
-const handleKeydown = (e: KeyboardEvent) => {
-  if (!isMaximized.value) return;
-
-  if (e.key === 'Escape') {
-    closeModal();
-    return;
+onBeforeUnmount(() => {
+  if (isMaximized.value) {
+    activeTrap?.deactivate();
+    activeTrap = null;
+    document.body.style.overflow = '';
+    document.getElementById('app')?.removeAttribute('inert');
   }
-
-  if (e.key === 'Tab') {
-    const focusableElements = modalRef.value?.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-
-    if (!focusableElements || focusableElements.length === 0) return;
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    if (e.shiftKey) {
-      if (document.activeElement === firstElement) {
-        e.preventDefault();
-        lastElement.focus();
-      }
-    } else {
-      if (document.activeElement === lastElement) {
-        e.preventDefault();
-        firstElement.focus();
-      }
-    }
-  }
-};
-
-onMounted(() => document.addEventListener('keydown', handleKeydown));
-onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown));
+});
 
 const handleCopy = (): void => {
   store.handleCopyToClipboard();
@@ -140,8 +127,7 @@ const previewFont = ref<'sans' | 'serif'>('sans');
             </div>
             <FontSwitcher v-model:font="previewFont" />
             <div class="relative z-20 flex space-x-4">
-              <IconButton ref="closeModalRef"
-                          class="mb-0"
+              <IconButton class="mb-0"
                           @click="closeModal"
                           icon="minimize"
                           tooltip="Close"
