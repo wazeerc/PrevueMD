@@ -14,8 +14,9 @@ defineProps<{
           role="tooltip"
           class="hidden md:block absolute left-1/2 -translate-x-1/2 px-2 py-1
                  whitespace-nowrap font-sans text-xs rounded-md z-40
-                 bg-neutral-800/80 text-neutral-400
-                 outline outline-1 outline-[--vue-color-secondary]
+                 dark:bg-neutral-800 dark:text-neutral-200
+                 bg-neutral-200 text-neutral-800
+                 outline outline-2 outline-[--vue-color-secondary]
                  pointer-events-none
                  opacity-0 invisible
                  transition-all duration-200 ease-in

@@ -30,7 +30,7 @@ test('should display editor word and character counts', async ({ page }) => {
 
 test('should parse markdown input into correct markup', async ({ page }) => {
   const mockMarkdownText = '# Hello, World!';
-  const parsedMockMarkdownHtml = '<h1>Hello, World!</h1>';
+  const parsedMockMarkdownHtml = '<h1 id="hello-world">Hello, World!</h1>';
 
   await page.goto('/');
   const markdownEditor = page.locator('textarea');
@@ -139,7 +139,7 @@ test('should import markdown file and populate editor', async ({ page }) => {
 
 test('should parse imported markdown into correct markup', async ({ page }) => {
   const mockMarkdownText = '# Imported Markdown';
-  const parsedHtml = '<h1>Imported Markdown</h1>';
+  const parsedHtml = '<h1 id="imported-markdown">Imported Markdown</h1>';
 
   await page.goto('/');
   const markdownPreview = page.locator('.prose-markdown');
@@ -311,5 +311,23 @@ test.describe('Fullscreen preview focus management', () => {
     await page.keyboard.press('Escape');
     await expect(page.locator('div[role="dialog"]')).not.toBeVisible();
     expect(await page.evaluate(() => document.body.style.overflow)).toBe('');
+  });
+
+  test('should scroll to heading when anchor link is clicked in fullscreen', async ({ page }) => {
+    const markdown = `## Contents\n\n- [Go to heading](#target-heading)\n\n${'Spacer\n\n'.repeat(20)}\n## Target Heading`;
+    await page.goto('/');
+    await page.locator('textarea').fill(markdown);
+
+    await page.locator('button[aria-label="maximize Icon"]').click();
+    const modal = page.locator('div[role="dialog"]');
+    await expect(modal).toBeVisible();
+
+    const scrollContainer = modal.locator('[role="document"]');
+    await scrollContainer.evaluate((el) => el.scrollTo(0, 0));
+
+    await modal.getByRole('link', { name: 'Go to heading' }).click();
+
+    const scrollTop = await scrollContainer.evaluate((el) => el.scrollTop);
+    expect(scrollTop).toBeGreaterThan(0);
   });
 });

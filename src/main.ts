@@ -39,6 +39,10 @@ app.use(Toast, {
 });
 app.mount("#app");
 
+if (window.location.hash) {
+  history.replaceState(null, '', window.location.pathname + window.location.search);
+}
+
 // Initialize theme after app is mounted
 try {
   const appStore = useStore();
