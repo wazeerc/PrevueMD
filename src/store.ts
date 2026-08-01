@@ -129,6 +129,10 @@ export const useStore = defineStore<
       this.isParsing = false;
       this.parseRequestId += 1;
 
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+
       this.unloadWarning?.();
       this.unloadWarning = null;
     },

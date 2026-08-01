@@ -90,4 +90,49 @@ describe("MarkdownPreview component", () => {
     expect(preventDefault).toHaveBeenCalled();
     expect(document.activeElement).toBe(firstElement);
   });
+
+  it('should scroll to target when anchor link is clicked in fullscreen', async () => {
+    const longContent = '<p>Spacer</p>'.repeat(50) + '<h2 id="target">Target</h2>';
+    const markupWithAnchor = '<a href="#target">Go to target</a>' + longContent;
+    const testStore = setupTest(MarkdownPreview,
+      { markdown: '[Go to target](#target)', markup: markupWithAnchor },
+      { props: { scrollPercentage: 0 } }
+    );
+    wrapper.unmount();
+    wrapper = testStore.wrapper;
+
+    await wrapper.find('button[aria-label="maximize Icon"]').trigger('click');
+    await nextTick();
+
+    const original = Element.prototype.scrollIntoView;
+    const scrollIntoViewSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoViewSpy;
+
+    const anchor = document.body.querySelector('a[href="#target"]') as HTMLElement;
+    anchor.click();
+
+    expect(scrollIntoViewSpy).toHaveBeenCalled();
+    Element.prototype.scrollIntoView = original;
+  });
+
+  it('should scroll to target when anchor link is clicked in normal preview', async () => {
+    const longContent = '<p>Spacer</p>'.repeat(50) + '<h2 id="target">Target</h2>';
+    const markupWithAnchor = '<a href="#target">Go to target</a>' + longContent;
+    const testStore = setupTest(MarkdownPreview,
+      { markdown: '[Go to target](#target)', markup: markupWithAnchor },
+      { props: { scrollPercentage: 0 } }
+    );
+    wrapper.unmount();
+    wrapper = testStore.wrapper;
+
+    const original = Element.prototype.scrollIntoView;
+    const scrollIntoViewSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoViewSpy;
+
+    const anchor = wrapper.find('.prose-markdown a[href="#target"]');
+    await anchor.trigger('click');
+
+    expect(scrollIntoViewSpy).toHaveBeenCalled();
+    Element.prototype.scrollIntoView = original;
+  });
 });

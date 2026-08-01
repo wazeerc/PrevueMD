@@ -61,6 +61,21 @@ const props = defineProps<{ scrollPercentage: number; }>();
 watch(() => props.scrollPercentage, syncScroll);
 
 const previewFont = ref<'sans' | 'serif'>('sans');
+
+const handleAnchorClick = (e: MouseEvent) => {
+  const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
+  if (!anchor) return;
+
+  const id = anchor.getAttribute('href')?.slice(1);
+  if (!id) return;
+
+  const container = isMaximized.value ? modalRef.value : previewRef.value;
+  const target = container?.querySelector(`[id="${id}"]`);
+  if (!target) return;
+
+  e.preventDefault();
+  target.scrollIntoView({ behavior: 'instant', block: 'start' });
+};
 </script>
 
 <template>
@@ -92,7 +107,8 @@ const previewFont = ref<'sans' | 'serif'>('sans');
          class="markdown-container flex-1 relative"
          :class="{ 'cursor-progress': store.getIsParsing }"
          :aria-busy="store.getIsParsing"
-         @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))">
+         @scroll="() => !isMaximized && onScroll(p => emit('scroll', p))"
+         @click="handleAnchorClick">
       <div class="w-full break-words prose-markdown"
            role="status"
            :aria-label="store.getIsParsing ? 'Rendering preview' : undefined"
@@ -140,7 +156,8 @@ const previewFont = ref<'sans' | 'serif'>('sans');
           <div :class="cn('relative flex-1 overflow-auto bg-neutral-100 dark:bg-neutral-900 border-4 border-neutral-400/40 dark:border-neutral-600/10 rounded-lg p-8',
             store.getIsParsing && 'cursor-progress')"
                :aria-busy="store.getIsParsing"
-               role="document">
+               role="document"
+               @click="handleAnchorClick">
             <div :class="cn('w-full break-words prose-markdown',
               previewFont === 'serif' ? 'font-serif' : 'font-sans')"
                  role="status"
