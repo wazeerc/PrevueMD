@@ -3,9 +3,21 @@ import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
 import { cn, debounce } from "@/utils/lib";
 import { computed, ref, watch } from 'vue';
+import { useToast } from 'vue-toastification';
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
+const toast = useToast();
+
+const MARKDOWN_FILE_EXTENSION = /\.md$/i;
+
+function isMarkdownFile(file: File): boolean {
+  return MARKDOWN_FILE_EXTENSION.test(file.name);
+}
+
+function isBinaryContent(content: string): boolean {
+  return content.includes('\u0000');
+}
 
 const debouncedParse = debounce((markdown: unknown) => {
   store.handleParseMarkdown(markdown as string);
@@ -20,18 +32,31 @@ const handleImport = (): void => {
 const handleFileSelected = (event: Event): void => {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
+
+  target.value = '';
   if (!file) return;
+
+  if (!isMarkdownFile(file)) {
+    toast.error('Only Markdown (.md) files can be imported.');
+    return;
+  }
 
   debouncedParse.cancel();
 
   const reader = new FileReader();
   reader.onload = (e: ProgressEvent<FileReader>) => {
-    const content = e.target?.result as string;
+    const content = e.target?.result;
+
+    if (typeof content !== 'string' || isBinaryContent(content)) {
+      toast.error('Only Markdown (.md) files can be imported.');
+      return;
+    }
+
     store.setMarkdown(content);
     store.handleParseMarkdown(content);
   };
+  reader.onerror = () => toast.error('Failed to read the selected file.');
   reader.readAsText(file);
-  target.value = '';
 };
 
 const handleInput = (event: Event): void => {
@@ -118,7 +143,7 @@ watch(() => props.scrollPercentage, syncScroll);
     </textarea>
     <input ref="fileInputRef"
            type="file"
-           accept=".md"
+           accept=".md,text/markdown"
            class="hidden"
            @change="handleFileSelected">
   </div>
