@@ -15,8 +15,13 @@ function isMarkdownFile(file: File): boolean {
   return MARKDOWN_FILE_EXTENSION.test(file.name);
 }
 
-function isBinaryContent(content: string): boolean {
-  return content.includes('\u0000');
+function decodeMarkdown(bytes: ArrayBuffer): string | null {
+  try {
+    const content = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    return content.includes('\u0000') ? null : content;
+  } catch {
+    return null;
+  }
 }
 
 const debouncedParse = debounce((markdown: unknown) => {
@@ -45,9 +50,10 @@ const handleFileSelected = (event: Event): void => {
 
   const reader = new FileReader();
   reader.onload = (e: ProgressEvent<FileReader>) => {
-    const content = e.target?.result;
+    const result = e.target?.result;
+    const content = result instanceof ArrayBuffer ? decodeMarkdown(result) : null;
 
-    if (typeof content !== 'string' || isBinaryContent(content)) {
+    if (content === null) {
       toast.error('Only Markdown (.md) files can be imported.');
       return;
     }
@@ -56,7 +62,7 @@ const handleFileSelected = (event: Event): void => {
     store.handleParseMarkdown(content);
   };
   reader.onerror = () => toast.error('Failed to read the selected file.');
-  reader.readAsText(file);
+  reader.readAsArrayBuffer(file);
 };
 
 const handleInput = (event: Event): void => {

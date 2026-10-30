@@ -139,4 +139,24 @@ describe("MarkdownEditor component", () => {
     });
     expect(store.getMarkdown).toBe("");
   });
+
+  it("should reject malformed UTF-8 content without replacing the draft", async () => {
+    store.setMarkdown("# Existing draft");
+    await nextTick();
+
+    const fileInput = wrapper.find('input[type="file"]');
+    const file = new File([new Uint8Array([0xff, 0xfe, 0xfd])], "corrupt.md", { type: "text/markdown" });
+
+    Object.defineProperty(fileInput.element, "files", {
+      value: [file],
+      writable: false,
+    });
+
+    await fileInput.trigger("change");
+
+    await vi.waitFor(() => {
+      expect(toastError).toHaveBeenCalledWith("Only Markdown (.md) files can be imported.");
+    });
+    expect(store.getMarkdown).toBe("# Existing draft");
+  });
 });
