@@ -31,7 +31,7 @@ I did not like the markdown editor on GitHub, so I decided to build my own.
 ## Local Development Setup
 
 1. **Prerequisites**
-   - [Node.js](https://nodejs.org/en/download) 16 or higher
+   - [Node.js](https://nodejs.org/en/download) `^20.19.0 || >=22.12.0`
    - [pnpm](https://pnpm.io/installation) package manager
 
 2. **Installation**
