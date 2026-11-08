@@ -49,7 +49,9 @@ describe("MarkdownEditor component", () => {
   it("should display word and character counts", async () => {
     await textarea.setValue("# Hello World");
 
-    expect(wrapper.text()).toContain("(3 words, 13 characters)");
+    await vi.waitFor(() => {
+      expect(wrapper.text()).toContain("(3 words, 13 characters)");
+    });
   });
 
   it("should clear input when reset button is clicked", async () => {

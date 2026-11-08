@@ -1,8 +1,23 @@
 import { initialState, useStore } from '@/store';
+import {
+  cancelDraftSave,
+  clearDraft,
+  flushDraft,
+  loadDraft,
+  scheduleSaveDraft,
+} from '@/utils/draft-storage';
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
 import { getCachedMarkdown, parseMarkdown } from "@/utils/markdown-parser";
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock("@/utils/draft-storage", () => ({
+  cancelDraftSave: vi.fn(),
+  clearDraft: vi.fn(),
+  flushDraft: vi.fn(),
+  loadDraft: vi.fn(() => null),
+  scheduleSaveDraft: vi.fn(),
+}));
 
 vi.mock("@/utils/lib", () => ({
   copyToClipboard: vi.fn(),
@@ -20,6 +35,8 @@ describe('Store', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     vi.mocked(getCachedMarkdown).mockReturnValue(null);
+    vi.mocked(loadDraft).mockReturnValue(null);
+    vi.mocked(scheduleSaveDraft).mockImplementation((_markdown, onSaved) => onSaved?.(true));
   });
 
   afterEach(() => {
@@ -66,11 +83,41 @@ describe('Store', () => {
 
     beforeEach(() => store = useStore());
 
-    it('should update markdown and set unload warning', () => {
+    it('should update markdown and schedule the draft save', () => {
       store.setMarkdown('test markdown');
 
       expect(store.markdown).toBe('test markdown');
-      expect(warnBeforeUnload).toHaveBeenCalled();
+      expect(scheduleSaveDraft).toHaveBeenCalledWith('test markdown', expect.any(Function));
+      expect(store.getIsDraftRestored).toBe(false);
+      expect(warnBeforeUnload).not.toHaveBeenCalled();
+    });
+
+    it('should clear the restored draft and warning when markdown is emptied', () => {
+      store.setMarkdown('test markdown');
+      vi.mocked(warnBeforeUnload).mockClear();
+
+      store.setMarkdown('');
+
+      expect(cancelDraftSave).toHaveBeenCalled();
+      expect(clearDraft).toHaveBeenCalled();
+      expect(store.getIsDraftRestored).toBe(false);
+      expect(warnBeforeUnload).not.toHaveBeenCalled();
+      expect(store.unloadWarning).toBeNull();
+    });
+
+    it('should fall back to a generic warning when the draft cannot be cached', () => {
+      vi.mocked(scheduleSaveDraft).mockImplementationOnce((_markdown, onSaved) => onSaved?.(false));
+
+      store.setMarkdown('test markdown');
+
+      expect(store.getIsDraftRestored).toBe(false);
+      expect(warnBeforeUnload).toHaveBeenCalledWith();
+    });
+
+    it('should flush a pending draft save', () => {
+      store.flushDraft();
+
+      expect(flushDraft).toHaveBeenCalled();
     });
 
     it('should update markup', () => {
@@ -87,6 +134,59 @@ describe('Store', () => {
       expect(store.markdown).toBeNull();
       expect(store.markup).toBeNull();
       expect(store.unloadWarning).toBeNull();
+      expect(store.restoredDraft).toBeNull();
+    });
+
+    it('should clear the cached draft when markdown is reset', () => {
+      store.setMarkdown('test');
+
+      store.clearMarkdown();
+
+      expect(cancelDraftSave).toHaveBeenCalled();
+      expect(clearDraft).toHaveBeenCalled();
+    });
+
+    it('should restore a cached draft on init and parse it', () => {
+      vi.mocked(loadDraft).mockReturnValue('# Restored');
+      vi.mocked(parseMarkdown).mockResolvedValue('<h1 id="restored">Restored</h1>');
+
+      store.initMarkdown();
+
+      expect(store.markdown).toBe('# Restored');
+      expect(store.restoredDraft).toBe('# Restored');
+      expect(store.getIsDraftRestored).toBe(true);
+      expect(scheduleSaveDraft).not.toHaveBeenCalled();
+      expect(warnBeforeUnload).not.toHaveBeenCalled();
+      expect(parseMarkdown).toHaveBeenCalledWith('# Restored');
+    });
+
+    it('should hide the restored draft indicator once the content changes', () => {
+      vi.mocked(loadDraft).mockReturnValue('# Restored');
+      vi.mocked(parseMarkdown).mockResolvedValue('<h1>Restored</h1>');
+      store.initMarkdown();
+
+      store.setMarkdown('# Edited');
+
+      expect(store.getIsDraftRestored).toBe(false);
+    });
+
+    it('should keep the restored draft indicator while the content is unchanged', () => {
+      vi.mocked(loadDraft).mockReturnValue('# Restored');
+      vi.mocked(parseMarkdown).mockResolvedValue('<h1>Restored</h1>');
+      store.initMarkdown();
+
+      store.setMarkdown('# Restored');
+
+      expect(store.getIsDraftRestored).toBe(true);
+    });
+
+    it('should do nothing when there is no cached draft to restore', () => {
+      store.initMarkdown();
+
+      expect(store.markdown).toBeNull();
+      expect(store.getIsDraftRestored).toBe(false);
+      expect(parseMarkdown).not.toHaveBeenCalled();
+      expect(warnBeforeUnload).not.toHaveBeenCalled();
     });
 
     it('should call parseMarkdown and update markup', async () => {
@@ -296,6 +396,19 @@ describe('Store', () => {
     it('should return markup when set', () => {
       store.setMarkup('test');
       expect(store.getMarkup).toBe('test');
+    });
+
+    it('should return whether a draft was restored', () => {
+      expect(store.getIsDraftRestored).toBe(false);
+
+      store.markdown = '# Restored';
+      store.restoredDraft = '# Restored';
+
+      expect(store.getIsDraftRestored).toBe(true);
+
+      store.markdown = '# Edited';
+
+      expect(store.getIsDraftRestored).toBe(false);
     });
 
     it('should return current theme', () => {

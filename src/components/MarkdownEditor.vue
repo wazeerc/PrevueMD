@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useScrollSync } from '@/composables/useScrollSync';
 import { useStore } from "@/store";
+import { IconLibrary } from '@/utils/icons';
 import { cn, debounce } from "@/utils/lib";
-import { computed, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
+import AppTooltip from "./AppTooltip.vue";
 import IconButton from "./IconButton.vue";
 
 const store = useStore();
@@ -95,16 +97,41 @@ function countWords(text: string): number {
   return wordCount;
 }
 
-const editorStats = computed(() => {
-  const markdown = store.getMarkdown;
-  return {
-    characters: (markdown ?? '').length,
-    words: countWords(markdown ?? ""),
-  };
-});
+const editorStats = ref({ characters: 0, words: 0 });
 
+function updateEditorStats(markdown: string): void {
+  editorStats.value = {
+    characters: markdown.length,
+    words: countWords(markdown),
+  };
+}
+
+const debouncedUpdateEditorStats = debounce((markdown: unknown) => {
+  updateEditorStats(markdown as string);
+}, 150);
+
+const draftSavedIcon = IconLibrary('pencil', 'sm', 'secondary', 'default');
+const resetButtonRef = ref<HTMLElement | null>(null);
 const editorRef = ref<HTMLTextAreaElement | null>(null);
 const { onScroll, syncScroll } = useScrollSync(editorRef);
+
+onMounted(() => {
+  updateEditorStats(store.getMarkdown ?? '');
+
+  if (store.getMarkdown) {
+    resetButtonRef.value?.querySelector('button')?.focus();
+    return;
+  }
+
+  editorRef.value?.focus();
+});
+
+onBeforeUnmount(() => {
+  debouncedUpdateEditorStats.cancel();
+  store.flushDraft();
+});
+
+watch(() => store.getMarkdown, (markdown) => debouncedUpdateEditorStats(markdown ?? ''));
 
 const emit = defineEmits<{ scroll: [percentage: number]; }>();
 const props = defineProps<{ scrollPercentage: number; }>();
@@ -121,6 +148,16 @@ watch(() => props.scrollPercentage, syncScroll);
               aria-live="polite">
           ({{ editorStats.words }} words, {{ editorStats.characters }} characters)
         </span>
+        <AppTooltip v-if="store.getIsDraftRestored"
+                    text="Draft restored"
+                    direction="bottom"
+                    class="self-center ml-1 mb-1">
+          <span class="inline-flex rounded-sm text-neutral-400 dark:text-neutral-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                tabindex="0"
+                role="img"
+                aria-label="Draft restored"
+                v-html="draftSavedIcon" />
+        </AppTooltip>
       </div>
       <div class="flex gap-2">
         <IconButton icon="upload"
@@ -128,17 +165,19 @@ watch(() => props.scrollPercentage, syncScroll);
                     tooltip="Import"
                     variant="secondary"
                     size="md" />
-        <IconButton :disabled="!store.getMarkdown"
-                    @click="handleClearInput"
-                    :state="!store.getMarkdown ? 'disabled' : 'default'"
-                    icon="reset"
-                    tooltip="Reset"
-                    variant="secondary"
-                    size="md" />
+        <span ref="resetButtonRef"
+              class="inline-flex">
+          <IconButton :disabled="!store.getMarkdown"
+                      @click="handleClearInput"
+                      :state="!store.getMarkdown ? 'disabled' : 'default'"
+                      icon="reset"
+                      tooltip="Reset"
+                      variant="secondary"
+                      size="md" />
+        </span>
       </div>
     </div>
     <textarea ref="editorRef"
-              autofocus
               placeholder="✏️ Start typing to edit and preview your Markdown in real-time.
 
 📝 You can also paste existing content or import a .md file."
