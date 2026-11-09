@@ -84,6 +84,101 @@ test('should reset markdown editor when reset button is clicked', async ({ page 
   expect(await markdownEditor.inputValue()).toBe('');
 });
 
+test('should restore cached draft after reload', async ({ page }) => {
+  const mockMarkdownText = '# Cached Draft';
+
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+
+  await markdownEditor.fill(mockMarkdownText);
+  await page.reload();
+
+  await expect(markdownEditor).toHaveValue(mockMarkdownText);
+  await expect(page.locator('.prose-markdown').first()).toContainText('Cached Draft');
+});
+
+test('should not show the draft icon in the same session', async ({ page }) => {
+  await page.goto('/');
+
+  await page.locator('textarea').fill('# Saved Draft');
+
+  await expect(page.getByLabel('Draft restored')).toHaveCount(0);
+});
+
+test('should show the draft icon when a draft is restored', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('prevue-md:draft', JSON.stringify({
+      markdown: '# Restored Draft',
+      savedAt: Date.now(),
+    }));
+  });
+
+  await page.goto('/');
+
+  await expect(page.getByLabel('Draft restored')).toBeVisible();
+});
+
+test('should hide the draft icon once the restored draft is edited', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('prevue-md:draft', JSON.stringify({
+      markdown: '# Restored Draft',
+      savedAt: Date.now(),
+    }));
+  });
+
+  await page.goto('/');
+
+  const markdownEditor = page.locator('textarea');
+  await expect(page.getByLabel('Draft restored')).toBeVisible();
+
+  await markdownEditor.fill('# Restored Draft edited');
+
+  await expect(page.getByLabel('Draft restored')).toHaveCount(0);
+});
+
+test('should focus the editor on load when there is no draft', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.locator('textarea')).toBeFocused();
+});
+
+test('should focus the reset button on load when a draft is restored', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('prevue-md:draft', JSON.stringify({
+      markdown: '# Restored Draft',
+      savedAt: Date.now(),
+    }));
+  });
+
+  await page.goto('/');
+
+  await expect(page.locator('button[aria-label="reset Icon"]')).toBeFocused();
+});
+
+test('should discard a cached draft older than one day', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('prevue-md:draft', JSON.stringify({
+      markdown: '# Expired Draft',
+      savedAt: Date.now() - (24 * 60 * 60 * 1000) - 1000,
+    }));
+  });
+
+  await page.goto('/');
+
+  await expect(page.locator('textarea')).toHaveValue('');
+});
+
+test('should remove cached draft when editor is reset', async ({ page }) => {
+  await page.goto('/');
+  const markdownEditor = page.locator('textarea');
+
+  await markdownEditor.fill('# Clear me');
+  await page.locator('button[aria-label="reset Icon"]').click();
+
+  const cachedDraft = await page.evaluate(() => localStorage.getItem('prevue-md:draft'));
+  expect(cachedDraft).toBeNull();
+});
+
 test('should copy markdown to clipboard when copy button is clicked', async ({ context, page }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   const mockMarkdownText = '# Hello, World!';

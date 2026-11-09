@@ -153,6 +153,10 @@ function createFocusTrap(container: HTMLElement, options?: { onEscape?: () => vo
  * when it's no longer needed.
  * @throws {Error} If the event listener cannot be set up
  *
+ * @remarks
+ * Browsers show their own fixed confirmation text and ignore any custom
+ * message, so this is only used when content has not been cached.
+ *
  * @example
  * onMounted(() => {
  *   const cleanup = warnBeforeUnload();

@@ -131,6 +131,21 @@ describe('warnBeforeUnload function', () => {
     expect(addEventListenerSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function));
   });
 
+  it('should prevent the default action when leaving the page', () => {
+    const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+
+    warnBeforeUnload();
+
+    const handler = addEventListenerSpy.mock.calls
+      .find(([eventName]) => eventName === 'beforeunload')?.[1] as unknown as
+      (event: BeforeUnloadEvent) => string;
+    const event = { preventDefault: vi.fn() };
+
+    handler(event as unknown as BeforeUnloadEvent);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
   it('should throw an error if the event listener fails to attach', () => {
     vi.spyOn(window, 'addEventListener').mockImplementation(() => {
       throw new Error('Mock error');

@@ -37,19 +37,27 @@ app.use(Toast, {
   icon: true,
   rtl: false
 });
+// Initialize theme and restore any cached draft before the editor mounts so
+// focus can be placed on the correct control on first render
+try {
+  const appStore = useStore();
+  appStore.initTheme();
+  appStore.initMarkdown();
+
+  const flushDraft = (): void => appStore.flushDraft();
+  window.addEventListener('pagehide', flushDraft);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushDraft();
+  });
+} catch {
+  // In test environment, store might not be available
+  console.debug('App initialization skipped in test environment');
+}
+
 app.mount("#app");
 
 if (window.location.hash) {
   history.replaceState(null, '', window.location.pathname + window.location.search);
-}
-
-// Initialize theme after app is mounted
-try {
-  const appStore = useStore();
-  appStore.initTheme();
-} catch {
-  // In test environment, store might not be available
-  console.debug('Theme initialization skipped in test environment');
 }
 
 const isMobileDevice = () => {

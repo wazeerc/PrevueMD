@@ -1,3 +1,4 @@
+import { cancelDraftSave, clearDraft, flushDraft as flushScheduledDraft, isDraftCacheable, loadDraft, scheduleSaveDraft } from "@/utils/draft-storage";
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
 import { getCachedMarkdown, parseMarkdown } from "@/utils/markdown-parser";
 import { defineStore } from "pinia";
@@ -6,6 +7,7 @@ interface StoreState {
   markdown: string | null;
   markup: string | null;
   unloadWarning: (() => void) | null;
+  restoredDraft: string | null;
   theme: 'light' | 'dark';
   isParsing: boolean;
   parseRequestId: number;
@@ -21,6 +23,8 @@ interface StoreActions {
   setMarkdown(markdownText: string): void;
   setMarkup(markupText: string): void;
   clearMarkdown(): void;
+  initMarkdown(): void;
+  flushDraft(): void;
   handleParseMarkdown(rawMarkdown: string): void;
   handleCopyToClipboard(): void;
   handleDownloadMarkdownFile(): void;
@@ -33,6 +37,7 @@ interface StoreGetters extends Record<string, (state: StoreState) => unknown> {
   getMarkup: (state: StoreState) => string | null;
   getTheme: (state: StoreState) => 'light' | 'dark';
   getIsParsing: (state: StoreState) => boolean;
+  getIsDraftRestored: (state: StoreState) => boolean;
   getMarkdownStats: (state: StoreState) => MarkdownStats;
 }
 
@@ -40,6 +45,7 @@ export const initialState: Readonly<StoreState> = {
   markdown: null,
   markup: null,
   unloadWarning: null,
+  restoredDraft: null,
   theme: 'dark',
   isParsing: false,
   parseRequestId: 0,
@@ -115,8 +121,39 @@ export const useStore = defineStore<
     setMarkdown(markdownText: string) {
       this.markdown = markdownText;
 
-      this.unloadWarning?.();
-      this.unloadWarning = markdownText.trim() ? warnBeforeUnload() : null;
+      if (markdownText !== this.restoredDraft) {
+        this.restoredDraft = null;
+      }
+
+      if (markdownText.length === 0) {
+        cancelDraftSave();
+        clearDraft();
+        this.unloadWarning?.();
+        this.unloadWarning = null;
+        return;
+      }
+
+      if (!isDraftCacheable(markdownText)) {
+        cancelDraftSave();
+        clearDraft();
+
+        if (this.unloadWarning === null) {
+          this.unloadWarning = warnBeforeUnload();
+        }
+
+        return;
+      }
+
+      if (this.unloadWarning === null) {
+        this.unloadWarning = warnBeforeUnload();
+      }
+
+      scheduleSaveDraft(markdownText, (saved) => {
+        if (!saved) return;
+
+        this.unloadWarning?.();
+        this.unloadWarning = null;
+      });
     },
     setMarkup(markupText: string) {
       this.markup = markupText;
@@ -125,9 +162,12 @@ export const useStore = defineStore<
       this.markdown = null;
       this.markup = null;
       this.lastParsedMarkdown = null;
+      this.restoredDraft = null;
       clearParsingLoaderTimeout();
       this.isParsing = false;
       this.parseRequestId += 1;
+      cancelDraftSave();
+      clearDraft();
 
       if (window.location.hash) {
         history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -135,6 +175,17 @@ export const useStore = defineStore<
 
       this.unloadWarning?.();
       this.unloadWarning = null;
+    },
+    initMarkdown() {
+      const cachedMarkdown = loadDraft();
+      if (cachedMarkdown === null) return;
+
+      this.markdown = cachedMarkdown;
+      this.restoredDraft = cachedMarkdown;
+      void this.handleParseMarkdown(cachedMarkdown);
+    },
+    flushDraft() {
+      flushScheduledDraft();
     },
     async handleParseMarkdown(rawMarkdown: string) {
       if (rawMarkdown === this.lastParsedMarkdown && this.markup !== null) {
@@ -207,6 +258,7 @@ export const useStore = defineStore<
     getMarkup: (state) => state.markup ?? '',
     getTheme: (state) => state.theme,
     getIsParsing: (state) => state.isParsing,
+    getIsDraftRestored: (state) => state.restoredDraft !== null && state.markdown === state.restoredDraft,
     getMarkdownStats: (state) => {
       const markdown = state.markdown ?? '';
 
