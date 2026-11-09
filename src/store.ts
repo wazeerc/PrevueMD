@@ -144,16 +144,15 @@ export const useStore = defineStore<
         return;
       }
 
-      scheduleSaveDraft(markdownText, (saved) => {
-        if (saved) {
-          this.unloadWarning?.();
-          this.unloadWarning = null;
-          return;
-        }
+      if (this.unloadWarning === null) {
+        this.unloadWarning = warnBeforeUnload();
+      }
 
-        if (this.unloadWarning === null) {
-          this.unloadWarning = warnBeforeUnload();
-        }
+      scheduleSaveDraft(markdownText, (saved) => {
+        if (!saved) return;
+
+        this.unloadWarning?.();
+        this.unloadWarning = null;
       });
     },
     setMarkup(markupText: string) {

@@ -86,13 +86,34 @@ describe('Store', () => {
 
     beforeEach(() => store = useStore());
 
-    it('should update markdown and schedule the draft save', () => {
+    it('should update markdown, warn while saving, and clear the warning after a save', () => {
       store.setMarkdown('test markdown');
 
       expect(store.markdown).toBe('test markdown');
       expect(scheduleSaveDraft).toHaveBeenCalledWith('test markdown', expect.any(Function));
       expect(store.getIsDraftRestored).toBe(false);
-      expect(warnBeforeUnload).not.toHaveBeenCalled();
+      expect(warnBeforeUnload).toHaveBeenCalledTimes(1);
+      expect(store.unloadWarning).toBeNull();
+    });
+
+    it('should keep a warning while a draft write is pending', () => {
+      const cleanup = vi.fn();
+      let pendingSave: ((saved: boolean) => void) | undefined;
+
+      vi.mocked(warnBeforeUnload).mockReturnValue(cleanup);
+      vi.mocked(scheduleSaveDraft).mockImplementationOnce((_markdown, onSaved) => {
+        pendingSave = onSaved;
+      });
+
+      store.setMarkdown('pending');
+
+      expect(warnBeforeUnload).toHaveBeenCalledTimes(1);
+      expect(store.unloadWarning).not.toBeNull();
+
+      pendingSave?.(true);
+
+      expect(cleanup).toHaveBeenCalledTimes(1);
+      expect(store.unloadWarning).toBeNull();
     });
 
     it('should clear the restored draft and warning when markdown is emptied', () => {
