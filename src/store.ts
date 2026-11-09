@@ -1,4 +1,4 @@
-import { cancelDraftSave, clearDraft, flushDraft as flushScheduledDraft, loadDraft, scheduleSaveDraft } from "@/utils/draft-storage";
+import { cancelDraftSave, clearDraft, flushDraft as flushScheduledDraft, isDraftCacheable, loadDraft, scheduleSaveDraft } from "@/utils/draft-storage";
 import { copyToClipboard, downloadMarkdownFile, warnBeforeUnload } from "@/utils/lib";
 import { getCachedMarkdown, parseMarkdown } from "@/utils/markdown-parser";
 import { defineStore } from "pinia";
@@ -133,12 +133,27 @@ export const useStore = defineStore<
         return;
       }
 
-      this.unloadWarning?.();
-      this.unloadWarning = null;
+      if (!isDraftCacheable(markdownText)) {
+        cancelDraftSave();
+        clearDraft();
+
+        if (this.unloadWarning === null) {
+          this.unloadWarning = warnBeforeUnload();
+        }
+
+        return;
+      }
 
       scheduleSaveDraft(markdownText, (saved) => {
-        this.unloadWarning?.();
-        this.unloadWarning = !saved ? warnBeforeUnload() : null;
+        if (saved) {
+          this.unloadWarning?.();
+          this.unloadWarning = null;
+          return;
+        }
+
+        if (this.unloadWarning === null) {
+          this.unloadWarning = warnBeforeUnload();
+        }
       });
     },
     setMarkup(markupText: string) {

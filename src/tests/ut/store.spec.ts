@@ -3,6 +3,7 @@ import {
   cancelDraftSave,
   clearDraft,
   flushDraft,
+  isDraftCacheable,
   loadDraft,
   scheduleSaveDraft,
 } from '@/utils/draft-storage';
@@ -15,6 +16,7 @@ vi.mock("@/utils/draft-storage", () => ({
   cancelDraftSave: vi.fn(),
   clearDraft: vi.fn(),
   flushDraft: vi.fn(),
+  isDraftCacheable: vi.fn(() => true),
   loadDraft: vi.fn(() => null),
   scheduleSaveDraft: vi.fn(),
 }));
@@ -36,6 +38,7 @@ describe('Store', () => {
     vi.clearAllMocks();
     vi.mocked(getCachedMarkdown).mockReturnValue(null);
     vi.mocked(loadDraft).mockReturnValue(null);
+    vi.mocked(isDraftCacheable).mockReturnValue(true);
     vi.mocked(scheduleSaveDraft).mockImplementation((_markdown, onSaved) => onSaved?.(true));
   });
 
@@ -112,6 +115,30 @@ describe('Store', () => {
 
       expect(store.getIsDraftRestored).toBe(false);
       expect(warnBeforeUnload).toHaveBeenCalledWith();
+    });
+
+    it('should warn immediately when the draft is too large to cache', () => {
+      vi.mocked(isDraftCacheable).mockReturnValueOnce(false);
+
+      store.setMarkdown('x'.repeat(10));
+
+      expect(scheduleSaveDraft).not.toHaveBeenCalled();
+      expect(cancelDraftSave).toHaveBeenCalled();
+      expect(clearDraft).toHaveBeenCalled();
+      expect(warnBeforeUnload).toHaveBeenCalledWith();
+    });
+
+    it('should keep the warning until a save succeeds', () => {
+      const cleanup = vi.fn();
+      vi.mocked(warnBeforeUnload).mockReturnValue(cleanup);
+      vi.mocked(scheduleSaveDraft).mockImplementationOnce((_markdown, onSaved) => onSaved?.(false));
+      store.setMarkdown('first');
+
+      vi.mocked(scheduleSaveDraft).mockImplementationOnce((_markdown, onSaved) => onSaved?.(true));
+      store.setMarkdown('second');
+
+      expect(cleanup).toHaveBeenCalledTimes(1);
+      expect(store.unloadWarning).toBeNull();
     });
 
     it('should flush a pending draft save', () => {
